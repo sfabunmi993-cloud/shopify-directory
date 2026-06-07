@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Star, MapPin, DollarSign } from 'lucide-react';
+import { Star, MapPin, DollarSign, Hash } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const CATEGORY_LABELS = {
@@ -42,9 +42,16 @@ export default function PartnerCard({ partner }) {
 
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-heading font-semibold text-foreground text-base group-hover:text-primary transition-colors truncate">
-              {partner.name}
-            </h3>
+            <div className="min-w-0">
+              <h3 className="font-heading font-semibold text-foreground text-base group-hover:text-primary transition-colors truncate">
+                {partner.name}
+              </h3>
+              {partner.partner_number && (
+                <span className="text-xs text-muted-foreground font-mono flex items-center gap-0.5">
+                  <Hash className="w-2.5 h-2.5" />{partner.partner_number}
+                </span>
+              )}
+            </div>
             {partner.partner_tier && partner.partner_tier !== 'standard' && (
               <Badge variant="outline" className={`text-xs shrink-0 ${TIER_STYLES[partner.partner_tier]}`}>
                 {partner.partner_tier.charAt(0).toUpperCase() + partner.partner_tier.slice(1)}
@@ -83,6 +90,13 @@ export default function PartnerCard({ partner }) {
                 {displayedServices.join(', ')}
                 {extraCount > 0 && <span className="text-muted-foreground"> + {extraCount} more</span>}
               </span>
+            </div>
+          )}
+          {partner.tags?.slice(0, 3).length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {partner.tags.slice(0, 3).map(tag => (
+                <span key={tag} className="text-xs px-2 py-0.5 bg-primary/8 text-primary/70 rounded-full">#{tag}</span>
+              ))}
             </div>
           )}
         </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Menu, X, ChevronDown, LogOut, User, LayoutDashboard } from 'lucide-react';
+import { Search, Menu, X, ChevronDown, LogOut, User, LayoutDashboard, Heart, MessageSquare, ShieldCheck } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
@@ -19,6 +19,7 @@ export default function Navbar() {
   const [user, setUser] = useState(null);
   const [hasPartnerProfile, setHasPartnerProfile] = useState(false);
   const [partnerId, setPartnerId] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +27,7 @@ export default function Navbar() {
       if (authed) {
         const me = await base44.auth.me();
         setUser(me);
+        setIsAdmin(me.role === 'admin');
         const partners = await base44.entities.Partner.filter({ created_by_id: me.id });
         if (partners.length > 0) {
           setHasPartnerProfile(true);
@@ -101,6 +103,14 @@ export default function Navbar() {
                       <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                     </div>
                     <DropdownMenuSeparator />
+                    {isAdmin && (
+                      <>
+                        <DropdownMenuItem asChild>
+                          <Link to="/admin"><ShieldCheck className="w-4 h-4 mr-2" /> Admin Dashboard</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
                     {hasPartnerProfile && (
                       <>
                         <DropdownMenuItem asChild>
@@ -120,6 +130,13 @@ export default function Navbar() {
                         <DropdownMenuSeparator />
                       </>
                     )}
+                    <DropdownMenuItem asChild>
+                      <Link to="/favorites"><Heart className="w-4 h-4 mr-2" /> Saved Partners</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/messages"><MessageSquare className="w-4 h-4 mr-2" /> Messages</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
                       <LogOut className="w-4 h-4 mr-2" /> Log out
                     </DropdownMenuItem>
@@ -170,6 +187,9 @@ export default function Navbar() {
                   ) : (
                     <Link to="/become-a-partner" className="text-sm font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Become a Partner</Link>
                   )}
+                  <Link to="/favorites" className="text-sm font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Saved Partners</Link>
+                  <Link to="/messages" className="text-sm font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Messages</Link>
+                  {isAdmin && <Link to="/admin" className="text-sm font-medium py-2 text-primary" onClick={() => setMobileMenuOpen(false)}>Admin Dashboard</Link>}
                   <button onClick={handleLogout} className="text-sm font-medium py-2 text-destructive text-left">Log out</button>
                 </>
               ) : (

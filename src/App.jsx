@@ -17,6 +17,9 @@ import PartnerDetail from '@/pages/PartnerDetail';
 import DirectoryLayout from '@/components/directory/Layout';
 import PartnerOnboarding from '@/pages/PartnerOnboarding';
 import MyProfile from '@/pages/MyProfile';
+import AdminDashboard from '@/pages/AdminDashboard';
+import Favorites from '@/pages/Favorites';
+import Messages from '@/pages/Messages';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -54,6 +57,9 @@ const AuthenticatedApp = () => {
         <Route path="/partner/:id" element={<PartnerDetail />} />
         <Route path="/become-a-partner" element={<PartnerOnboarding />} />
         <Route path="/my-profile" element={<MyProfile />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/favorites" element={<Favorites />} />
+        <Route path="/messages" element={<Messages />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

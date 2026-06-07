@@ -2,6 +2,10 @@
   "name": "Partner",
   "type": "object",
   "properties": {
+    "partner_number": {
+      "type": "string",
+      "description": "Auto-generated unique partner ID (e.g. PB-00042)"
+    },
     "name": {
       "type": "string",
       "description": "Partner/agency name"
@@ -45,6 +49,13 @@
         "type": "string"
       }
     },
+    "tags": {
+      "type": "array",
+      "description": "Searchable tags/keywords for this partner",
+      "items": {
+        "type": "string"
+      }
+    },
     "service_category": {
       "type": "string",
       "enum": [
@@ -56,6 +67,22 @@
         "expert_guidance"
       ],
       "description": "Primary service category"
+    },
+    "industry": {
+      "type": "string",
+      "enum": [
+        "technology",
+        "healthcare",
+        "finance",
+        "retail",
+        "education",
+        "manufacturing",
+        "real_estate",
+        "hospitality",
+        "creative",
+        "other"
+      ],
+      "description": "Industry specialization"
     },
     "partner_tier": {
       "type": "string",
@@ -90,6 +117,25 @@
       "type": "boolean",
       "default": false,
       "description": "Whether this partner is featured"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "restricted"
+      ],
+      "default": "pending",
+      "description": "Account status - must be approved by admin"
+    },
+    "flag_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of times this partner has been flagged"
+    },
+    "restriction_reason": {
+      "type": "string",
+      "description": "Reason for account restriction by admin"
     }
   },
   "required": [

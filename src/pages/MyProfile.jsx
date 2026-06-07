@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera } from 'lucide-react';
+import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 
 const SERVICE_CATEGORIES = [
@@ -29,6 +29,19 @@ const SUGGESTED_SERVICES = {
 };
 
 const COUNTRIES = ['United States', 'United Kingdom', 'Canada', 'Australia', 'India', 'Germany', 'France', 'Nigeria', 'Brazil', 'Singapore', 'South Africa', 'Other'];
+
+const INDUSTRIES = [
+  { label: 'Technology', value: 'technology' },
+  { label: 'Healthcare', value: 'healthcare' },
+  { label: 'Finance', value: 'finance' },
+  { label: 'Retail', value: 'retail' },
+  { label: 'Education', value: 'education' },
+  { label: 'Manufacturing', value: 'manufacturing' },
+  { label: 'Real Estate', value: 'real_estate' },
+  { label: 'Hospitality', value: 'hospitality' },
+  { label: 'Creative', value: 'creative' },
+  { label: 'Other', value: 'other' },
+];
 const LANGUAGES_LIST = ['English', 'Spanish', 'French', 'German', 'Hindi', 'Portuguese', 'Arabic', 'Mandarin', 'Japanese', 'Tamil'];
 
 export default function MyProfile() {
@@ -38,6 +51,7 @@ export default function MyProfile() {
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [newService, setNewService] = useState('');
+  const [newTag, setNewTag] = useState('');
   const [form, setForm] = useState({});
 
   useEffect(() => {
@@ -76,6 +90,15 @@ export default function MyProfile() {
     set('languages', languages.includes(lang) ? languages.filter(l => l !== lang) : [...languages, lang]);
   };
 
+  const addTag = () => {
+    const t = newTag.trim().toLowerCase().replace(/\s+/g, '-');
+    const tags = form.tags || [];
+    if (t && !tags.includes(t)) set('tags', [...tags, t]);
+    setNewTag('');
+  };
+
+  const removeTag = (t) => set('tags', (form.tags || []).filter(tag => tag !== t));
+
   const handleLogoUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -111,11 +134,34 @@ export default function MyProfile() {
         <div>
           <h1 className="font-heading text-2xl font-bold">My Partner Profile</h1>
           <p className="text-sm text-muted-foreground mt-1">Edit how you appear in the directory</p>
+          {partner?.partner_number && (
+            <p className="text-xs text-muted-foreground font-mono mt-1">ID: {partner.partner_number}</p>
+          )}
         </div>
         <Button asChild variant="outline" className="rounded-full" size="sm">
           <Link to={`/partner/${partner?.id}`}><Eye className="w-4 h-4 mr-1.5" /> View Public Profile</Link>
         </Button>
       </div>
+
+      {/* Status Banner */}
+      {partner?.status === 'pending' && (
+        <div className="mb-4 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-center gap-2 text-amber-700 text-sm">
+          <Clock className="w-4 h-4 shrink-0" />
+          <span><strong>Pending approval.</strong> Your profile is under review. You'll be visible in the directory once approved by an admin.</span>
+        </div>
+      )}
+      {partner?.status === 'approved' && (
+        <div className="mb-4 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 flex items-center gap-2 text-emerald-700 text-sm">
+          <ShieldCheck className="w-4 h-4 shrink-0" />
+          <span><strong>Approved.</strong> Your profile is live and visible in the directory.</span>
+        </div>
+      )}
+      {partner?.status === 'restricted' && (
+        <div className="mb-4 bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-center gap-2 text-red-700 text-sm">
+          <ShieldAlert className="w-4 h-4 shrink-0" />
+          <span><strong>Account restricted.</strong> {partner.restriction_reason || 'Your account has been restricted by an admin.'}</span>
+        </div>
+      )}
 
       <div className="bg-white border border-border rounded-2xl p-6 space-y-6">
         {/* Basic */}
@@ -161,6 +207,15 @@ export default function MyProfile() {
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {SERVICE_CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Industry specialization</Label>
+              <Select value={form.industry || ''} onValueChange={v => set('industry', v)}>
+                <SelectTrigger><SelectValue placeholder="Select industry" /></SelectTrigger>
+                <SelectContent>
+                  {INDUSTRIES.map(i => <SelectItem key={i.value} value={i.value}>{i.label}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -234,6 +289,33 @@ export default function MyProfile() {
               <Input type="url" placeholder="https://" value={form.website_url || ''} onChange={e => set('website_url', e.target.value)} />
             </div>
           </div>
+        </div>
+
+        <hr className="border-border" />
+
+        {/* Tags */}
+        <div>
+          <h2 className="font-semibold text-base mb-1">Tags / Keywords</h2>
+          <p className="text-xs text-muted-foreground mb-3">Searchable tags that help clients find you (e.g. "ecommerce", "b2b", "react")</p>
+          <div className="flex gap-2 mb-3">
+            <Input
+              placeholder="Add a tag..."
+              value={newTag}
+              onChange={e => setNewTag(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && addTag()}
+            />
+            <Button variant="outline" size="icon" onClick={addTag}><Plus className="w-4 h-4" /></Button>
+          </div>
+          {(form.tags || []).length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {(form.tags || []).map(t => (
+                <span key={t} className="flex items-center gap-1 px-2.5 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                  #{t}
+                  <button onClick={() => removeTag(t)} className="hover:text-primary/60"><X className="w-3 h-3" /></button>
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         <hr className="border-border" />

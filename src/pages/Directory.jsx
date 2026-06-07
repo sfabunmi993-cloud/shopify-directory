@@ -5,8 +5,9 @@ import FilterSidebar from '@/components/directory/FilterSidebar';
 import PartnerCard from '@/components/directory/PartnerCard';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { SlidersHorizontal, X } from 'lucide-react';
+import { SlidersHorizontal, X, Search } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 
 export default function Directory() {
@@ -16,17 +17,18 @@ export default function Directory() {
 
   const [filters, setFilters] = useState({
     category: initialCategory,
+    industry: 'all',
     location: 'all',
     tier: 'all',
     minPrice: '',
     maxPrice: '',
   });
-  const [searchQuery] = useState(initialSearch);
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [sortBy, setSortBy] = useState('rating');
 
   const { data: partners, isLoading } = useQuery({
     queryKey: ['partners'],
-    queryFn: () => base44.entities.Partner.list('-rating', 200),
+    queryFn: () => base44.entities.Partner.filter({ status: 'approved' }, '-rating', 500),
     initialData: [],
   });
 
@@ -35,24 +37,30 @@ export default function Directory() {
   };
 
   const clearFilters = () => {
-    setFilters({ category: 'all', location: 'all', tier: 'all', minPrice: '', maxPrice: '' });
+    setFilters({ category: 'all', industry: 'all', location: 'all', tier: 'all', minPrice: '', maxPrice: '' });
+    setSearchQuery('');
   };
 
   const filteredPartners = useMemo(() => {
     let results = [...partners];
 
     if (searchQuery) {
-      const q = searchQuery.toLowerCase();
+      const q = searchQuery.toLowerCase().trim();
       results = results.filter(p =>
         p.name?.toLowerCase().includes(q) ||
         p.description?.toLowerCase().includes(q) ||
         p.location?.toLowerCase().includes(q) ||
-        p.services?.some(s => s.toLowerCase().includes(q))
+        p.partner_number?.toLowerCase().includes(q) ||
+        p.services?.some(s => s.toLowerCase().includes(q)) ||
+        p.tags?.some(t => t.toLowerCase().includes(q))
       );
     }
 
     if (filters.category !== 'all') {
       results = results.filter(p => p.service_category === filters.category);
+    }
+    if (filters.industry !== 'all') {
+      results = results.filter(p => p.industry === filters.industry);
     }
     if (filters.location !== 'all') {
       results = results.filter(p => p.country === filters.location);
@@ -82,6 +90,23 @@ export default function Directory() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Search bar */}
+      <div className="relative mb-6">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          type="text"
+          placeholder="Search by name, ID number, tags, or services..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          className="pl-10 rounded-full h-11 text-sm"
+        />
+        {searchQuery && (
+          <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+            <X className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8">
         {/* Desktop Sidebar */}
         <aside className="hidden md:block">
@@ -147,7 +172,7 @@ export default function Directory() {
             ) : filteredPartners.length === 0 ? (
               <div className="text-center py-20">
                 <p className="text-lg font-medium text-foreground">No partners found</p>
-                <p className="text-sm text-muted-foreground mt-1">Try adjusting your filters</p>
+                <p className="text-sm text-muted-foreground mt-1">Try adjusting your search or filters</p>
                 <Button variant="outline" size="sm" onClick={clearFilters} className="mt-4 rounded-full">
                   <X className="w-3 h-3 mr-1" /> Clear all filters
                 </Button>

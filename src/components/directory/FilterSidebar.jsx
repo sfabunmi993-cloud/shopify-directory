@@ -15,6 +15,20 @@ const SERVICE_CATEGORIES = [
   { label: 'Expert guidance', value: 'expert_guidance' },
 ];
 
+const INDUSTRIES = [
+  { label: 'All Industries', value: 'all' },
+  { label: 'Technology', value: 'technology' },
+  { label: 'Healthcare', value: 'healthcare' },
+  { label: 'Finance', value: 'finance' },
+  { label: 'Retail', value: 'retail' },
+  { label: 'Education', value: 'education' },
+  { label: 'Manufacturing', value: 'manufacturing' },
+  { label: 'Real Estate', value: 'real_estate' },
+  { label: 'Hospitality', value: 'hospitality' },
+  { label: 'Creative', value: 'creative' },
+  { label: 'Other', value: 'other' },
+];
+
 const LOCATIONS = [
   { label: 'All Locations', value: 'all' },
   { label: 'United States', value: 'United States' },
@@ -35,7 +49,7 @@ const TIERS = [
 ];
 
 export default function FilterSidebar({ filters, onFilterChange, onClearFilters }) {
-  const hasActiveFilters = filters.category !== 'all' || filters.location !== 'all' || 
+  const hasActiveFilters = filters.category !== 'all' || filters.industry !== 'all' || filters.location !== 'all' || 
     filters.tier !== 'all' || filters.minPrice || filters.maxPrice;
 
   return (
@@ -70,7 +84,21 @@ export default function FilterSidebar({ filters, onFilterChange, onClearFilters 
       </div>
 
       <div className="border-t border-border pt-5 space-y-2">
-        <Label className="text-sm font-semibold text-foreground">Service</Label>
+        <Label className="text-sm font-semibold text-foreground">Industry</Label>
+        <Select value={filters.industry || 'all'} onValueChange={(v) => onFilterChange('industry', v)}>
+          <SelectTrigger className="h-9">
+            <SelectValue placeholder="Select an industry" />
+          </SelectTrigger>
+          <SelectContent>
+            {INDUSTRIES.map((ind) => (
+              <SelectItem key={ind.value} value={ind.value}>{ind.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="border-t border-border pt-5 space-y-2">
+        <Label className="text-sm font-semibold text-foreground">Service Category</Label>
         <Select value={filters.category} onValueChange={(v) => onFilterChange('category', v)}>
           <SelectTrigger className="h-9">
             <SelectValue placeholder="Select a service" />

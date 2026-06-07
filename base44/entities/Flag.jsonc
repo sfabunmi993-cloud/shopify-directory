@@ -1,0 +1,42 @@
+{
+  "name": "Flag",
+  "type": "object",
+  "properties": {
+    "partner_id": {
+      "type": "string",
+      "description": "ID of the flagged partner"
+    },
+    "reporter_id": {
+      "type": "string",
+      "description": "ID of the user who submitted the flag"
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "spam",
+        "fraud",
+        "inappropriate_content",
+        "misrepresentation",
+        "other"
+      ],
+      "description": "Reason for flagging"
+    },
+    "details": {
+      "type": "string",
+      "description": "Additional details about the flag"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "reviewed",
+        "dismissed"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "partner_id",
+    "reason"
+  ]
+}

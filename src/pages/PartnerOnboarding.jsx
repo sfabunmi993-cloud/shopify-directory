@@ -7,9 +7,22 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, X, Plus, Loader2, ArrowRight, ArrowLeft, Sparkles } from 'lucide-react';
+import { CheckCircle, X, Plus, Loader2, ArrowRight, ArrowLeft, Sparkles, Tag } from 'lucide-react';
 
 const STEPS = ['Basic Info', 'Services', 'Details'];
+
+const INDUSTRIES = [
+  { label: 'Technology', value: 'technology' },
+  { label: 'Healthcare', value: 'healthcare' },
+  { label: 'Finance', value: 'finance' },
+  { label: 'Retail', value: 'retail' },
+  { label: 'Education', value: 'education' },
+  { label: 'Manufacturing', value: 'manufacturing' },
+  { label: 'Real Estate', value: 'real_estate' },
+  { label: 'Hospitality', value: 'hospitality' },
+  { label: 'Creative', value: 'creative' },
+  { label: 'Other', value: 'other' },
+];
 
 const SERVICE_CATEGORIES = [
   { label: 'Marketing and sales', value: 'marketing_and_sales' },
@@ -42,12 +55,15 @@ export default function PartnerOnboarding() {
   const [newService, setNewService] = useState('');
   const [newLanguage, setNewLanguage] = useState('');
 
+  const [newTag, setNewTag] = useState('');
   const [form, setForm] = useState({
     name: '',
     description: '',
     full_description: '',
     service_category: '',
+    industry: '',
     services: [],
+    tags: [],
     starting_price: '',
     location: '',
     country: '',
@@ -92,16 +108,35 @@ export default function PartnerOnboarding() {
       : [...form.languages, lang]);
   };
 
+  const addTag = () => {
+    const t = newTag.trim().toLowerCase().replace(/\s+/g, '-');
+    if (t && !form.tags.includes(t)) set('tags', [...form.tags, t]);
+    setNewTag('');
+  };
+
+  const removeTag = (t) => set('tags', form.tags.filter(tag => tag !== t));
+
   const handleSubmit = async () => {
     setSaving(true);
+    // Generate a unique partner number
+    const allPartners = await base44.entities.Partner.list('-created_date', 1);
+    const lastNum = allPartners.length > 0
+      ? parseInt(allPartners[0].partner_number?.replace('PB-', '') || '0', 10)
+      : 0;
+    const nextNum = String(lastNum + 1).padStart(5, '0');
+    const partnerNumber = `PB-${nextNum}`;
+
     const partner = await base44.entities.Partner.create({
       ...form,
+      partner_number: partnerNumber,
       starting_price: form.starting_price ? Number(form.starting_price) : undefined,
       partner_tier: 'standard',
       is_featured: false,
       rating: 0,
       review_count: 0,
       completed_projects: 0,
+      status: 'pending',
+      flag_count: 0,
     });
     navigate(`/partner/${partner.id}`);
   };
@@ -173,6 +208,18 @@ export default function PartnerOnboarding() {
                   <SelectContent>
                     {SERVICE_CATEGORIES.map(c => (
                       <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label>Industry specialization</Label>
+                <Select value={form.industry} onValueChange={v => set('industry', v)}>
+                  <SelectTrigger><SelectValue placeholder="Select your industry" /></SelectTrigger>
+                  <SelectContent>
+                    {INDUSTRIES.map(i => (
+                      <SelectItem key={i.value} value={i.value}>{i.label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -292,6 +339,30 @@ export default function PartnerOnboarding() {
                     </button>
                   ))}
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Tags / Keywords</Label>
+                <p className="text-xs text-muted-foreground">Add searchable tags to help clients find you (e.g. "ecommerce", "react", "b2b")</p>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Add a tag..."
+                    value={newTag}
+                    onChange={e => setNewTag(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && addTag()}
+                  />
+                  <Button variant="outline" size="icon" onClick={addTag}><Plus className="w-4 h-4" /></Button>
+                </div>
+                {form.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {form.tags.map(t => (
+                      <span key={t} className="flex items-center gap-1 px-2.5 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                        #{t}
+                        <button onClick={() => removeTag(t)} className="hover:text-primary/60"><X className="w-3 h-3" /></button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="flex gap-3 pt-2">

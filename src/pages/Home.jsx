@@ -11,13 +11,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function Home() {
   const { data: featuredPartners, isLoading } = useQuery({
     queryKey: ['featured-partners'],
-    queryFn: () => base44.entities.Partner.filter({ is_featured: true }, '-rating', 6),
+    queryFn: () => base44.entities.Partner.filter({ is_featured: true, status: 'approved' }, '-rating', 6),
     initialData: [],
   });
 
   const { data: topPartners, isLoading: isLoadingTop } = useQuery({
     queryKey: ['top-partners'],
-    queryFn: () => base44.entities.Partner.list('-rating', 8),
+    queryFn: () => base44.entities.Partner.filter({ status: 'approved' }, '-rating', 8),
     initialData: [],
   });
 

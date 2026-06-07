@@ -1,0 +1,61 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string",
+      "description": "ID linking messages in the same conversation"
+    },
+    "partner_id": {
+      "type": "string",
+      "description": "The partner involved in the conversation"
+    },
+    "sender_id": {
+      "type": "string",
+      "description": "User ID of the sender"
+    },
+    "sender_name": {
+      "type": "string",
+      "description": "Display name of the sender"
+    },
+    "sender_role": {
+      "type": "string",
+      "enum": [
+        "user",
+        "partner"
+      ],
+      "description": "Whether sender is a regular user or the partner"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Message subject (for first message)"
+    },
+    "body": {
+      "type": "string",
+      "description": "Message content"
+    },
+    "message_type": {
+      "type": "string",
+      "enum": [
+        "inquiry",
+        "hire_request",
+        "reply"
+      ],
+      "description": "Type of message"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the message has been read"
+    },
+    "hire_details": {
+      "type": "string",
+      "description": "Details about the hire request (project scope, budget, timeline)"
+    }
+  },
+  "required": [
+    "partner_id",
+    "body",
+    "sender_role"
+  ]
+}
