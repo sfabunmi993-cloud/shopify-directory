@@ -28,7 +28,7 @@ export default function Directory() {
 
   const { data: partners, isLoading } = useQuery({
     queryKey: ['partners'],
-    queryFn: () => base44.entities.Partner.filter({ status: 'approved' }, '-rating', 500),
+    queryFn: () => base44.entities.Partner.list('-rating', 500),
     initialData: [],
   });
 
