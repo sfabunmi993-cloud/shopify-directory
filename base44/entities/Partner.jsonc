@@ -1,0 +1,99 @@
+{
+  "name": "Partner",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Partner/agency name"
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "URL of the partner's logo"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description of the partner"
+    },
+    "full_description": {
+      "type": "string",
+      "description": "Detailed description of partner services"
+    },
+    "location": {
+      "type": "string",
+      "description": "City, Country"
+    },
+    "country": {
+      "type": "string",
+      "description": "Country name for filtering"
+    },
+    "rating": {
+      "type": "number",
+      "description": "Average rating out of 5"
+    },
+    "review_count": {
+      "type": "number",
+      "description": "Total number of reviews"
+    },
+    "starting_price": {
+      "type": "number",
+      "description": "Starting price in USD"
+    },
+    "services": {
+      "type": "array",
+      "description": "List of services offered",
+      "items": {
+        "type": "string"
+      }
+    },
+    "service_category": {
+      "type": "string",
+      "enum": [
+        "marketing_and_sales",
+        "store_setup_and_management",
+        "development_and_troubleshooting",
+        "visual_content_and_branding",
+        "content_writing",
+        "expert_guidance"
+      ],
+      "description": "Primary service category"
+    },
+    "partner_tier": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "plus",
+        "premium"
+      ],
+      "default": "standard",
+      "description": "Partner tier level"
+    },
+    "website_url": {
+      "type": "string",
+      "description": "Partner's website URL"
+    },
+    "email": {
+      "type": "string",
+      "description": "Contact email"
+    },
+    "completed_projects": {
+      "type": "number",
+      "description": "Number of completed projects"
+    },
+    "languages": {
+      "type": "array",
+      "description": "Languages spoken",
+      "items": {
+        "type": "string"
+      }
+    },
+    "is_featured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this partner is featured"
+    }
+  },
+  "required": [
+    "name",
+    "service_category"
+  ]
+}
