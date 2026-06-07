@@ -109,7 +109,7 @@ export default function Home() {
             Join our directory and connect with thousands of businesses looking for expert help.
           </p>
           <Button asChild className="mt-6 rounded-full px-8" size="lg">
-            <Link to="/register">Get started</Link>
+            <Link to="/become-a-partner">Get started</Link>
           </Button>
         </div>
       </section>
@@ -139,7 +139,7 @@ export default function Home() {
               <h4 className="font-semibold text-white mb-3 text-sm">Company</h4>
               <ul className="space-y-2 text-sm">
                 <li><Link to="/login" className="hover:text-white transition-colors">Log in</Link></li>
-                <li><Link to="/register" className="hover:text-white transition-colors">Become a Partner</Link></li>
+                <li><Link to="/become-a-partner" className="hover:text-white transition-colors">Become a Partner</Link></li>
               </ul>
             </div>
           </div>

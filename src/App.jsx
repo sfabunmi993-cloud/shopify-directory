@@ -15,6 +15,8 @@ import Home from '@/pages/Home';
 import Directory from '@/pages/Directory';
 import PartnerDetail from '@/pages/PartnerDetail';
 import DirectoryLayout from '@/components/directory/Layout';
+import PartnerOnboarding from '@/pages/PartnerOnboarding';
+import MyProfile from '@/pages/MyProfile';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -50,6 +52,8 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<Home />} />
         <Route path="/directory" element={<Directory />} />
         <Route path="/partner/:id" element={<PartnerDetail />} />
+        <Route path="/become-a-partner" element={<PartnerOnboarding />} />
+        <Route path="/my-profile" element={<MyProfile />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
