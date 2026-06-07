@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Star, MapPin, DollarSign, Globe, Mail, ArrowLeft, CheckCircle, Award } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
+import ReviewSection from '@/components/directory/ReviewSection';
 
 const CATEGORY_LABELS = {
   marketing_and_sales: 'Marketing & Sales',
@@ -25,6 +26,7 @@ const TIER_CONFIG = {
 
 export default function PartnerDetail() {
   const { id } = useParams();
+  const queryClient = useQueryClient();
 
   const { data: partners, isLoading } = useQuery({
     queryKey: ['partner', id],
@@ -33,6 +35,10 @@ export default function PartnerDetail() {
   });
 
   const partner = partners?.[0];
+
+  const handleReviewAdded = () => {
+    queryClient.invalidateQueries({ queryKey: ['partner', id] });
+  };
 
   if (isLoading) {
     return (
@@ -63,6 +69,10 @@ export default function PartnerDetail() {
   }
 
   const tierConfig = TIER_CONFIG[partner.partner_tier] || TIER_CONFIG.standard;
+
+  const gmailComposeUrl = partner.email
+    ? `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(partner.email)}&su=${encodeURIComponent(`Inquiry from Partners Directory - ${partner.name}`)}`
+    : null;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -124,9 +134,9 @@ export default function PartnerDetail() {
               </a>
             </Button>
           )}
-          {partner.email && (
+          {gmailComposeUrl && (
             <Button asChild variant="outline" className="rounded-full">
-              <a href={`mailto:${partner.email}`}>
+              <a href={gmailComposeUrl} target="_blank" rel="noopener noreferrer">
                 <Mail className="w-4 h-4 mr-1.5" /> Contact
               </a>
             </Button>
@@ -159,6 +169,9 @@ export default function PartnerDetail() {
               </div>
             </div>
           )}
+
+          {/* Reviews */}
+          <ReviewSection partnerId={id} onReviewAdded={handleReviewAdded} />
         </div>
 
         {/* Sidebar info */}

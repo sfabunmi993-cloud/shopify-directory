@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Save, Eye, X, Plus, CheckCircle } from 'lucide-react';
+import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera } from 'lucide-react';
 import { toast } from 'sonner';
 
 const SERVICE_CATEGORIES = [
@@ -36,6 +36,7 @@ export default function MyProfile() {
   const [partner, setPartner] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
   const [newService, setNewService] = useState('');
   const [form, setForm] = useState({});
 
@@ -75,6 +76,17 @@ export default function MyProfile() {
     set('languages', languages.includes(lang) ? languages.filter(l => l !== lang) : [...languages, lang]);
   };
 
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingLogo(true);
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    set('logo_url', file_url);
+    await base44.entities.Partner.update(partner.id, { logo_url: file_url });
+    toast.success('Logo updated!');
+    setUploadingLogo(false);
+  };
+
   const handleSave = async () => {
     setSaving(true);
     await base44.entities.Partner.update(partner.id, {
@@ -110,6 +122,27 @@ export default function MyProfile() {
         <div>
           <h2 className="font-semibold text-base mb-4">Basic information</h2>
           <div className="space-y-4">
+            {/* Logo Upload */}
+            <div className="space-y-1.5">
+              <Label>Logo / Profile image</Label>
+              <div className="flex items-center gap-4">
+                {form.logo_url ? (
+                  <img src={form.logo_url} alt="Logo" className="w-16 h-16 rounded-xl object-cover border border-border/50" />
+                ) : (
+                  <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center border border-border/50">
+                    <span className="font-bold text-primary text-xl">{(form.name || 'P').charAt(0).toUpperCase()}</span>
+                  </div>
+                )}
+                <label className="cursor-pointer">
+                  <input type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} disabled={uploadingLogo} />
+                  <div className="flex items-center gap-2 px-3 py-2 border border-border rounded-full text-sm font-medium hover:bg-muted/50 transition-colors">
+                    {uploadingLogo ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
+                    {uploadingLogo ? 'Uploading...' : 'Change image'}
+                  </div>
+                </label>
+              </div>
+            </div>
+
             <div className="space-y-1.5">
               <Label>Agency / Partner name</Label>
               <Input value={form.name || ''} onChange={e => set('name', e.target.value)} />

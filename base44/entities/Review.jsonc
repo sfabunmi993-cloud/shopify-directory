@@ -1,0 +1,26 @@
+{
+  "name": "Review",
+  "type": "object",
+  "properties": {
+    "partner_id": {
+      "type": "string",
+      "description": "ID of the partner being reviewed"
+    },
+    "reviewer_name": {
+      "type": "string",
+      "description": "Name of the reviewer"
+    },
+    "rating": {
+      "type": "number",
+      "description": "Rating 1-5"
+    },
+    "comment": {
+      "type": "string",
+      "description": "Review text"
+    }
+  },
+  "required": [
+    "partner_id",
+    "rating"
+  ]
+}
