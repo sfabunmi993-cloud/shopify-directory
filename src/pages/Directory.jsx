@@ -38,16 +38,16 @@ export default function Directory() {
     );
   };
 
-  const comparePartners = useMemo(
-    () => partners.filter(p => compareIds.includes(p.id)),
-    [partners, compareIds]
-  );
-
   const { data: partners, isLoading } = useQuery({
     queryKey: ['partners'],
     queryFn: () => base44.entities.Partner.list('-rating', 500),
     initialData: [],
   });
+
+  const comparePartners = useMemo(
+    () => partners.filter(p => compareIds.includes(p.id)),
+    [partners, compareIds]
+  );
 
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));
