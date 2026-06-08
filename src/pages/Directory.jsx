@@ -217,7 +217,6 @@ export default function Directory() {
           </div>
         </div>
       </div>
-      </div>
       <CompareBar
         partners={comparePartners}
         onRemove={(id) => setCompareIds(prev => prev.filter(x => x !== id))}
