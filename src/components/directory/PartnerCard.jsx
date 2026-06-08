@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Star, MapPin, DollarSign, Hash } from 'lucide-react';
+import { Star, MapPin, DollarSign, Hash, Briefcase } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const CATEGORY_LABELS = {
@@ -18,14 +18,23 @@ const TIER_STYLES = {
   premium: 'bg-amber-50 text-amber-700 border-amber-200',
 };
 
-export default function PartnerCard({ partner }) {
+export default function PartnerCard({ partner, compareSelected, onToggleCompare }) {
   const displayedServices = partner.services?.slice(0, 4) || [];
   const extraCount = (partner.services?.length || 0) - 4;
 
   return (
+    <div className={`relative bg-white border rounded-xl p-5 hover:shadow-md transition-all duration-200 group ${compareSelected ? 'border-primary ring-1 ring-primary/30' : 'border-border hover:border-border/80'}`}>
+      {onToggleCompare && (
+        <button
+          onClick={e => { e.preventDefault(); onToggleCompare(); }}
+          className={`absolute top-3 right-3 z-10 flex items-center gap-1 text-xs px-2 py-0.5 rounded-full border font-medium transition-all ${compareSelected ? 'bg-primary text-white border-primary' : 'bg-white text-muted-foreground border-border hover:border-primary hover:text-primary'}`}
+        >
+          {compareSelected ? '✓ Added' : '+ Compare'}
+        </button>
+      )}
     <Link
       to={`/partner/${partner.id}`}
-      className="block bg-white border border-border rounded-xl p-5 hover:shadow-md hover:border-border/80 transition-all duration-200 group"
+      className="block"
     >
       <div className="flex gap-4">
         <div className="shrink-0">
@@ -75,13 +84,20 @@ export default function PartnerCard({ partner }) {
             )}
           </div>
 
-          {partner.starting_price > 0 && (
-            <div className="flex items-center gap-1.5 mt-2 text-sm">
-              <span className="text-muted-foreground">Price range for services</span>
-              <DollarSign className="w-3.5 h-3.5 text-primary" />
-              <span className="font-medium text-foreground">Starting from ${partner.starting_price}</span>
-            </div>
-          )}
+          <div className="flex flex-wrap items-center gap-3 mt-2 text-sm">
+            {partner.starting_price > 0 && (
+              <span className="flex items-center gap-1 text-muted-foreground">
+                <DollarSign className="w-3.5 h-3.5 text-primary" />
+                <span className="font-medium text-foreground">From ${partner.starting_price}</span>
+              </span>
+            )}
+            {partner.completed_projects > 0 && (
+              <span className="flex items-center gap-1 text-muted-foreground">
+                <Briefcase className="w-3.5 h-3.5" />
+                <span className="font-medium text-foreground">{partner.completed_projects}</span> projects
+              </span>
+            )}
+          </div>
 
           {displayedServices.length > 0 && (
             <div className="mt-3">
@@ -102,5 +118,6 @@ export default function PartnerCard({ partner }) {
         </div>
       </div>
     </Link>
+    </div>
   );
 }

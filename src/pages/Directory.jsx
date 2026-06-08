@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import FilterSidebar from '@/components/directory/FilterSidebar';
 import PartnerCard from '@/components/directory/PartnerCard';
+import CompareBar from '@/components/directory/CompareBar';
+import ComparePartners from '@/pages/ComparePartners';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,6 +27,21 @@ export default function Directory() {
   });
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [sortBy, setSortBy] = useState('rating');
+  const [compareIds, setCompareIds] = useState([]);
+  const [showCompare, setShowCompare] = useState(false);
+
+  const toggleCompare = (partner) => {
+    setCompareIds(prev =>
+      prev.includes(partner.id)
+        ? prev.filter(id => id !== partner.id)
+        : prev.length < 4 ? [...prev, partner.id] : prev
+    );
+  };
+
+  const comparePartners = useMemo(
+    () => partners.filter(p => compareIds.includes(p.id)),
+    [partners, compareIds]
+  );
 
   const { data: partners, isLoading } = useQuery({
     queryKey: ['partners'],
@@ -88,8 +105,18 @@ export default function Directory() {
     return results;
   }, [partners, filters, searchQuery, sortBy]);
 
+  if (showCompare) {
+    return (
+      <ComparePartners
+        partners={comparePartners}
+        onRemove={(id) => setCompareIds(prev => prev.filter(x => x !== id))}
+        onClose={() => setShowCompare(false)}
+      />
+    );
+  }
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
       {/* Search bar */}
       <div className="relative mb-6">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -179,12 +206,24 @@ export default function Directory() {
               </div>
             ) : (
               filteredPartners.map((partner) => (
-                <PartnerCard key={partner.id} partner={partner} />
+                <PartnerCard
+                  key={partner.id}
+                  partner={partner}
+                  compareSelected={compareIds.includes(partner.id)}
+                  onToggleCompare={() => toggleCompare(partner)}
+                />
               ))
             )}
           </div>
         </div>
       </div>
+      </div>
+      <CompareBar
+        partners={comparePartners}
+        onRemove={(id) => setCompareIds(prev => prev.filter(x => x !== id))}
+        onCompare={() => setShowCompare(true)}
+        onClear={() => setCompareIds([])}
+      />
     </div>
   );
 }

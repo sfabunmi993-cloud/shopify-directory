@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock } from 'lucide-react';
 import { toast } from 'sonner';
+import InquiriesDashboard from '@/components/profile/InquiriesDashboard';
 
 const SERVICE_CATEGORIES = [
   { label: 'Marketing and sales', value: 'marketing_and_sales' },
@@ -47,6 +48,7 @@ const LANGUAGES_LIST = ['English', 'Spanish', 'French', 'German', 'Hindi', 'Port
 export default function MyProfile() {
   const navigate = useNavigate();
   const [partner, setPartner] = useState(null);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
@@ -57,6 +59,7 @@ export default function MyProfile() {
   useEffect(() => {
     const load = async () => {
       const user = await base44.auth.me();
+      setUser(user);
       const partners = await base44.entities.Partner.filter({ created_by_id: user.id });
       if (partners.length > 0) {
         const p = partners[0];
@@ -162,6 +165,15 @@ export default function MyProfile() {
           <span><strong>Account restricted.</strong> {partner.restriction_reason || 'Your account has been restricted by an admin.'}</span>
         </div>
       )}
+
+      {/* Inquiries Dashboard */}
+      <div className="bg-white border border-border rounded-2xl p-6 mb-6">
+        <h2 className="font-semibold text-base mb-4 flex items-center gap-2">
+          <span>My Inquiries & Messages</span>
+          <span className="text-xs text-muted-foreground font-normal">(recent activity)</span>
+        </h2>
+        <InquiriesDashboard userId={user?.id} />
+      </div>
 
       <div className="bg-white border border-border rounded-2xl p-6 space-y-6">
         {/* Basic */}
