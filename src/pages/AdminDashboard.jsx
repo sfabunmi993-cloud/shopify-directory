@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
@@ -32,6 +32,8 @@ export default function AdminDashboard() {
   const [search, setSearch] = useState('');
   const [restrictDialog, setRestrictDialog] = useState(null);
   const [restrictReason, setRestrictReason] = useState('');
+  const [editIdDialog, setEditIdDialog] = useState(null);
+  const [newPartnerId, setNewPartnerId] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
@@ -74,6 +76,17 @@ export default function AdminDashboard() {
     toast.success(`${restrictDialog.name} has been restricted.`);
     setRestrictDialog(null);
     setRestrictReason('');
+    loadData();
+    setActionLoading(false);
+  };
+
+  const handleEditPartnerId = async () => {
+    if (!editIdDialog || !newPartnerId.trim()) return;
+    setActionLoading(true);
+    await base44.entities.Partner.update(editIdDialog.id, { partner_number: newPartnerId.trim() });
+    toast.success(`Partner ID updated to ${newPartnerId.trim()}`);
+    setEditIdDialog(null);
+    setNewPartnerId('');
     loadData();
     setActionLoading(false);
   };
@@ -174,18 +187,41 @@ export default function AdminDashboard() {
         </TabsList>
 
         <TabsContent value="pending">
-          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} showApprove />
+          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} showApprove />
         </TabsContent>
         <TabsContent value="approved">
-          <PartnerList partners={approved} onRestrict={setRestrictDialog} />
+          <PartnerList partners={approved} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} />
         </TabsContent>
         <TabsContent value="restricted">
-          <PartnerList partners={restricted} onApprove={handleApprove} showApprove />
+          <PartnerList partners={restricted} onApprove={handleApprove} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} showApprove />
         </TabsContent>
         <TabsContent value="flags">
           <FlagList flags={pendingFlags} partners={partners} onDismiss={handleDismissFlag} onReviewed={handleMarkFlagReviewed} />
         </TabsContent>
       </Tabs>
+
+      {/* Edit Partner ID Dialog */}
+      <Dialog open={!!editIdDialog} onOpenChange={() => { setEditIdDialog(null); setNewPartnerId(''); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Partner ID</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Change the partner ID number for <strong>{editIdDialog?.name}</strong>.
+          </p>
+          <Input
+            placeholder="e.g. PB-00042"
+            value={newPartnerId}
+            onChange={e => setNewPartnerId(e.target.value)}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setEditIdDialog(null); setNewPartnerId(''); }}>Cancel</Button>
+            <Button onClick={handleEditPartnerId} disabled={!newPartnerId.trim() || actionLoading}>
+              {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Hash className="w-4 h-4 mr-1.5" /> Save ID</>}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Restrict Dialog */}
       <Dialog open={!!restrictDialog} onOpenChange={() => { setRestrictDialog(null); setRestrictReason(''); }}>
@@ -214,52 +250,63 @@ export default function AdminDashboard() {
   );
 }
 
-function PartnerList({ partners, onApprove, onRestrict, showApprove }) {
+function getPartnerRank(reviewCount = 0) {
+  if (reviewCount >= 25) return { label: 'Plus', color: 'bg-amber-50 text-amber-700 border-amber-200' };
+  if (reviewCount >= 5) return { label: 'Pro', color: 'bg-primary/10 text-primary border-primary/20' };
+  return { label: 'Basic', color: 'bg-muted text-muted-foreground border-border' };
+}
+
+function PartnerList({ partners, onApprove, onRestrict, onEditId, showApprove }) {
   if (partners.length === 0) {
     return <p className="text-center text-muted-foreground py-12">No partners in this category.</p>;
   }
   return (
     <div className="space-y-3">
-      {partners.map(p => (
-        <div key={p.id} className="bg-white border border-border rounded-xl p-4 flex items-center gap-4">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-            {p.logo_url
-              ? <img src={p.logo_url} className="w-10 h-10 rounded-lg object-cover" alt={p.name} />
-              : <span className="font-bold text-primary">{p.name?.charAt(0)}</span>
-            }
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <p className="font-semibold text-sm">{p.name}</p>
-              {p.partner_number && <span className="text-xs text-muted-foreground font-mono">#{p.partner_number}</span>}
-              <Badge variant="outline" className={`text-xs ${STATUS_STYLES[p.status] || ''}`}>
-                {p.status}
-              </Badge>
+      {partners.map(p => {
+        const rank = getPartnerRank(p.review_count);
+        return (
+          <div key={p.id} className="bg-white border border-border rounded-xl p-4 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+              {p.logo_url
+                ? <img src={p.logo_url} className="w-10 h-10 rounded-lg object-cover" alt={p.name} />
+                : <span className="font-bold text-primary">{p.name?.charAt(0)}</span>
+              }
             </div>
-            <p className="text-xs text-muted-foreground truncate">{p.description}</p>
-            {p.restriction_reason && (
-              <p className="text-xs text-red-600 mt-1">Reason: {p.restriction_reason}</p>
-            )}
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <Button asChild variant="ghost" size="icon" className="h-8 w-8">
-              <Link to={`/partner/${p.id}`}><Eye className="w-4 h-4" /></Link>
-            </Button>
-            {showApprove && (
-              <Button size="sm" variant="outline" className="rounded-full text-emerald-700 border-emerald-200 hover:bg-emerald-50"
-                onClick={() => onApprove(p)}>
-                <CheckCircle className="w-3.5 h-3.5 mr-1" /> Approve
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="font-semibold text-sm">{p.name}</p>
+                {p.partner_number && <span className="text-xs text-muted-foreground font-mono">#{p.partner_number}</span>}
+                <Badge variant="outline" className={`text-xs ${STATUS_STYLES[p.status] || ''}`}>{p.status}</Badge>
+                <Badge variant="outline" className={`text-xs ${rank.color}`}>{rank.label}</Badge>
+              </div>
+              <p className="text-xs text-muted-foreground truncate">{p.description}</p>
+              {p.restriction_reason && (
+                <p className="text-xs text-red-600 mt-1">Reason: {p.restriction_reason}</p>
+              )}
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <Button asChild variant="ghost" size="icon" className="h-8 w-8">
+                <Link to={`/partner/${p.id}`}><Eye className="w-4 h-4" /></Link>
               </Button>
-            )}
-            {p.status !== 'restricted' && (
-              <Button size="sm" variant="outline" className="rounded-full text-red-700 border-red-200 hover:bg-red-50"
-                onClick={() => onRestrict(p)}>
-                <XCircle className="w-3.5 h-3.5 mr-1" /> Restrict
+              <Button size="sm" variant="ghost" className="h-8 w-8 p-0" title="Edit Partner ID" onClick={() => onEditId(p)}>
+                <Edit2 className="w-4 h-4" />
               </Button>
-            )}
+              {showApprove && (
+                <Button size="sm" variant="outline" className="rounded-full text-emerald-700 border-emerald-200 hover:bg-emerald-50"
+                  onClick={() => onApprove(p)}>
+                  <CheckCircle className="w-3.5 h-3.5 mr-1" /> Approve
+                </Button>
+              )}
+              {p.status !== 'restricted' && (
+                <Button size="sm" variant="outline" className="rounded-full text-red-700 border-red-200 hover:bg-red-50"
+                  onClick={() => onRestrict(p)}>
+                  <XCircle className="w-3.5 h-3.5 mr-1" /> Restrict
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

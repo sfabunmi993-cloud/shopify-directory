@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock } from 'lucide-react';
+import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock, Share2, Star, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 import InquiriesDashboard from '@/components/profile/InquiriesDashboard';
 
@@ -141,10 +141,47 @@ export default function MyProfile() {
             <p className="text-xs text-muted-foreground font-mono mt-1">ID: {partner.partner_number}</p>
           )}
         </div>
-        <Button asChild variant="outline" className="rounded-full" size="sm">
-          <Link to={`/partner/${partner?.id}`}><Eye className="w-4 h-4 mr-1.5" /> View Public Profile</Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-full"
+            onClick={() => {
+              const url = `${window.location.origin}/partner/${partner?.id}`;
+              navigator.clipboard.writeText(url);
+              toast.success('Profile link copied to clipboard!');
+            }}
+          >
+            <Share2 className="w-4 h-4 mr-1.5" /> Share Profile
+          </Button>
+          <Button asChild variant="outline" className="rounded-full" size="sm">
+            <Link to={`/partner/${partner?.id}`}><Eye className="w-4 h-4 mr-1.5" /> View Public Profile</Link>
+          </Button>
+        </div>
       </div>
+
+      {/* Rank Banner */}
+      {partner && (() => {
+        const reviewCount = partner.review_count || 0;
+        const rank = reviewCount >= 25 ? 'Plus' : reviewCount >= 5 ? 'Pro' : 'Basic';
+        const nextRank = rank === 'Basic' ? 'Pro' : rank === 'Pro' ? 'Plus' : null;
+        const nextAt = rank === 'Basic' ? 5 : rank === 'Pro' ? 25 : null;
+        const rankColor = rank === 'Plus' ? 'bg-amber-50 border-amber-200 text-amber-700' : rank === 'Pro' ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-muted border-border text-muted-foreground';
+        return (
+          <div className={`mb-4 rounded-xl px-4 py-3 border flex items-center justify-between ${rankColor}`}>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 shrink-0" />
+              <span className="text-sm font-semibold">Partner Rank: {rank}</span>
+              {nextRank && <span className="text-xs opacity-80">· {reviewCount}/{nextAt} reviews to reach {nextRank}</span>}
+              {!nextRank && <span className="text-xs opacity-80">· Top rank achieved!</span>}
+            </div>
+            <div className="flex items-center gap-1 text-xs">
+              <Star className="w-3.5 h-3.5" />
+              {reviewCount} review{reviewCount !== 1 ? 's' : ''}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Status Banner */}
       {partner?.status === 'pending' && (

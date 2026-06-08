@@ -39,6 +39,12 @@ const TIER_CONFIG = {
   premium: { label: 'Premium Partner', color: 'bg-amber-50 text-amber-700 border-amber-200' },
 };
 
+function getPartnerRank(reviewCount = 0) {
+  if (reviewCount >= 25) return { label: 'Plus Partner', color: 'bg-amber-50 text-amber-700 border-amber-200' };
+  if (reviewCount >= 5) return { label: 'Pro Partner', color: 'bg-primary/10 text-primary border-primary/20' };
+  return { label: 'Basic Partner', color: 'bg-muted text-muted-foreground border-border' };
+}
+
 function ServiceRow({ service }) {
   return (
     <div className="flex items-center justify-between py-3 border-b border-border last:border-0">
@@ -148,6 +154,7 @@ export default function PartnerDetail() {
   }
 
   const tierConfig = TIER_CONFIG[partner.partner_tier] || TIER_CONFIG.standard;
+  const rankConfig = getPartnerRank(partner.review_count);
   const visibleServices = showAllServices ? partner.services : partner.services?.slice(0, 5);
 
   return (
@@ -176,12 +183,10 @@ export default function PartnerDetail() {
                 <span className="font-heading font-bold text-primary text-3xl">{partner.name?.charAt(0)?.toUpperCase()}</span>
               </div>
             )}
-            {/* Tier badge */}
-            {partner.partner_tier && partner.partner_tier !== 'standard' && (
-              <div className={`mt-2 inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded border font-medium ${tierConfig.color}`}>
-                <Award className="w-3 h-3" /> {tierConfig.label}
-              </div>
-            )}
+            {/* Rank badge */}
+            <div className={`mt-2 inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded border font-medium ${rankConfig.color}`}>
+              <Award className="w-3 h-3" /> {rankConfig.label}
+            </div>
           </div>
 
           {/* Name */}
@@ -292,7 +297,7 @@ export default function PartnerDetail() {
 
             {partner.full_description && (
               <div className="mb-4">
-                <h3 className="font-semibold text-primary mb-1">{tierConfig.label}</h3>
+                <h3 className="font-semibold text-primary mb-1">{rankConfig.label}</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm whitespace-pre-line">{partner.full_description}</p>
               </div>
             )}
