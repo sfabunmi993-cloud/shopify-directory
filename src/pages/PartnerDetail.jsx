@@ -251,7 +251,7 @@ export default function PartnerDetail() {
               </button>
               <button
                 onClick={() => {navigator.clipboard.writeText(window.location.href);toast.success('Profile link copied!');}}
-                className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded border border-border text-muted-foreground hover:border-primary hover:text-primary transition-all opacity-100 text-sm">
+                className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded border border-border text-muted-foreground hover:border-primary hover:text-primary transition-all opacity-100 text-xs">
                 
                 <Share2 className="w-3.5 h-3.5" /> Share
               </button>
