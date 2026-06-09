@@ -240,9 +240,9 @@ export default function PartnerDetail() {
                 WhatsApp
               </a>
             }
-            <Button variant="outline" className="w-full text-emerald-700 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 hidden" onClick={() => setHireOpen(true)}>
-              <Briefcase className="w-4 h-4 mr-1.5" /> Hire Partner
-            </Button>
+            
+
+            
             <div className="flex gap-2">
               <button
                 onClick={handleToggleFavorite}
