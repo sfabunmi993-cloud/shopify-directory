@@ -184,7 +184,7 @@ export default function PartnerDetail() {
             {partner.logo_url ?
             <img src={partner.logo_url} alt={partner.name} className="w-24 h-24 rounded-full object-cover border-2 border-border" /> :
 
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border-2 border-border">
+            <div className="https://media.base44.com/images/public/6a2805659e609ed3b20b3b12/096000bae_WhatsAppImage2026-06-09at074013.jpg">
                 <span className="font-heading font-bold text-primary text-3xl">{partner.name?.charAt(0)?.toUpperCase()}</span>
               </div>
             }
