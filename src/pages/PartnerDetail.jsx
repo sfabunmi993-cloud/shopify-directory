@@ -17,7 +17,7 @@ const CATEGORY_LABELS = {
   development_and_troubleshooting: 'Development & Troubleshooting',
   visual_content_and_branding: 'Visual Content & Branding',
   content_writing: 'Content Writing',
-  expert_guidance: 'Expert Guidance',
+  expert_guidance: 'Expert Guidance'
 };
 
 const INDUSTRY_LABELS = {
@@ -30,7 +30,7 @@ const INDUSTRY_LABELS = {
   real_estate: 'Real Estate',
   hospitality: 'Hospitality',
   creative: 'Creative',
-  other: 'Other',
+  other: 'Other'
 };
 
 function getPartnerRank(reviewCount = 0) {
@@ -46,11 +46,11 @@ function ServiceRow({ service, description }) {
         <span className="text-sm font-medium text-foreground">{service}</span>
         <CheckCircle className="w-4 h-4 text-primary shrink-0" />
       </div>
-      {description && (
-        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{description}</p>
-      )}
-    </div>
-  );
+      {description &&
+      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{description}</p>
+      }
+    </div>);
+
 }
 
 export default function PartnerDetail() {
@@ -67,7 +67,7 @@ export default function PartnerDetail() {
   const { data: partners, isLoading } = useQuery({
     queryKey: ['partner', id],
     queryFn: () => base44.entities.Partner.filter({ id }),
-    enabled: !!id,
+    enabled: !!id
   });
 
   const partner = partners?.[0];
@@ -88,7 +88,7 @@ export default function PartnerDetail() {
   }, [id]);
 
   const handleToggleFavorite = async () => {
-    if (!user) { toast.error('Please log in to save favorites.'); return; }
+    if (!user) {toast.error('Please log in to save favorites.');return;}
     if (isFavorited && favoriteId) {
       await base44.entities.Favorite.delete(favoriteId);
       setIsFavorited(false);
@@ -122,8 +122,8 @@ export default function PartnerDetail() {
             <Skeleton className="h-48 w-full rounded" />
           </div>
         </div>
-      </div>
-    );
+      </div>);
+
   }
 
   if (!partner) {
@@ -135,8 +135,8 @@ export default function PartnerDetail() {
             <ArrowLeft className="w-4 h-4 mr-1" /> Back to directory
           </Link>
         </Button>
-      </div>
-    );
+      </div>);
+
   }
 
   if (partner.status === 'restricted') {
@@ -144,16 +144,16 @@ export default function PartnerDetail() {
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
         <ShieldAlert className="w-12 h-12 text-red-400 mx-auto mb-4" />
         <p className="text-lg font-medium text-foreground">This account has been restricted</p>
-        {partner.restriction_reason && (
-          <p className="text-sm text-muted-foreground mt-2">Reason: {partner.restriction_reason}</p>
-        )}
+        {partner.restriction_reason &&
+        <p className="text-sm text-muted-foreground mt-2">Reason: {partner.restriction_reason}</p>
+        }
         <Button asChild variant="outline" className="mt-6">
           <Link to="/directory">
             <ArrowLeft className="w-4 h-4 mr-1" /> Back to directory
           </Link>
         </Button>
-      </div>
-    );
+      </div>);
+
   }
 
   const rankConfig = getPartnerRank(partner.review_count);
@@ -165,12 +165,12 @@ export default function PartnerDetail() {
         <ArrowLeft className="w-4 h-4 mr-1" /> Back to directory
       </Link>
 
-      {partner.status === 'pending' && (
-        <div className="mb-4 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 flex items-center gap-2 text-amber-700 text-sm">
+      {partner.status === 'pending' &&
+      <div className="mb-4 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 flex items-center gap-2 text-amber-700 text-sm">
           <ShieldAlert className="w-4 h-4 shrink-0" />
           <span>This profile is pending admin approval and is not yet visible in the directory.</span>
         </div>
-      )}
+      }
 
       <div className="grid md:grid-cols-[280px_1fr] gap-8 items-start">
 
@@ -179,13 +179,13 @@ export default function PartnerDetail() {
 
           {/* Logo */}
           <div className="flex flex-col items-center text-center">
-            {partner.logo_url ? (
-              <img src={partner.logo_url} alt={partner.name} className="w-24 h-24 rounded-full object-cover border-2 border-border" />
-            ) : (
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border-2 border-border">
+            {partner.logo_url ?
+            <img src={partner.logo_url} alt={partner.name} className="w-24 h-24 rounded-full object-cover border-2 border-border" /> :
+
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border-2 border-border">
                 <span className="font-heading font-bold text-primary text-3xl">{partner.name?.charAt(0)?.toUpperCase()}</span>
               </div>
-            )}
+            }
             <div className={`mt-2 inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded border font-medium ${rankConfig.color}`}>
               <Award className="w-3 h-3" /> {rankConfig.label}
             </div>
@@ -194,71 +194,71 @@ export default function PartnerDetail() {
           {/* Name */}
           <div className="text-center">
             <h1 className="font-heading text-xl font-bold text-foreground">{partner.name}</h1>
-            {partner.partner_number && (
-              <span className="text-xs text-muted-foreground font-mono flex items-center justify-center gap-0.5 mt-0.5">
+            {partner.partner_number &&
+            <span className="text-xs text-muted-foreground font-mono flex items-center justify-center gap-0.5 mt-0.5">
                 <Hash className="w-2.5 h-2.5" />{partner.partner_number}
               </span>
-            )}
+            }
           </div>
 
           {/* Rating */}
-          {partner.rating > 0 && (
-            <div className="flex items-center justify-center gap-1.5 text-sm">
+          {partner.rating > 0 &&
+          <div className="flex items-center justify-center gap-1.5 text-sm">
               <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
               <span className="font-semibold text-foreground">{partner.rating}</span>
               <span className="text-muted-foreground">({partner.review_count || 0})</span>
             </div>
-          )}
+          }
 
           {/* CTA Buttons */}
           <div className="space-y-2">
-            {partner.email ? (
-              <a
-                href={`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(partner.email)}&su=${encodeURIComponent('Inquiry - ' + partner.name)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 h-9 px-4 py-2 text-sm font-medium transition-colors bg-gray-600 text-white rounded-2xl hover:bg-gray-700"
-              >
+            {partner.email ?
+            <a
+              href={`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(partner.email)}&su=${encodeURIComponent('Inquiry - ' + partner.name)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full inline-flex items-center justify-center gap-2 h-9 px-4 py-2 text-sm font-medium transition-colors bg-gray-600 text-white rounded-2xl hover:bg-gray-700">
+              
                 <Mail className="w-4 h-4" /> Contact
-              </a>
-            ) : (
-              <Button className="w-full" onClick={() => setContactOpen(true)}>
+              </a> :
+
+            <Button className="w-full" onClick={() => setContactOpen(true)}>
                 <MessageSquare className="w-4 h-4 mr-1.5" /> Contact
               </Button>
-            )}
+            }
 
-            {partner.whatsapp_url && (
-              <a
-                href={partner.whatsapp_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 rounded-md border text-sm font-medium h-9 px-4 py-2 transition-colors bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
-              >
+            {partner.whatsapp_url &&
+            <a
+              href={partner.whatsapp_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-md border text-sm font-medium h-9 px-4 py-2 transition-colors bg-green-50 border-green-200 text-green-700 hover:bg-green-100">
+              
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                 </svg>
                 WhatsApp
               </a>
-            )}
+            }
 
             <div className="flex gap-2">
               <button
                 onClick={handleToggleFavorite}
-                className={`flex-1 flex items-center justify-center gap-1.5 text-xs py-1.5 rounded border transition-all ${isFavorited ? 'bg-rose-50 border-rose-200 text-rose-500' : 'border-border text-muted-foreground hover:border-rose-200 hover:text-rose-400'}`}
-              >
+                className={`flex-1 flex items-center justify-center gap-1.5 text-xs py-1.5 rounded border transition-all ${isFavorited ? 'bg-rose-50 border-rose-200 text-rose-500' : 'border-border text-muted-foreground hover:border-rose-200 hover:text-rose-400'}`}>
+                
                 <Heart className={`w-3.5 h-3.5 ${isFavorited ? 'fill-rose-500' : ''}`} />
                 {isFavorited ? 'Saved' : 'Save'}
               </button>
               <button
-                onClick={() => { navigator.clipboard.writeText(window.location.href); toast.success('Profile link copied!'); }}
-                className="flex-1 flex items-center justify-center gap-1.5 text-xs py-1.5 rounded border border-border text-muted-foreground hover:border-primary hover:text-primary transition-all"
-              >
+                onClick={() => {navigator.clipboard.writeText(window.location.href);toast.success('Profile link copied!');}}
+                className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded border border-border text-muted-foreground hover:border-primary hover:text-primary transition-all opacity-100 text-sm">
+                
                 <Share2 className="w-3.5 h-3.5" /> Share
               </button>
               <button
                 onClick={() => setFlagOpen(true)}
-                className="flex-1 flex items-center justify-center gap-1.5 text-xs py-1.5 rounded border border-border text-muted-foreground hover:text-red-500 hover:border-red-200 transition-all"
-              >
+                className="flex-1 flex items-center justify-center gap-1.5 text-xs py-1.5 rounded border border-border text-muted-foreground hover:text-red-500 hover:border-red-200 transition-all">
+                
                 <Flag className="w-3.5 h-3.5" /> Report
               </button>
             </div>
@@ -266,49 +266,49 @@ export default function PartnerDetail() {
 
           {/* Info details */}
           <div className="space-y-3 text-sm pt-1 border-t border-border text-gray-700">
-            {partner.starting_price > 0 && (
-              <div>
+            {partner.starting_price > 0 &&
+            <div>
                 <p className="font-semibold text-xs uppercase tracking-wide text-gray-700">PRICE RANGE</p>
                 <p className="text-muted-foreground">Starting from ${partner.starting_price}</p>
               </div>
-            )}
-            {(partner.website_url || partner.email) && (
-              <div>
+            }
+            {(partner.website_url || partner.email) &&
+            <div>
                 <p className="font-semibold text-xs uppercase tracking-wide text-gray-700">CONTACT</p>
-                {partner.website_url && (
-                  <a href={partner.website_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-primary hover:underline mt-1">
+                {partner.website_url &&
+              <a href={partner.website_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-primary hover:underline mt-1">
                     <Globe className="w-3.5 h-3.5 shrink-0" />
                     <span className="truncate">{partner.website_url.replace(/^https?:\/\//, '')}</span>
                   </a>
-                )}
-                {partner.email && (
-                  <a href={`mailto:${partner.email}`} className="flex items-center gap-1.5 text-primary hover:underline mt-1">
+              }
+                {partner.email &&
+              <a href={`mailto:${partner.email}`} className="flex items-center gap-1.5 text-primary hover:underline mt-1">
                     <Mail className="w-3.5 h-3.5 shrink-0" />
                     <span className="truncate">{partner.email}</span>
                   </a>
-                )}
+              }
               </div>
-            )}
-            {partner.location && (
-              <div>
+            }
+            {partner.location &&
+            <div>
                 <p className="font-semibold text-xs uppercase tracking-wide text-gray-700">LOCATION</p>
                 <p className="text-muted-foreground flex items-center gap-1 mt-0.5">
                   <MapPin className="w-3.5 h-3.5 shrink-0" />{partner.location}
                 </p>
               </div>
-            )}
-            {partner.languages?.length > 0 && (
-              <div>
+            }
+            {partner.languages?.length > 0 &&
+            <div>
                 <p className="font-semibold text-xs uppercase tracking-wide text-gray-700">LANGUAGES</p>
                 <p className="mt-0.5">{partner.languages.join(', ')}</p>
               </div>
-            )}
-            {partner.completed_projects > 0 && (
-              <div>
+            }
+            {partner.completed_projects > 0 &&
+            <div>
                 <p className="font-semibold text-xs uppercase tracking-wide text-primary">COMPLETED PROJECTS</p>
                 <p className="text-muted-foreground mt-0.5">{partner.completed_projects}</p>
               </div>
-            )}
+            }
           </div>
         </div>
 
@@ -318,78 +318,78 @@ export default function PartnerDetail() {
           {/* About */}
           <div>
             <h2 className="font-heading text-xl font-bold text-foreground mb-4">About</h2>
-            {partner.description && (
-              <div className="mb-4">
+            {partner.description &&
+            <div className="mb-4">
                 <h3 className="font-semibold mb-1 text-foreground">Business description</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm">{partner.description}</p>
               </div>
-            )}
-            {partner.full_description && (
-              <div className="mb-4">
+            }
+            {partner.full_description &&
+            <div className="mb-4">
                 <h3 className="font-semibold mb-1 text-foreground">{rankConfig.label}</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm whitespace-pre-line">{partner.full_description}</p>
               </div>
-            )}
-            {partner.tags?.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-3">
-                {partner.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="text-xs">#{tag}</Badge>
-                ))}
+            }
+            {partner.tags?.length > 0 &&
+            <div className="flex flex-wrap gap-1.5 mt-3">
+                {partner.tags.map((tag) =>
+              <Badge key={tag} variant="secondary" className="text-xs">#{tag}</Badge>
+              )}
               </div>
-            )}
+            }
           </div>
 
           {/* Services */}
-          {partner.services?.length > 0 && (
-            <div>
+          {partner.services?.length > 0 &&
+          <div>
               <h2 className="font-heading text-xl font-bold text-foreground mb-2">Specialized services</h2>
               <div className="border border-border rounded-xl overflow-hidden bg-white">
-                {visibleServices.map((service, i) => (
-                  <ServiceRow key={i} service={service} description={partner.service_descriptions?.[service]} />
-                ))}
-              </div>
-              {partner.services.length > 5 && (
-                <button
-                  onClick={() => setShowAllServices((v) => !v)}
-                  className="mt-2 flex items-center gap-1 text-sm text-primary hover:underline"
-                >
-                  {showAllServices ? (
-                    <><ChevronUp className="w-4 h-4" /> Show fewer services</>
-                  ) : (
-                    <><ChevronDown className="w-4 h-4" /> Show all {partner.services.length} services</>
-                  )}
-                </button>
+                {visibleServices.map((service, i) =>
+              <ServiceRow key={i} service={service} description={partner.service_descriptions?.[service]} />
               )}
+              </div>
+              {partner.services.length > 5 &&
+            <button
+              onClick={() => setShowAllServices((v) => !v)}
+              className="mt-2 flex items-center gap-1 text-sm text-primary hover:underline">
+              
+                  {showAllServices ?
+              <><ChevronUp className="w-4 h-4" /> Show fewer services</> :
+
+              <><ChevronDown className="w-4 h-4" /> Show all {partner.services.length} services</>
+              }
+                </button>
+            }
             </div>
-          )}
+          }
 
           {/* Category & Industry */}
-          {(partner.service_category || partner.industry) && (
-            <div>
-              {partner.service_category && (
-                <div className="mb-3">
+          {(partner.service_category || partner.industry) &&
+          <div>
+              {partner.service_category &&
+            <div className="mb-3">
                   <h2 className="font-heading text-xl font-bold text-foreground mb-1">Category</h2>
                   <p className="text-sm text-muted-foreground">{CATEGORY_LABELS[partner.service_category] || partner.service_category}</p>
                 </div>
-              )}
-              {partner.industry && (
-                <div>
+            }
+              {partner.industry &&
+            <div>
                   <h2 className="font-heading text-xl font-bold text-foreground mb-1">Industries</h2>
                   <p className="text-sm text-muted-foreground">{INDUSTRY_LABELS[partner.industry] || partner.industry}</p>
                 </div>
-              )}
+            }
             </div>
-          )}
+          }
 
           {/* Dashboard Screenshot */}
-          {partner.dashboard_screenshot_url && (
-            <div>
+          {partner.dashboard_screenshot_url &&
+          <div>
               <h2 className="font-heading text-xl font-bold text-foreground mb-3">Shopify Partner Dashboard</h2>
               <div className="rounded-xl overflow-hidden border border-border">
                 <img src={partner.dashboard_screenshot_url} alt="Shopify Partner Dashboard" className="w-full object-cover" />
               </div>
             </div>
-          )}
+          }
 
           {/* Reviews */}
           <div>
@@ -401,13 +401,13 @@ export default function PartnerDetail() {
       </div>
 
       {/* Modals */}
-      {partner && (
-        <>
+      {partner &&
+      <>
           <ContactModal partner={partner} isOpen={contactOpen} onClose={() => setContactOpen(false)} mode="inquiry" />
           <ContactModal partner={partner} isOpen={hireOpen} onClose={() => setHireOpen(false)} mode="hire" />
           <FlagModal partner={partner} isOpen={flagOpen} onClose={() => setFlagOpen(false)} />
         </>
-      )}
-    </div>
-  );
+      }
+    </div>);
+
 }
