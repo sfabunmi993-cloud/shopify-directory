@@ -271,7 +271,7 @@ export default function PartnerDetail() {
           <div className="space-y-3 text-sm pt-1 border-t border-border text-gray-700">
             {partner.starting_price > 0 &&
             <div>
-                <p className="text-primary font-semibold text-xs uppercase tracking-wide">Price range for selected services</p>
+                <p className="font-semibold text-xs uppercase tracking-wide text-gray-700">PRICE RANGE FOR SELECTED SERVICES</p>
                 <p className="text-muted-foreground">Starting from ${partner.starting_price}</p>
               </div>
             }
