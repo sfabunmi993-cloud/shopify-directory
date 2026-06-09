@@ -57,7 +57,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+            <div className="<img src=\"https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg\" alt=\"Shopify\" class=\"h-7\">">
               <span className="text-white font-bold text-sm">D</span>
             </div>
             <span className="font-heading font-bold text-lg text-foreground hidden sm:block">Shopify Partners Directory</span>
