@@ -85,7 +85,7 @@ export default function Navbar() {
             <>
                 {!hasPartnerProfile &&
               <Button asChild variant="outline" size="sm" className="rounded-full">
-                    <Link to="/become-a-partner">Become a Partner</Link>
+                    <Link to="/become-a-partner">Login</Link>
                   </Button>
               }
                 <DropdownMenu>
