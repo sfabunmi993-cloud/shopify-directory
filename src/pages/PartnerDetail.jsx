@@ -189,7 +189,7 @@ export default function PartnerDetail() {
               </div>
             }
             {/* Rank badge */}
-            <div className={`mt-2 inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded border font-medium ${rankConfig.color}`}>
+            <div className={`mt-2 inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded border font-medium text-[#b46227] ${rankConfig.color}`}>
               <Award className="w-3 h-3" /> {rankConfig.label}
             </div>
           </div>
@@ -220,7 +220,7 @@ export default function PartnerDetail() {
               href={`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(partner.email)}&su=${encodeURIComponent(`Inquiry - ${partner.name}`)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 text-sm font-medium transition-colors">
+              className="w-full inline-flex items-center justify-center gap-2 text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 text-sm font-medium transition-colors bg-gray-600 rounded-lg">
                 <Mail className="w-4 h-4" /> Contact
               </a> :
             <Button className="w-full" onClick={() => setContactOpen(true)}>
@@ -331,7 +331,7 @@ export default function PartnerDetail() {
 
             {partner.full_description &&
             <div className="mb-4">
-                <h3 className="font-semibold text-primary mb-1">{rankConfig.label}</h3>
+                <h3 className="font-semibold mb-1 text-[#515855]">{rankConfig.label}</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm whitespace-pre-line">{partner.full_description}</p>
               </div>
             }
