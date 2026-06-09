@@ -324,7 +324,7 @@ export default function PartnerDetail() {
 
             {partner.description &&
             <div className="mb-4">
-                <h3 className="font-semibold text-primary mb-1">Business description</h3>
+                <h3 className="font-semibold mb-1 text-[#5a5e5c]">Business description</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm">{partner.description}</p>
               </div>
             }
