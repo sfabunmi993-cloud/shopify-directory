@@ -280,14 +280,14 @@ export default function PartnerDetail() {
                 <p className="font-semibold text-xs uppercase tracking-wide text-gray-700">CONTACT INFORMATION</p>
                 {partner.website_url &&
               <a href={partner.website_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-primary hover:underline mt-1">
-                    <Globe className="w-3.5 h-3.5 shrink-0" />
+                    <Globe className="w-3.5 h-3.5 shrink-0 text-[#000000]" />
                     <span className="truncate text-[#494141]">{partner.website_url.replace(/^https?:\/\//, '')}</span>
                   </a>
               }
                 {partner.email &&
               <a href={`mailto:${partner.email}`} className="flex items-center gap-1.5 text-primary hover:underline mt-1">
-                    <Mail className="w-3.5 h-3.5 shrink-0" />
-                    <span className="truncate">{partner.email}</span>
+                    <Mail className="w-3.5 h-3.5 shrink-0 text-gray-950" />
+                    <span className="truncate text-gray-700">{partner.email}</span>
                   </a>
               }
               </div>
@@ -302,7 +302,7 @@ export default function PartnerDetail() {
             }
             {partner.languages?.length > 0 &&
             <div>
-                <p className="text-primary font-semibold text-xs uppercase tracking-wide">Languages</p>
+                <p className="font-semibold text-xs uppercase tracking-wide text-[#020303]">LANGUAGES</p>
                 <p className="mt-0.5 text-gray-700">{partner.languages.join(', ')}</p>
               </div>
             }
