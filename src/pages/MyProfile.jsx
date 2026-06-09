@@ -347,9 +347,14 @@ export default function MyProfile() {
               <Label>Contact email</Label>
               <Input type="email" value={form.email || ''} onChange={e => set('email', e.target.value)} />
             </div>
-            <div className="space-y-1.5 sm:col-span-2">
+            <div className="space-y-1.5">
               <Label>Website URL</Label>
               <Input type="url" placeholder="https://" value={form.website_url || ''} onChange={e => set('website_url', e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>WhatsApp Link</Label>
+              <Input type="url" placeholder="https://wa.me/1234567890" value={form.whatsapp_url || ''} onChange={e => set('whatsapp_url', e.target.value)} />
+              <p className="text-xs text-muted-foreground">Format: https://wa.me/[your number with country code]</p>
             </div>
           </div>
         </div>
