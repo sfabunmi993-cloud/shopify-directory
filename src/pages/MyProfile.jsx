@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock, Share2, Star, TrendingUp } from 'lucide-react';
+import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock, Share2, Star, TrendingUp, Upload, ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import InquiriesDashboard from '@/components/profile/InquiriesDashboard';
 import ServiceDescriptionEditor from '@/components/profile/ServiceDescriptionEditor';
@@ -53,6 +53,7 @@ export default function MyProfile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingScreenshot, setUploadingScreenshot] = useState(false);
   const [newService, setNewService] = useState('');
   const [newTag, setNewTag] = useState('');
   const [form, setForm] = useState({});
@@ -102,6 +103,17 @@ export default function MyProfile() {
   };
 
   const removeTag = (t) => set('tags', (form.tags || []).filter(tag => tag !== t));
+
+  const handleScreenshotUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingScreenshot(true);
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    set('dashboard_screenshot_url', file_url);
+    await base44.entities.Partner.update(partner.id, { dashboard_screenshot_url: file_url });
+    toast.success('Dashboard screenshot uploaded!');
+    setUploadingScreenshot(false);
+  };
 
   const handleLogoUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -356,6 +368,39 @@ export default function MyProfile() {
               <Input type="url" placeholder="https://wa.me/1234567890" value={form.whatsapp_url || ''} onChange={e => set('whatsapp_url', e.target.value)} />
               <p className="text-xs text-muted-foreground">Format: https://wa.me/[your number with country code]</p>
             </div>
+          </div>
+        </div>
+
+        <hr className="border-border" />
+
+        {/* Shopify Dashboard Screenshot */}
+        <div>
+          <h2 className="font-semibold text-base mb-1">Shopify Partner Dashboard Screenshot</h2>
+          <p className="text-xs text-muted-foreground mb-4">Upload a screenshot of your Shopify Partner Dashboard to showcase your experience. It will be displayed on your public profile.</p>
+          <div className="space-y-3">
+            {form.dashboard_screenshot_url ? (
+              <div className="relative rounded-xl overflow-hidden border border-border">
+                <img src={form.dashboard_screenshot_url} alt="Dashboard screenshot" className="w-full object-cover" />
+                <button
+                  onClick={() => set('dashboard_screenshot_url', '')}
+                  className="absolute top-2 right-2 bg-white/90 rounded-full p-1 hover:bg-white shadow text-foreground"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <div className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center gap-2 text-muted-foreground">
+                <ImageIcon className="w-8 h-8 opacity-40" />
+                <p className="text-sm">No screenshot uploaded yet</p>
+              </div>
+            )}
+            <label className="cursor-pointer">
+              <input type="file" accept="image/*" className="hidden" onChange={handleScreenshotUpload} disabled={uploadingScreenshot} />
+              <div className="flex items-center gap-2 px-4 py-2 border border-border rounded-full text-sm font-medium hover:bg-muted/50 transition-colors w-fit">
+                {uploadingScreenshot ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                {uploadingScreenshot ? 'Uploading...' : form.dashboard_screenshot_url ? 'Replace screenshot' : 'Upload screenshot'}
+              </div>
+            </label>
           </div>
         </div>
 

@@ -111,7 +111,11 @@
     },
     "whatsapp_url": {
       "type": "string",
-      "description": "WhatsApp link or number (e.g. https://wa.me/1234567890)"
+      "description": "WhatsApp link (e.g. https://wa.me/1234567890)"
+    },
+    "dashboard_screenshot_url": {
+      "type": "string",
+      "description": "URL of the partner's Shopify Partner Dashboard screenshot"
     },
     "completed_projects": {
       "type": "number",

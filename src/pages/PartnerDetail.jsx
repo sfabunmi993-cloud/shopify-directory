@@ -217,14 +217,12 @@ export default function PartnerDetail() {
           <div className="space-y-2">
             {partner.email ?
             <a
-              href={`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(partner.email)}&su=${encodeURIComponent(`Inquiry from ${window.location.origin}`)}`}
+              href={`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(partner.email)}&su=${encodeURIComponent(`Inquiry - ${partner.name}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 text-sm font-medium transition-colors">
-              
-                <Mail className="w-4 h-4" /> Contact via Gmail
+                <Mail className="w-4 h-4" /> Contact
               </a> :
-
             <Button className="w-full" onClick={() => setContactOpen(true)}>
                 <MessageSquare className="w-4 h-4 mr-1.5" /> Contact
               </Button>
@@ -389,6 +387,16 @@ export default function PartnerDetail() {
             }
             </div>
           }
+
+          {/* Dashboard Screenshot */}
+          {partner.dashboard_screenshot_url && (
+            <div>
+              <h2 className="font-heading text-xl font-bold text-foreground mb-3">Shopify Partner Dashboard</h2>
+              <div className="rounded-xl overflow-hidden border border-border">
+                <img src={partner.dashboard_screenshot_url} alt="Shopify Partner Dashboard" className="w-full object-cover" />
+              </div>
+            </div>
+          )}
 
           {/* Reviews */}
           <div>
