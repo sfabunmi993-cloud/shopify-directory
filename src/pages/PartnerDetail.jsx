@@ -276,12 +276,12 @@ export default function PartnerDetail() {
               </div>
             }
             {(partner.website_url || partner.email) &&
-            <div>
-                <p className="text-primary font-semibold text-xs uppercase tracking-wide">Contact information</p>
+            <div className="text-gray-800">
+                <p className="font-semibold text-xs uppercase tracking-wide text-gray-700">CONTACT INFORMATION</p>
                 {partner.website_url &&
               <a href={partner.website_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-primary hover:underline mt-1">
                     <Globe className="w-3.5 h-3.5 shrink-0" />
-                    <span className="truncate">{partner.website_url.replace(/^https?:\/\//, '')}</span>
+                    <span className="truncate text-[#494141]">{partner.website_url.replace(/^https?:\/\//, '')}</span>
                   </a>
               }
                 {partner.email &&
@@ -294,7 +294,7 @@ export default function PartnerDetail() {
             }
             {partner.location &&
             <div>
-                <p className="text-primary font-semibold text-xs uppercase tracking-wide">Primary location</p>
+                <p className="font-semibold text-xs uppercase tracking-wide text-gray-700">PRIMARY LOCATION</p>
                 <p className="text-muted-foreground flex items-center gap-1 mt-0.5">
                   <MapPin className="w-3.5 h-3.5 shrink-0" />{partner.location}
                 </p>
@@ -303,7 +303,7 @@ export default function PartnerDetail() {
             {partner.languages?.length > 0 &&
             <div>
                 <p className="text-primary font-semibold text-xs uppercase tracking-wide">Languages</p>
-                <p className="text-primary mt-0.5">{partner.languages.join(', ')}</p>
+                <p className="mt-0.5 text-gray-700">{partner.languages.join(', ')}</p>
               </div>
             }
             {partner.completed_projects > 0 &&
