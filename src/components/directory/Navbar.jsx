@@ -60,7 +60,7 @@ export default function Navbar() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">PD</span>
             </div>
-            <span className="font-heading font-bold text-lg text-foreground hidden sm:block">ShoPartners Directory</span>
+            <span className="font-heading font-bold text-lg text-foreground hidden sm:block">Shopify Partners Directory</span>
           </Link>
 
           <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl mx-8">
