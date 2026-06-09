@@ -2,17 +2,17 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const CATEGORIES = [
-{ label: 'Marketing and sales', value: 'marketing_and_sales' },
-{ label: 'Store setup and management', value: 'store_setup_and_management' },
-{ label: 'Development and troubleshooting', value: 'development_and_troubleshooting' },
-{ label: 'Visual content and branding', value: 'visual_content_and_branding' },
-{ label: 'Content writing', value: 'content_writing' },
-{ label: 'Expert guidance', value: 'expert_guidance' }];
-
+  { label: 'Marketing and sales', value: 'marketing_and_sales' },
+  { label: 'Store setup and management', value: 'store_setup_and_management' },
+  { label: 'Development and troubleshooting', value: 'development_and_troubleshooting' },
+  { label: 'Visual content and branding', value: 'visual_content_and_branding' },
+  { label: 'Content writing', value: 'content_writing' },
+  { label: 'Expert guidance', value: 'expert_guidance' },
+];
 
 export default function HeroSection() {
   return (
-    <section className="bg-white py-16 md:py-20">
+    <section className="bg-gradient-to-br from-muted/40 via-white to-muted/60 pt-16 pb-20 md:pt-20 md:pb-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
@@ -23,15 +23,15 @@ export default function HeroSection() {
               Browse by price, location, services, and more to find a partner that meets your needs.
             </p>
             <div className="mt-8 flex flex-wrap gap-2.5">
-              {CATEGORIES.map((cat) =>
-              <Link
-                key={cat.value}
-                to={`/directory?category=${cat.value}`}
-                className="inline-flex items-center px-4 py-2.5 rounded-full border border-border bg-white text-sm font-medium text-foreground hover:border-foreground hover:shadow-sm transition-all duration-200">
-                
+              {CATEGORIES.map((cat) => (
+                <Link
+                  key={cat.value}
+                  to={`/directory?category=${cat.value}`}
+                  className="inline-flex items-center px-4 py-2.5 rounded-full border border-border bg-white text-sm font-medium text-foreground hover:border-foreground hover:shadow-sm transition-all duration-200"
+                >
                   {cat.label}
                 </Link>
-              )}
+              ))}
             </div>
           </div>
           <div className="hidden md:flex justify-center">
@@ -39,7 +39,7 @@ export default function HeroSection() {
               <div className="w-72 h-72 lg:w-80 lg:h-80 rounded-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
                 <div className="grid grid-cols-2 gap-4 p-8">
                   <div className="w-28 h-28 rounded-2xl bg-white shadow-lg border border-border/50 flex items-center justify-center overflow-hidden">
-                    <img src="https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/a811d5dd6_pskv.PNG" alt="Partner" className="w-full h-full object-cover" />
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop&crop=face" alt="Partner" className="w-full h-full object-cover" />
                   </div>
                   <div className="w-28 h-28 rounded-2xl bg-white shadow-lg border border-border/50 flex items-center justify-center overflow-hidden mt-6">
                     <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop&crop=face" alt="Partner" className="w-full h-full object-cover" />
@@ -52,6 +52,6 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
-    </section>);
-
+    </section>
+  );
 }

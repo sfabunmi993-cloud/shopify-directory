@@ -57,8 +57,8 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img src="https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg" alt="Shopify" className="h-7 mt-4 mr-4 py-1" />
-            <span className="font-heading font-bold text-lg text-foreground hidden sm:block px-3">Shopify Partners Directory</span>
+            <img src="https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg" alt="Shopify" className="h-7 mt-4 mr-3" />
+            <span className="font-heading font-bold text-lg text-foreground hidden sm:block py-6 my-2">Shopify Partners Directory</span>
           </Link>
 
           <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl mx-8">
@@ -89,7 +89,7 @@ export default function Navbar() {
                   <DropdownMenuTrigger asChild>
                     <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                       <Avatar className="w-8 h-8">
-                        <AvatarFallback className="bg-primary/10 text-xs font-semibold text-[#1c211f]">{initials}</AvatarFallback>
+                        <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">{initials}</AvatarFallback>
                       </Avatar>
                       <ChevronDown className="w-3 h-3 text-muted-foreground" />
                     </button>
