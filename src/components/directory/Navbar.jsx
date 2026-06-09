@@ -58,7 +58,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">PD</span>
+              <span className="text-white font-bold text-sm">D</span>
             </div>
             <span className="font-heading font-bold text-lg text-foreground hidden sm:block">Shopify Partners Directory</span>
           </Link>
