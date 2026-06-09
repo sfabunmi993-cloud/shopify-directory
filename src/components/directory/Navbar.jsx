@@ -9,8 +9,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger } from
+'@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 export default function Navbar() {
@@ -48,9 +48,9 @@ export default function Navbar() {
     base44.auth.logout('/');
   };
 
-  const initials = user?.full_name
-    ? user.full_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
-    : user?.email?.[0]?.toUpperCase() || '?';
+  const initials = user?.full_name ?
+  user.full_name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase() :
+  user?.email?.[0]?.toUpperCase() || '?';
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-border">
@@ -60,7 +60,7 @@ export default function Navbar() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">PD</span>
             </div>
-            <span className="font-heading font-bold text-lg text-foreground hidden sm:block">Partners Directory</span>
+            <span className="font-heading font-bold text-lg text-foreground hidden sm:block">ShoPartners Directory</span>
           </Link>
 
           <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl mx-8">
@@ -71,8 +71,8 @@ export default function Navbar() {
                 placeholder="Search partners, services, or location..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-10 rounded-full border-border bg-muted/50 focus:bg-white"
-              />
+                className="pl-10 h-10 rounded-full border-border bg-muted/50 focus:bg-white" />
+              
             </div>
           </form>
 
@@ -81,13 +81,13 @@ export default function Navbar() {
               Browse
             </Link>
 
-            {user ? (
-              <>
-                {!hasPartnerProfile && (
-                  <Button asChild variant="outline" size="sm" className="rounded-full">
+            {user ?
+            <>
+                {!hasPartnerProfile &&
+              <Button asChild variant="outline" size="sm" className="rounded-full">
                     <Link to="/become-a-partner">Become a Partner</Link>
                   </Button>
-                )}
+              }
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
@@ -103,16 +103,16 @@ export default function Navbar() {
                       <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                     </div>
                     <DropdownMenuSeparator />
-                    {isAdmin && (
-                      <>
+                    {isAdmin &&
+                  <>
                         <DropdownMenuItem asChild>
                           <Link to="/admin"><ShieldCheck className="w-4 h-4 mr-2" /> Admin Dashboard</Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                       </>
-                    )}
-                    {hasPartnerProfile && (
-                      <>
+                  }
+                    {hasPartnerProfile &&
+                  <>
                         <DropdownMenuItem asChild>
                           <Link to="/my-profile"><User className="w-4 h-4 mr-2" /> My Profile</Link>
                         </DropdownMenuItem>
@@ -121,15 +121,15 @@ export default function Navbar() {
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                       </>
-                    )}
-                    {!hasPartnerProfile && (
-                      <>
+                  }
+                    {!hasPartnerProfile &&
+                  <>
                         <DropdownMenuItem asChild>
                           <Link to="/become-a-partner"><User className="w-4 h-4 mr-2" /> Become a Partner</Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                       </>
-                    )}
+                  }
                     <DropdownMenuItem asChild>
                       <Link to="/favorites"><Heart className="w-4 h-4 mr-2" /> Saved Partners</Link>
                     </DropdownMenuItem>
@@ -142,9 +142,9 @@ export default function Navbar() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              </>
-            ) : (
-              <div className="flex items-center gap-2">
+              </> :
+
+            <div className="flex items-center gap-2">
                 <Button asChild variant="ghost" size="sm">
                   <Link to="/login">Log in</Link>
                 </Button>
@@ -153,7 +153,7 @@ export default function Navbar() {
                 </Button>
                 {/* After register, user lands at /become-a-partner via onboarding */}
               </div>
-            )}
+            }
           </nav>
 
           <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -161,49 +161,49 @@ export default function Navbar() {
           </button>
         </div>
 
-        {mobileMenuOpen && (
-          <div className="md:hidden pb-4 border-t border-border pt-4">
+        {mobileMenuOpen &&
+        <div className="md:hidden pb-4 border-t border-border pt-4">
             <form onSubmit={handleSearch} className="mb-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
-                  type="text"
-                  placeholder="Search partners..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 rounded-full"
-                />
+                type="text"
+                placeholder="Search partners..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 rounded-full" />
+              
               </div>
             </form>
             <div className="flex flex-col gap-3">
               <Link to="/directory" className="text-sm font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Browse All</Link>
-              {user ? (
-                <>
-                  {hasPartnerProfile ? (
-                    <>
+              {user ?
+            <>
+                  {hasPartnerProfile ?
+              <>
                       <Link to="/my-profile" className="text-sm font-medium py-2" onClick={() => setMobileMenuOpen(false)}>My Profile</Link>
                       <Link to={`/partner/${partnerId}`} className="text-sm font-medium py-2" onClick={() => setMobileMenuOpen(false)}>View Public Profile</Link>
-                    </>
-                  ) : (
-                    <Link to="/become-a-partner" className="text-sm font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Become a Partner</Link>
-                  )}
+                    </> :
+
+              <Link to="/become-a-partner" className="text-sm font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Become a Partner</Link>
+              }
                   <Link to="/favorites" className="text-sm font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Saved Partners</Link>
                   <Link to="/messages" className="text-sm font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Messages</Link>
                   {isAdmin && <Link to="/admin" className="text-sm font-medium py-2 text-primary" onClick={() => setMobileMenuOpen(false)}>Admin Dashboard</Link>}
                   <button onClick={handleLogout} className="text-sm font-medium py-2 text-destructive text-left">Log out</button>
-                </>
-              ) : (
-                <>
+                </> :
+
+            <>
                   <Link to="/login" className="text-sm font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Log in</Link>
                   <Button asChild size="sm" className="rounded-full w-fit">
                     <Link to="/register" onClick={() => setMobileMenuOpen(false)}>Become a Partner</Link>
                   </Button>
                 </>
-              )}
+            }
             </div>
           </div>
-        )}
+        }
       </div>
-    </header>
-  );
+    </header>);
+
 }
