@@ -163,7 +163,7 @@ export default function PartnerDetail() {
   const visibleServices = showAllServices ? partner.services : partner.services?.slice(0, 5);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-gray-500">
       <Link to="/directory" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-6">
         <ArrowLeft className="w-4 h-4 mr-1" /> Back to directory
       </Link>
@@ -389,14 +389,14 @@ export default function PartnerDetail() {
           }
 
           {/* Dashboard Screenshot */}
-          {partner.dashboard_screenshot_url && (
-            <div>
+          {partner.dashboard_screenshot_url &&
+          <div>
               <h2 className="font-heading text-xl font-bold text-foreground mb-3">Shopify Partner Dashboard</h2>
               <div className="rounded-xl overflow-hidden border border-border">
                 <img src={partner.dashboard_screenshot_url} alt="Shopify Partner Dashboard" className="w-full object-cover" />
               </div>
             </div>
-          )}
+          }
 
           {/* Reviews */}
           <div>
