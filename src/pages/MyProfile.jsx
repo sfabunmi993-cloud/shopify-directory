@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock, Share2, Star, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 import InquiriesDashboard from '@/components/profile/InquiriesDashboard';
+import ServiceDescriptionEditor from '@/components/profile/ServiceDescriptionEditor';
 
 const SERVICE_CATEGORIES = [
   { label: 'Marketing and sales', value: 'marketing_and_sales' },
@@ -295,13 +296,26 @@ export default function MyProfile() {
             <Button variant="outline" size="icon" onClick={addCustomService}><Plus className="w-4 h-4" /></Button>
           </div>
           {(form.services || []).length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5 mb-4">
               {(form.services || []).map(s => (
                 <Badge key={s} variant="secondary" className="gap-1 pr-1">
                   {s}
                   <button onClick={() => toggleService(s)} className="ml-0.5 rounded-full hover:bg-muted-foreground/20 p-0.5"><X className="w-3 h-3" /></button>
                 </Badge>
               ))}
+            </div>
+          )}
+
+          {(form.services || []).length > 0 && (
+            <div>
+              <p className="text-sm font-medium text-foreground mb-2">Service descriptions</p>
+              <p className="text-xs text-muted-foreground mb-3">Add a description for each service. You can write your own or use AI to generate one.</p>
+              <ServiceDescriptionEditor
+                services={form.services || []}
+                partnerName={form.name}
+                serviceDescriptions={form.service_descriptions || {}}
+                onChange={v => set('service_descriptions', v)}
+              />
             </div>
           )}
         </div>

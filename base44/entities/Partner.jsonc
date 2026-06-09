@@ -49,6 +49,13 @@
         "type": "string"
       }
     },
+    "service_descriptions": {
+      "type": "object",
+      "description": "Map of service name to its description",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
     "tags": {
       "type": "array",
       "description": "Searchable tags/keywords for this partner",

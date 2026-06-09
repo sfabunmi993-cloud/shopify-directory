@@ -45,11 +45,16 @@ function getPartnerRank(reviewCount = 0) {
   return { label: 'Basic Partner', color: 'bg-muted text-muted-foreground border-border' };
 }
 
-function ServiceRow({ service }) {
+function ServiceRow({ service, description }) {
   return (
-    <div className="flex items-center justify-between py-3 border-b border-border last:border-0">
-      <span className="text-sm font-medium text-foreground">{service}</span>
-      <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+    <div className="py-3 border-b border-border last:border-0">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-sm font-medium text-foreground">{service}</span>
+        <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+      </div>
+      {description && (
+        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{description}</p>
+      )}
     </div>
   );
 }
@@ -318,7 +323,7 @@ export default function PartnerDetail() {
               <h2 className="font-heading text-xl font-bold text-foreground mb-2">Specialized services</h2>
               <div className="border border-border rounded-xl overflow-hidden bg-white">
                 {visibleServices.map((service, i) => (
-                  <ServiceRow key={i} service={service} />
+                  <ServiceRow key={i} service={service} description={partner.service_descriptions?.[service]} />
                 ))}
               </div>
               {partner.services.length > 5 && (
