@@ -39,7 +39,7 @@ export default function HeroSection() {
               <div className="w-72 h-72 lg:w-80 lg:h-80 rounded-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
                 <div className="grid grid-cols-2 gap-4 p-8">
                   <div className="w-28 h-28 rounded-2xl bg-white shadow-lg border border-border/50 flex items-center justify-center overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop&crop=face" alt="Partner" className="w-full h-full object-cover" />
+                    <img src="https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/a811d5dd6_pskv.PNG" alt="Partner" className="w-full h-full object-cover" />
                   </div>
                   <div className="w-28 h-28 rounded-2xl bg-white shadow-lg border border-border/50 flex items-center justify-center overflow-hidden mt-6">
                     <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop&crop=face" alt="Partner" className="w-full h-full object-cover" />
