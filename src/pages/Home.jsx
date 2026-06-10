@@ -12,13 +12,13 @@ export default function Home() {
   const { data: featuredPartners, isLoading } = useQuery({
     queryKey: ['featured-partners'],
     queryFn: () => base44.entities.Partner.filter({ is_featured: true }, '-rating', 6),
-    initialData: [],
+    initialData: []
   });
 
   const { data: topPartners, isLoading: isLoadingTop } = useQuery({
     queryKey: ['top-partners'],
     queryFn: () => base44.entities.Partner.list('-rating', 8),
-    initialData: [],
+    initialData: []
   });
 
   const displayPartners = featuredPartners.length > 0 ? featuredPartners : topPartners;
@@ -73,9 +73,9 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
-            {loading ? (
-              Array(4).fill(0).map((_, i) => (
-                <div key={i} className="border border-border rounded-xl p-5">
+            {loading ?
+            Array(4).fill(0).map((_, i) =>
+            <div key={i} className="border border-border rounded-xl p-5">
                   <div className="flex gap-4">
                     <Skeleton className="w-14 h-14 rounded-lg" />
                     <div className="flex-1 space-y-2">
@@ -85,12 +85,12 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-              ))
-            ) : (
-              displayPartners.slice(0, 6).map((partner) => (
-                <PartnerCard key={partner.id} partner={partner} />
-              ))
-            )}
+            ) :
+
+            displayPartners.slice(0, 6).map((partner) =>
+            <PartnerCard key={partner.id} partner={partner} />
+            )
+            }
           </div>
 
           <div className="mt-8 text-center sm:hidden">
@@ -120,8 +120,8 @@ export default function Home() {
           <div className="grid sm:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-xs">PD</span>
+                <div className="<img src=\"https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg\" alt=\"Shopify\" className=\"h-7 mt-4 mr-3\" />">
+                  <span className="text-white font-bold text-xs hidden">PD</span>
                 </div>
                 <span className="font-heading font-bold text-white">Partners Directory</span>
               </div>
@@ -148,6 +148,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>);
+
 }
