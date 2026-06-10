@@ -251,15 +251,15 @@ export default function PartnerDetail() {
                 <Heart className={`w-3.5 h-3.5 ${isFavorited ? 'fill-rose-500' : ''}`} />
                 {isFavorited ? 'Saved' : 'Save'}
               </button>
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
-                  toast.success('Profile link copied!');
-                }}
-                className="flex-1 flex items-center justify-center gap-1.5 text-xs py-1.5 rounded border border-border text-muted-foreground hover:border-primary hover:text-primary transition-all hidden">
-                
-                <Share2 className="w-3.5 h-3.5" /> Share
-              </button>
+              
+
+
+
+
+
+
+
+              
               <button
                 onClick={() => setFlagOpen(true)}
                 className="flex-1 flex items-center justify-center gap-1.5 text-xs py-1.5 rounded border border-border text-muted-foreground hover:text-red-500 hover:border-red-200 transition-all">
