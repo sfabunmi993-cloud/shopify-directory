@@ -185,7 +185,7 @@ export default function Navbar() {
                   <Link to="/favorites" className="text-sm font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Saved Partners</Link>
                   <Link to="/messages" className="text-sm font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Messages</Link>
                   {isAdmin && <Link to="/admin" className="text-sm font-medium py-2 text-primary" onClick={() => setMobileMenuOpen(false)}>Admin Dashboard</Link>}
-                  <button onClick={handleLogout} className="font-medium py-2 text-left bg-[#f91515] text-[#fcf2f2] text-sm">Log out</button>
+                  <button onClick={handleLogout} className="font-medium py-2 text-left bg-[#f91515] text-[#fcf2f2] text-sm line-through">Log out</button>
                 </> :
 
             <>
