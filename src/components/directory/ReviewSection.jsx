@@ -164,9 +164,6 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
                   </div>
                   <div>
                     <p className="text-sm font-medium">{review.reviewer_name || 'Anonymous'}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {review.created_date ? format(new Date(review.created_date), 'MMM d, yyyy') : ''}
-                    </p>
                   </div>
                 </div>
                 <div className="flex shrink-0">
