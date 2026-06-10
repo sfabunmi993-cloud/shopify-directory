@@ -188,10 +188,10 @@ export default function PartnerDetail() {
         {/* LEFT SIDEBAR */}
         <div className="border border-border rounded-xl p-6 space-y-5">
           {/* Logo */}
-          <div className="flex flex-col items-center text-center">
+          <div className="flex flex-col items-center text-center rounded-[999px]">
             <PartnerAvatar partner={partner} size="lg" shape="rounded-full" className="border-2" />
             {/* Rank badge */}
-            <div className={`mt-2 inline-flex items-center gap-1 text-xs px-2 py-0.5 border font-medium bg-[#ffd700] rounded-md ${rankConfig.color}`}>
+            <div className={`mt-2 inline-flex items-center gap-1 text-xs px-2 py-0.5 border font-medium bg-[#ffd700] rounded-lg ${rankConfig.color}`}>
               <Award className="w-3 h-3" /> {rankConfig.label}
             </div>
           </div>
