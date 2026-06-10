@@ -215,14 +215,21 @@ export default function PartnerDetail() {
 
           {/* CTA Buttons */}
           <div className="space-y-2">
-            {partner.email ?
-            <a
-              href={`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(partner.email)}&su=${encodeURIComponent(`Inquiry - ${partner.name}`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 text-sm font-medium transition-colors bg-gray-600 rounded-2xl">
-                <Mail className="w-4 h-4" /> Contact
-              </a> :
+            {partner.email ? (() => {
+              const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+              const href = isMobile
+                ? `mailto:${partner.email}?subject=Inquiry - ${encodeURIComponent(partner.name)}`
+                : `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(partner.email)}&su=${encodeURIComponent(`Inquiry - ${partner.name}`)}`;
+              return (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2 text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 text-sm font-medium transition-colors bg-gray-600 rounded-2xl">
+                  <Mail className="w-4 h-4" /> Contact
+                </a>
+              );
+            })() :
             <Button className="w-full" onClick={() => setContactOpen(true)}>
                 <MessageSquare className="w-4 h-4 mr-1.5" /> Contact
               </Button>
