@@ -179,7 +179,7 @@ export default function PartnerDetail() {
       <div className="grid md:grid-cols-[280px_1fr] gap-8 items-start">
 
         {/* LEFT SIDEBAR */}
-        <div className="border border-border rounded-xl p-6 space-y-5 bg-[#867a23]">
+        <div className="border border-border rounded-xl p-6 space-y-5">
           {/* Logo */}
           <div className="flex flex-col items-center text-center">
             <PartnerAvatar partner={partner} size="lg" shape="rounded-full" className="border-2" />
