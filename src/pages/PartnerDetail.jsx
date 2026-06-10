@@ -179,7 +179,7 @@ export default function PartnerDetail() {
       <div className="grid md:grid-cols-[280px_1fr] gap-8 items-start">
 
         {/* LEFT SIDEBAR */}
-        <div className="border border-border rounded-xl bg-white p-6 space-y-5">
+        <div className="border border-border rounded-xl p-6 space-y-5 bg-[#867a23]">
           {/* Logo */}
           <div className="flex flex-col items-center text-center">
             <PartnerAvatar partner={partner} size="lg" shape="rounded-full" className="border-2" />
@@ -212,9 +212,9 @@ export default function PartnerDetail() {
           <div className="space-y-2">
             {partner.email ? (() => {
               const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-              const href = isMobile
-                ? `mailto:${partner.email}?subject=Inquiry - ${encodeURIComponent(partner.name)}`
-                : `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(partner.email)}&su=${encodeURIComponent(`Inquiry - ${partner.name}`)}`;
+              const href = isMobile ?
+              `mailto:${partner.email}?subject=Inquiry - ${encodeURIComponent(partner.name)}` :
+              `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(partner.email)}&su=${encodeURIComponent(`Inquiry - ${partner.name}`)}`;
               return (
                 <a
                   href={href}
@@ -222,8 +222,8 @@ export default function PartnerDetail() {
                   rel="noopener noreferrer"
                   className="w-full inline-flex items-center justify-center gap-2 text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 text-sm font-medium transition-colors bg-gray-600 rounded-2xl">
                   <Mail className="w-4 h-4" /> Contact
-                </a>
-              );
+                </a>);
+
             })() :
             <Button className="w-full" onClick={() => setContactOpen(true)}>
                 <MessageSquare className="w-4 h-4 mr-1.5" /> Contact
