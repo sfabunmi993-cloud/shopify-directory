@@ -263,7 +263,7 @@ export default function PartnerDetail() {
               
               <button
                 onClick={() => setFlagOpen(true)}
-                className="flex-1 flex items-center justify-center gap-1.5 text-xs py-1.5 rounded border border-border text-muted-foreground hover:text-red-500 hover:border-red-200 transition-all">
+                className="flex-1 flex items-center justify-center gap-1.5 text-xs py-1.5 rounded border border-border hover:text-red-500 hover:border-red-200 transition-all bg-[#f91515] text-gray-100">
                 
                 <Flag className="w-3.5 h-3.5" /> Report
               </button>
