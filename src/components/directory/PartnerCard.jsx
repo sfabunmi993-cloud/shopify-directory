@@ -24,11 +24,11 @@ export default function PartnerCard({ partner, compareSelected, onToggleCompare 
   const extraCount = (partner.services?.length || 0) - 4;
 
   return (
-    <div className={`relative bg-white border rounded-xl p-5 hover:shadow-md transition-all duration-200 group ${compareSelected ? 'border-primary ring-1 ring-primary/30' : 'border-border hover:border-border/80'}`}>
+    <div className={`relative bg-white border rounded-xl p-5 hover:shadow-md transition-all duration-200 group my-2 ${compareSelected ? 'border-primary ring-1 ring-primary/30' : 'border-border hover:border-border/80'}`}>
       {onToggleCompare &&
       <button
         onClick={(e) => {e.preventDefault();onToggleCompare();}}
-        className={`absolute top-3 right-3 z-10 flex items-center gap-1 text-xs rounded-full border font-medium transition-all py-1 px-5 my-10 ${compareSelected ? 'bg-primary text-white border-primary' : 'bg-white text-muted-foreground border-border hover:border-primary hover:text-primary'}`}>
+        className={`absolute top-3 right-3 z-10 flex items-center gap-1 text-xs rounded-full border font-medium transition-all py-1 my-8 px-6 ${compareSelected ? 'bg-primary text-white border-primary' : 'bg-white text-muted-foreground border-border hover:border-primary hover:text-primary'}`}>
         
           {compareSelected ? '✓ Added' : '+ Compare'}
         </button>
