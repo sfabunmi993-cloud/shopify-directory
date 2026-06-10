@@ -165,8 +165,8 @@ export default function PartnerDetail() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-gray-500">
-      <Link to="/directory" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-6">
-        <ArrowLeft className="w-4 h-4 mr-1" /> Back to directory
+      <Link to="/directory" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-6">Back to directory        
+
       </Link>
 
       {partner.status === 'pending' &&
