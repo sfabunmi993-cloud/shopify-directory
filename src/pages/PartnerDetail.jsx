@@ -256,7 +256,7 @@ export default function PartnerDetail() {
                   navigator.clipboard.writeText(window.location.href);
                   toast.success('Profile link copied!');
                 }}
-                className="flex-1 flex items-center justify-center gap-1.5 text-xs py-1.5 rounded border border-border text-muted-foreground hover:border-primary hover:text-primary transition-all">
+                className="flex-1 flex items-center justify-center gap-1.5 text-xs py-1.5 rounded border border-border text-muted-foreground hover:border-primary hover:text-primary transition-all hidden">
                 
                 <Share2 className="w-3.5 h-3.5" /> Share
               </button>
