@@ -40,9 +40,9 @@ const TIER_CONFIG = {
 };
 
 function getPartnerRank(reviewCount = 0) {
-  if (reviewCount >= 25) return { label: 'Plus Partner', color: 'bg-amber-50 text-amber-700 border-amber-200' };
-  if (reviewCount >= 5) return { label: 'Pro Partner', color: 'bg-primary/10 text-primary border-primary/20' };
-  return { label: 'Basic Partner', color: 'bg-muted text-muted-foreground border-border' };
+  if (reviewCount >= 25) return { label: 'Plus Partner', color: 'bg-amber-50 text-amber-700 border-amber-200', medal: '🥇' };
+  if (reviewCount >= 5) return { label: 'Pro Partner', color: 'bg-primary/10 text-primary border-primary/20', medal: '🥈' };
+  return { label: 'Basic Partner', color: 'bg-muted text-muted-foreground border-border', medal: '🥉' };
 }
 
 function ServiceRow({ service, description }) {
@@ -184,8 +184,8 @@ export default function PartnerDetail() {
             {partner.logo_url ?
             <img src={partner.logo_url} alt={partner.name} className="w-24 h-24 rounded-full object-cover border-2 border-border" /> :
 
-            <div className="https://media.base44.com/images/public/6a2805659e609ed3b20b3b12/096000bae_WhatsAppImage2026-06-09at074013.jpg">
-                <span className="font-heading font-bold text-primary text-3xl">{partner.name?.charAt(0)?.toUpperCase()}</span>
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border-2 border-border">
+                <span className="text-5xl">{getPartnerRank(partner.review_count).medal}</span>
               </div>
             }
             {/* Rank badge */}
