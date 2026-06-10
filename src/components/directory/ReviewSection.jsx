@@ -107,7 +107,7 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
           }
         </div>
         {!isOwner && !showForm &&
-        <Button size="sm" variant="outline" className="rounded-full" onClick={() => setShowForm(true)}>
+        <Button size="sm" variant="outline" className="rounded-full hidden" onClick={() => setShowForm(true)}>
             Write a review
           </Button>
         }
