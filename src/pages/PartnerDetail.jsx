@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import ReviewSection from '@/components/directory/ReviewSection';
+import PartnerAvatar from '@/components/directory/PartnerAvatar';
 import ContactModal from '@/components/partner/ContactModal';
 import FlagModal from '@/components/partner/FlagModal';
 import { toast } from 'sonner';
@@ -181,13 +182,7 @@ export default function PartnerDetail() {
         <div className="border border-border rounded-xl bg-white p-6 space-y-5">
           {/* Logo */}
           <div className="flex flex-col items-center text-center">
-            {partner.logo_url ?
-            <img src={partner.logo_url} alt={partner.name} className="w-24 h-24 rounded-full object-cover border-2 border-border" /> :
-
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border-2 border-border">
-                <span className="text-5xl">{getPartnerRank(partner.review_count).medal}</span>
-              </div>
-            }
+            <PartnerAvatar partner={partner} size="lg" shape="rounded-full" className="border-2" />
             {/* Rank badge */}
             <div className={`mt-2 inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded border font-medium text-[#b46227] ${rankConfig.color}`}>
               <Award className="w-3 h-3" /> {rankConfig.label}

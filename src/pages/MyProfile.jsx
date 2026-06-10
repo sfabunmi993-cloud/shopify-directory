@@ -237,8 +237,8 @@ export default function MyProfile() {
                 {form.logo_url ? (
                   <img src={form.logo_url} alt="Logo" className="w-16 h-16 rounded-xl object-cover border border-border/50" />
                 ) : (
-                  <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center border border-border/50">
-                    <span className="font-bold text-primary text-xl">{(form.name || 'P').charAt(0).toUpperCase()}</span>
+                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-border/50">
+                    <span className="text-4xl">{partner?.review_count >= 25 ? '🥇' : partner?.review_count >= 5 ? '🥈' : '🥉'}</span>
                   </div>
                 )}
                 <label className="cursor-pointer">

@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import PartnerAvatar from '@/components/directory/PartnerAvatar';
 
 export default function Messages() {
   const navigate = useNavigate();
@@ -148,11 +148,7 @@ export default function Messages() {
                     className={`w-full text-left p-4 hover:bg-muted/30 transition-colors ${selectedConv?.id === conv.id ? 'bg-primary/5 border-l-2 border-primary' : ''}`}
                   >
                     <div className="flex items-start gap-3">
-                      <Avatar className="w-9 h-9 shrink-0">
-                        <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
-                          {conv.partner?.name?.charAt(0) || '?'}
-                        </AvatarFallback>
-                      </Avatar>
+                      <PartnerAvatar partner={conv.partner} size="sm" shape="rounded-lg" className="shrink-0" />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <p className="text-sm font-medium truncate">{conv.partner?.name || 'Unknown Partner'}</p>
@@ -186,11 +182,7 @@ export default function Messages() {
             <>
               {/* Header */}
               <div className="p-4 border-b border-border flex items-center gap-3">
-                <Avatar className="w-9 h-9">
-                  <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
-                    {selectedConv.partner?.name?.charAt(0) || '?'}
-                  </AvatarFallback>
-                </Avatar>
+                <PartnerAvatar partner={selectedConv.partner} size="sm" shape="rounded-lg" />
                 <div>
                   <p className="font-semibold text-sm">{selectedConv.partner?.name || 'Partner'}</p>
                   {selectedConv.partner?.id && (

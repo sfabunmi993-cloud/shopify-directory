@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { MessageSquare, Clock, CheckCircle, Send, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import PartnerAvatar from '@/components/directory/PartnerAvatar';
 
 function statusBadge(type) {
   if (type === 'hire_request') return <Badge className="bg-primary/10 text-primary border-0 text-xs">Hire Request</Badge>;
@@ -74,13 +75,7 @@ export default function InquiriesDashboard({ userId }) {
             className="flex items-center gap-3 p-3 rounded-xl border border-border hover:bg-muted/40 transition-colors"
           >
             <div className="shrink-0">
-              {partner?.logo_url ? (
-                <img src={partner.logo_url} alt={partner.name} className="w-9 h-9 rounded-lg object-cover border border-border/50" />
-              ) : (
-                <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <span className="text-primary font-bold text-sm">{(partner?.name || '?').charAt(0).toUpperCase()}</span>
-                </div>
-              )}
+              <PartnerAvatar partner={partner} size="sm" shape="rounded-lg" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">

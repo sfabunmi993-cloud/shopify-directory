@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Star, MapPin, DollarSign, Hash, Briefcase } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import PartnerAvatar from '@/components/directory/PartnerAvatar';
 
 const CATEGORY_LABELS = {
   marketing_and_sales: 'Marketing & Sales',
@@ -38,15 +39,7 @@ export default function PartnerCard({ partner, compareSelected, onToggleCompare 
     >
       <div className="flex gap-4">
         <div className="shrink-0">
-          {partner.logo_url ? (
-            <img src={partner.logo_url} alt={partner.name} className="w-14 h-14 rounded-lg object-cover border border-border/50" />
-          ) : (
-            <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-border/50">
-              <span className="font-heading font-bold text-primary text-lg">
-                {partner.name?.charAt(0)?.toUpperCase()}
-              </span>
-            </div>
-          )}
+          <PartnerAvatar partner={partner} size="md" shape="rounded-lg" />
         </div>
 
         <div className="flex-1 min-w-0">
