@@ -28,7 +28,7 @@ export default function PartnerCard({ partner, compareSelected, onToggleCompare 
       {onToggleCompare &&
       <button
         onClick={(e) => {e.preventDefault();onToggleCompare();}}
-        className={`absolute top-3 right-3 z-10 flex items-center gap-1 text-xs rounded-full border font-medium transition-all px-3 py-1 mx-40 my-5 ${compareSelected ? 'bg-primary text-white border-primary' : 'bg-white text-muted-foreground border-border hover:border-primary hover:text-primary'}`}>
+        className={`absolute top-3 right-3 z-10 flex items-center gap-1 text-xs rounded-full border font-medium transition-all py-1 mx-40 my-5 ${compareSelected ? 'bg-primary text-white border-primary' : 'bg-white text-muted-foreground border-border hover:border-primary hover:text-primary'}`}>
         
           {compareSelected ? '✓ Added' : '+ Compare'}
         </button>
