@@ -191,7 +191,7 @@ export default function PartnerDetail() {
 
           {/* Name */}
           <div className="text-center">
-            <h1 className="font-heading text-[#f2f7fd] text-base font-thin underline text-center lowercase bg-[#a39729]">{partner.name}</h1>
+            <h1 className="font-heading text-base font-thin underline text-center lowercase text-gray-950">{partner.name}</h1>
             {partner.partner_number &&
             <span className="text-xs text-muted-foreground font-mono flex items-center justify-center gap-0.5 mt-0.5">
                 <Hash className="w-2.5 h-2.5" />{partner.partner_number}
