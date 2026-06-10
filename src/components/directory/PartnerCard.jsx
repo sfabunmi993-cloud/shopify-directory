@@ -10,13 +10,13 @@ const CATEGORY_LABELS = {
   development_and_troubleshooting: 'Development',
   visual_content_and_branding: 'Visual Content',
   content_writing: 'Content Writing',
-  expert_guidance: 'Expert Guidance',
+  expert_guidance: 'Expert Guidance'
 };
 
 const TIER_STYLES = {
   standard: 'bg-muted text-muted-foreground',
   plus: 'bg-primary/10 text-primary',
-  premium: 'bg-amber-50 text-amber-700 border-amber-200',
+  premium: 'bg-amber-50 text-amber-700 border-amber-200'
 };
 
 export default function PartnerCard({ partner, compareSelected, onToggleCompare }) {
@@ -25,18 +25,18 @@ export default function PartnerCard({ partner, compareSelected, onToggleCompare 
 
   return (
     <div className={`relative bg-white border rounded-xl p-5 hover:shadow-md transition-all duration-200 group ${compareSelected ? 'border-primary ring-1 ring-primary/30' : 'border-border hover:border-border/80'}`}>
-      {onToggleCompare && (
-        <button
-          onClick={e => { e.preventDefault(); onToggleCompare(); }}
-          className={`absolute top-3 right-3 z-10 flex items-center gap-1 text-xs px-2 py-0.5 rounded-full border font-medium transition-all ${compareSelected ? 'bg-primary text-white border-primary' : 'bg-white text-muted-foreground border-border hover:border-primary hover:text-primary'}`}
-        >
+      {onToggleCompare &&
+      <button
+        onClick={(e) => {e.preventDefault();onToggleCompare();}}
+        className={`absolute top-3 right-3 z-10 flex items-center gap-1 text-xs rounded-full border font-medium transition-all px-3 py-1 my-1 ${compareSelected ? 'bg-primary text-white border-primary' : 'bg-white text-muted-foreground border-border hover:border-primary hover:text-primary'}`}>
+        
           {compareSelected ? '✓ Added' : '+ Compare'}
         </button>
-      )}
+      }
     <Link
-      to={`/partner/${partner.id}`}
-      className="block"
-    >
+        to={`/partner/${partner.id}`}
+        className="block">
+        
       <div className="flex gap-4">
         <div className="shrink-0">
           <PartnerAvatar partner={partner} size="md" shape="rounded-lg" />
@@ -48,51 +48,51 @@ export default function PartnerCard({ partner, compareSelected, onToggleCompare 
               <h3 className="font-heading font-semibold text-foreground text-base group-hover:text-primary transition-colors truncate">
                 {partner.name}
               </h3>
-              {partner.partner_number && (
+              {partner.partner_number &&
                 <span className="text-xs text-muted-foreground font-mono flex items-center gap-0.5">
                   <Hash className="w-2.5 h-2.5" />{partner.partner_number}
                 </span>
-              )}
+                }
             </div>
-            {partner.partner_tier && partner.partner_tier !== 'standard' && (
+            {partner.partner_tier && partner.partner_tier !== 'standard' &&
               <Badge variant="outline" className={`text-xs shrink-0 ${TIER_STYLES[partner.partner_tier]}`}>
                 {partner.partner_tier.charAt(0).toUpperCase() + partner.partner_tier.slice(1)}
               </Badge>
-            )}
+              }
           </div>
 
           <div className="flex items-center gap-3 mt-1.5 text-sm text-muted-foreground">
-            {partner.rating > 0 && (
+            {partner.rating > 0 &&
               <span className="flex items-center gap-1">
                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                 <span className="font-medium text-foreground">{partner.rating}</span>
                 <span>({partner.review_count || 0})</span>
               </span>
-            )}
-            {partner.location && (
+              }
+            {partner.location &&
               <span className="flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5" />
                 {partner.location}
               </span>
-            )}
+              }
           </div>
 
           <div className="flex flex-wrap items-center gap-3 mt-2 text-sm">
-            {partner.starting_price > 0 && (
+            {partner.starting_price > 0 &&
               <span className="flex items-center gap-1 text-muted-foreground">
                 <DollarSign className="w-3.5 h-3.5 text-primary" />
                 <span className="font-medium text-foreground">From ${partner.starting_price}</span>
               </span>
-            )}
-            {partner.completed_projects > 0 && (
+              }
+            {partner.completed_projects > 0 &&
               <span className="flex items-center gap-1 text-muted-foreground">
                 <Briefcase className="w-3.5 h-3.5" />
                 <span className="font-medium text-foreground">{partner.completed_projects}</span> projects
               </span>
-            )}
+              }
           </div>
 
-          {displayedServices.length > 0 && (
+          {displayedServices.length > 0 &&
             <div className="mt-3">
               <span className="text-xs font-medium text-muted-foreground">Services </span>
               <span className="text-xs text-foreground">
@@ -100,17 +100,17 @@ export default function PartnerCard({ partner, compareSelected, onToggleCompare 
                 {extraCount > 0 && <span className="text-muted-foreground"> + {extraCount} more</span>}
               </span>
             </div>
-          )}
-          {partner.tags?.slice(0, 3).length > 0 && (
+            }
+          {partner.tags?.slice(0, 3).length > 0 &&
             <div className="flex flex-wrap gap-1 mt-2">
-              {partner.tags.slice(0, 3).map(tag => (
-                <span key={tag} className="text-xs px-2 py-0.5 bg-primary/8 text-primary/70 rounded-full">#{tag}</span>
-              ))}
+              {partner.tags.slice(0, 3).map((tag) =>
+              <span key={tag} className="text-xs px-2 py-0.5 bg-primary/8 text-primary/70 rounded-full">#{tag}</span>
+              )}
             </div>
-          )}
+            }
         </div>
       </div>
     </Link>
-    </div>
-  );
+    </div>);
+
 }
