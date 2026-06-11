@@ -1,0 +1,96 @@
+{
+  "name": "Project",
+  "type": "object",
+  "properties": {
+    "partner_id": {
+      "type": "string",
+      "description": "ID of the partner who delivered the project"
+    },
+    "client_user_id": {
+      "type": "string",
+      "description": "ID of the client user"
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Display name of the client"
+    },
+    "conversation_id": {
+      "type": "string",
+      "description": "Linked conversation/message thread ID"
+    },
+    "title": {
+      "type": "string",
+      "description": "Project title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Project description / delivery notes"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "delivered",
+        "completed",
+        "disputed"
+      ],
+      "default": "delivered",
+      "description": "Project status"
+    },
+    "delivery_url": {
+      "type": "string",
+      "description": "Link to the delivered work (e.g. Shopify store URL, Google Drive, etc.)"
+    },
+    "delivery_file_url": {
+      "type": "string",
+      "description": "URL of an uploaded delivery file/attachment"
+    }
+  },
+  "required": [
+    "partner_id",
+    "title"
+  ],
+  "rls": {
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "client_user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

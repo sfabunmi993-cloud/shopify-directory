@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useNavigate, Link } from 'react-router-dom';
-import { Loader2, Send, ArrowLeft, MessageSquare, ChevronRight } from 'lucide-react';
+import { Loader2, Send, MessageSquare, ChevronRight, PackageCheck } from 'lucide-react';
+import DeliveryModal from '@/components/partner/DeliveryModal';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
@@ -19,6 +20,7 @@ export default function Messages() {
   const [convMessages, setConvMessages] = useState([]);
   const [reply, setReply] = useState('');
   const [sending, setSending] = useState(false);
+  const [deliveryOpen, setDeliveryOpen] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -181,16 +183,26 @@ export default function Messages() {
           ) : (
             <>
               {/* Header */}
-              <div className="p-4 border-b border-border flex items-center gap-3">
-                <PartnerAvatar partner={selectedConv.partner} size="sm" shape="rounded-lg" />
-                <div>
-                  <p className="font-semibold text-sm">{selectedConv.partner?.name || 'Partner'}</p>
-                  {selectedConv.partner?.id && (
-                    <Link to={`/partner/${selectedConv.partner.id}`} className="text-xs text-primary hover:underline">
-                      View profile <ChevronRight className="w-3 h-3 inline" />
-                    </Link>
-                  )}
+              <div className="p-4 border-b border-border flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <PartnerAvatar partner={selectedConv.partner} size="sm" shape="rounded-lg" />
+                  <div>
+                    <p className="font-semibold text-sm">{selectedConv.partner?.name || 'Partner'}</p>
+                    {selectedConv.partner?.id && (
+                      <Link to={`/partner/${selectedConv.partner.slug || selectedConv.partner.id}`} className="text-xs text-primary hover:underline">
+                        View profile <ChevronRight className="w-3 h-3 inline" />
+                      </Link>
+                    )}
+                  </div>
                 </div>
+                {myPartner && (
+                  <button
+                    onClick={() => setDeliveryOpen(true)}
+                    className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-primary/30 text-primary hover:bg-primary/5 transition-colors font-medium"
+                  >
+                    <PackageCheck className="w-3.5 h-3.5" /> Deliver Project
+                  </button>
+                )}
               </div>
 
               {/* Messages */}
@@ -243,6 +255,20 @@ export default function Messages() {
           )}
         </div>
       </div>
+      {deliveryOpen && myPartner && selectedConv && (
+        <DeliveryModal
+          isOpen={deliveryOpen}
+          onClose={() => setDeliveryOpen(false)}
+          partner={myPartner}
+          conversation={selectedConv}
+          user={user}
+          onDelivered={async () => {
+            const msgs = await base44.entities.Message.filter({ conversation_id: selectedConv.id }, 'created_date', 200);
+            setConvMessages(msgs);
+            await loadConversations(user, myPartner);
+          }}
+        />
+      )}
     </div>
   );
 }

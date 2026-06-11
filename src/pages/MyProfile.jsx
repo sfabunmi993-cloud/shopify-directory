@@ -11,6 +11,7 @@ import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, Sh
 import { toast } from 'sonner';
 import InquiriesDashboard from '@/components/profile/InquiriesDashboard';
 import ServiceDescriptionEditor from '@/components/profile/ServiceDescriptionEditor';
+import ProjectsSection from '@/components/profile/ProjectsSection';
 
 const SERVICE_CATEGORIES = [
   { label: 'Marketing and sales', value: 'marketing_and_sales' },
@@ -223,6 +224,13 @@ export default function MyProfile() {
           <span className="text-xs text-muted-foreground font-normal">(recent activity)</span>
         </h2>
         <InquiriesDashboard userId={user?.id} />
+      </div>
+
+      {/* Delivered Projects */}
+      <div className="bg-white border border-border rounded-2xl p-6 mb-6">
+        <h2 className="font-semibold text-base mb-1">Delivered Projects</h2>
+        <p className="text-xs text-muted-foreground mb-4">Projects you have delivered to clients via messages.</p>
+        <ProjectsSection partnerId={partner?.id} />
       </div>
 
       <div className="bg-white border border-border rounded-2xl p-6 space-y-6">
