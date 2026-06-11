@@ -491,7 +491,7 @@ export default function MyProfile() {
         </div>
       </div>
 
-      <BuyReviewModal isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} />
+      <BuyReviewModal isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} partner={partner} />
       <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
     </div>
   );

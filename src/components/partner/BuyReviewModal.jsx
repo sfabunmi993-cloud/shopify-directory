@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Star, Copy, Check, CreditCard, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { usePricing } from '@/hooks/usePricing';
+import { base44 } from '@/api/base44Client';
 
-export default function BuyReviewModal({ isOpen, onClose }) {
+export default function BuyReviewModal({ isOpen, onClose, partner }) {
   const { pricing } = usePricing();
   const PACKAGES = [
     { reviews: 1, price: pricing.reviews_1, label: '1 Review', popular: false },
@@ -15,9 +16,25 @@ export default function BuyReviewModal({ isOpen, onClose }) {
   const [selected, setSelected] = useState(1);
   const [copied, setCopied] = useState('');
   const [btnState, setBtnState] = useState('idle'); // idle | pending | done
+  const [user, setUser] = useState(null);
 
-  const handleDone = () => {
+  useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => {});
+  }, []);
+
+  const handleDone = async () => {
     setBtnState('pending');
+    const pkg = PACKAGES.find(p => p.reviews === selected);
+    await base44.entities.Payment.create({
+      user_id: user?.id || '',
+      user_name: user?.full_name || '',
+      user_email: user?.email || '',
+      partner_id: partner?.id || '',
+      partner_name: partner?.name || '',
+      amount: pkg?.price || 0,
+      description: `Buy Reviews — ${pkg?.label} package (₦${pkg?.price?.toLocaleString()})`,
+      status: 'pending',
+    });
     setTimeout(() => setBtnState('done'), 2000);
   };
 
