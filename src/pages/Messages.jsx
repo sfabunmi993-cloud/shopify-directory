@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useNavigate, Link } from 'react-router-dom';
-import { Loader2, Send, MessageSquare, ChevronLeft, PackageCheck, CheckCheck, Check } from 'lucide-react';
+import { Loader2, Send, MessageSquare, ChevronLeft, PackageCheck, CheckCheck, Check, PenSquare } from 'lucide-react';
 import DeliveryModal from '@/components/partner/DeliveryModal';
+import NewConversationModal from '@/components/messages/NewConversationModal';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
@@ -21,6 +22,7 @@ export default function Messages() {
   const [reply, setReply] = useState('');
   const [sending, setSending] = useState(false);
   const [deliveryOpen, setDeliveryOpen] = useState(false);
+  const [newConvOpen, setNewConvOpen] = useState(false);
   const [mobileView, setMobileView] = useState('list'); // 'list' | 'chat'
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
@@ -144,14 +146,31 @@ export default function Messages() {
 
           {/* Sidebar — conversation list */}
           <div className={`w-full md:w-80 border-r border-border flex flex-col shrink-0 ${mobileView === 'chat' ? 'hidden md:flex' : 'flex'}`}>
-            <div className="px-4 py-3 border-b border-border bg-muted/30">
+            <div className="px-4 py-3 border-b border-border bg-muted/30 flex items-center justify-between">
               <p className="text-sm font-semibold text-foreground">Conversations</p>
+              {!myPartner && (
+                <button
+                  onClick={() => setNewConvOpen(true)}
+                  className="text-primary hover:text-primary/80 transition-colors"
+                  title="New message"
+                >
+                  <PenSquare className="w-4 h-4" />
+                </button>
+              )}
             </div>
             <div className="flex-1 overflow-y-auto">
               {conversations.length === 0 ? (
                 <div className="p-8 text-center mt-8">
                   <MessageSquare className="w-10 h-10 text-muted-foreground/20 mx-auto mb-3" />
                   <p className="text-sm text-muted-foreground">No conversations yet</p>
+                  {!myPartner && (
+                    <button
+                      onClick={() => setNewConvOpen(true)}
+                      className="mt-3 text-xs text-primary hover:underline font-medium"
+                    >
+                      + Start a conversation
+                    </button>
+                  )}
                 </div>
               ) : (
                 conversations.map(conv => {
@@ -333,6 +352,15 @@ export default function Messages() {
           </div>
         </div>
       </div>
+
+      <NewConversationModal
+        isOpen={newConvOpen}
+        onClose={() => setNewConvOpen(false)}
+        user={user}
+        onCreated={async () => {
+          await loadConversations(user, myPartner);
+        }}
+      />
 
       {deliveryOpen && myPartner && selectedConv && (
         <DeliveryModal
