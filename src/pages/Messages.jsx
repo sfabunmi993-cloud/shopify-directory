@@ -87,8 +87,9 @@ export default function Messages() {
     setMobileView('chat');
     const msgs = await base44.entities.Message.filter({ conversation_id: conv.id }, 'created_date', 200);
     setConvMessages(msgs);
+    const isPartnerSide = myPartner && conv.partnerUserId === user?.id;
     for (const m of msgs) {
-      if (!m.is_read && m.sender_role !== (myPartner ? 'user' : 'partner')) {
+      if (!m.is_read && m.sender_role !== (isPartnerSide ? 'user' : 'partner')) {
         await base44.entities.Message.update(m.id, { is_read: true });
       }
     }
@@ -97,12 +98,14 @@ export default function Messages() {
   const sendReply = async () => {
     if (!reply.trim() || !selectedConv) return;
     setSending(true);
-    const senderRole = myPartner ? 'partner' : 'user';
+    // Determine if this user is the partner side of this specific conversation
+    const isPartnerSide = myPartner && selectedConv.partnerUserId === user.id;
+    const senderRole = isPartnerSide ? 'partner' : 'user';
     await base44.entities.Message.create({
       conversation_id: selectedConv.id,
       partner_id: selectedConv.partner_id,
-      partner_user_id: myPartner ? user.id : selectedConv.partnerUserId,
-      client_user_id: myPartner ? selectedConv.clientUserId : user.id,
+      partner_user_id: isPartnerSide ? user.id : selectedConv.partnerUserId,
+      client_user_id: isPartnerSide ? selectedConv.clientUserId : user.id,
       sender_id: user.id,
       sender_name: user.full_name || user.email,
       sender_role: senderRole,
@@ -117,9 +120,10 @@ export default function Messages() {
     setSending(false);
   };
 
-  const totalUnread = conversations.reduce((sum, c) =>
-    sum + c.messages.filter(m => !m.is_read && m.sender_role !== (myPartner ? 'user' : 'partner')).length, 0
-  );
+  const totalUnread = conversations.reduce((sum, c) => {
+    const isPartnerSide = myPartner && c.partnerUserId === user?.id;
+    return sum + c.messages.filter(m => !m.is_read && m.sender_role !== (isPartnerSide ? 'user' : 'partner')).length;
+  }, 0);
 
   if (loading) {
     return (
@@ -141,9 +145,7 @@ export default function Messages() {
         </div>
         <div>
           <h1 className="font-heading text-2xl font-bold">Messages</h1>
-          <p className="text-sm text-muted-foreground">
-            {myPartner ? 'Chat with your clients' : 'Chat with your partners'}
-          </p>
+          <p className="text-sm text-muted-foreground">Your conversations</p>
         </div>
       </div>
 
@@ -155,33 +157,30 @@ export default function Messages() {
           <div className={`w-full md:w-80 border-r border-border flex flex-col shrink-0 ${mobileView === 'chat' ? 'hidden md:flex' : 'flex'}`}>
             <div className="px-4 py-3 border-b border-border bg-muted/30 flex items-center justify-between">
               <p className="text-sm font-semibold text-foreground">Conversations</p>
-              {!myPartner && (
-                <button
-                  onClick={() => setNewConvOpen(true)}
-                  className="text-primary hover:text-primary/80 transition-colors"
-                  title="New message"
-                >
-                  <PenSquare className="w-4 h-4" />
-                </button>
-              )}
+              <button
+                onClick={() => setNewConvOpen(true)}
+                className="text-primary hover:text-primary/80 transition-colors"
+                title="New message"
+              >
+                <PenSquare className="w-4 h-4" />
+              </button>
             </div>
             <div className="flex-1 overflow-y-auto">
               {conversations.length === 0 ? (
                 <div className="p-8 text-center mt-8">
                   <MessageSquare className="w-10 h-10 text-muted-foreground/20 mx-auto mb-3" />
                   <p className="text-sm text-muted-foreground">No conversations yet</p>
-                  {!myPartner && (
-                    <button
-                      onClick={() => setNewConvOpen(true)}
-                      className="mt-3 text-xs text-primary hover:underline font-medium"
-                    >
-                      + Start a conversation
-                    </button>
-                  )}
+                  <button
+                    onClick={() => setNewConvOpen(true)}
+                    className="mt-3 text-xs text-primary hover:underline font-medium"
+                  >
+                    + Start a conversation
+                  </button>
                 </div>
               ) : (
                 conversations.map(conv => {
-                  const unread = conv.messages.filter(m => !m.is_read && m.sender_role !== (myPartner ? 'user' : 'partner')).length;
+                  const isPartnerSide = myPartner && conv.partnerUserId === user?.id;
+                  const unread = conv.messages.filter(m => !m.is_read && m.sender_role !== (isPartnerSide ? 'user' : 'partner')).length;
                   const isActive = selectedConv?.id === conv.id;
                   return (
                     <button
@@ -190,7 +189,7 @@ export default function Messages() {
                       className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-muted/30 transition-colors border-b border-border/50 last:border-0 ${isActive ? 'bg-primary/5 border-l-2 border-l-primary' : ''}`}
                     >
                       <div className="relative shrink-0">
-                        {myPartner ? (
+                        {myPartner && conv.partnerUserId === user?.id ? (
                           <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary border border-border/50">
                             {(conv.clientName || 'C').charAt(0).toUpperCase()}
                           </div>
@@ -204,7 +203,7 @@ export default function Messages() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-1">
                           <p className={`text-sm truncate ${unread > 0 ? 'font-semibold text-foreground' : 'font-medium text-foreground/80'}`}>
-                            {myPartner ? (conv.clientName || 'Client') : (conv.partner?.name || 'Partner')}
+                            {myPartner && conv.partnerUserId === user?.id ? (conv.clientName || 'Client') : (conv.partner?.name || 'Partner')}
                           </p>
                           <span className="text-[10px] text-muted-foreground shrink-0">
                             {conv.lastMessage.created_date ? format(new Date(conv.lastMessage.created_date), 'MMM d') : ''}
@@ -240,30 +239,40 @@ export default function Messages() {
                     <button onClick={() => setMobileView('list')} className="md:hidden text-muted-foreground hover:text-foreground">
                       <ChevronLeft className="w-5 h-5" />
                     </button>
-                    {myPartner ? (
-                      <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary border border-border/50">
-                        {(selectedConv.clientName || 'C').charAt(0).toUpperCase()}
-                      </div>
-                    ) : (
-                      <PartnerAvatar partner={selectedConv.partner} size="sm" shape="rounded-full" />
-                    )}
+                    {(() => {
+                      const isPartnerSide = myPartner && selectedConv.partnerUserId === user?.id;
+                      return isPartnerSide ? (
+                        <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary border border-border/50">
+                          {(selectedConv.clientName || 'C').charAt(0).toUpperCase()}
+                        </div>
+                      ) : (
+                        <PartnerAvatar partner={selectedConv.partner} size="sm" shape="rounded-full" />
+                      );
+                    })()}
                     <div>
-                      <p className="font-semibold text-sm text-foreground">
-                        {myPartner ? (selectedConv.clientName || 'Client') : (selectedConv.partner?.name || 'Partner')}
-                      </p>
-                      {!myPartner && (
-                        <Link
-                          to={`/partner/${selectedConv.partner?.slug || selectedConv.partner?.id}`}
-                          className="text-xs text-primary hover:underline"
-                        >
-                          View profile →
-                        </Link>
-                      )}
+                      {(() => {
+                        const isPartnerSide = myPartner && selectedConv.partnerUserId === user?.id;
+                        return (
+                          <>
+                            <p className="font-semibold text-sm text-foreground">
+                              {isPartnerSide ? (selectedConv.clientName || 'Client') : (selectedConv.partner?.name || 'Partner')}
+                            </p>
+                            {!isPartnerSide && (
+                              <Link
+                                to={`/partner/${selectedConv.partner?.slug || selectedConv.partner?.id}`}
+                                className="text-xs text-primary hover:underline"
+                              >
+                                View profile →
+                              </Link>
+                            )}
+                          </>
+                        );
+                      })()}
                     </div>
                   </div>
 
                   {/* Partner "Project Done" button */}
-                  {myPartner && (
+                  {myPartner && selectedConv.partnerUserId === user?.id && (
                     <Button
                       onClick={() => setDeliveryOpen(true)}
                       size="sm"
