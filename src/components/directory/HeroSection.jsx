@@ -42,7 +42,7 @@ export default function HeroSection() {
                     <img src="https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/a811d5dd6_pskv.PNG" alt="Partner" className="w-full h-full object-cover" />
                   </div>
                   <div className="w-28 h-28 rounded-2xl bg-white shadow-lg border border-border/50 flex items-center justify-center overflow-hidden mt-6">
-                    <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop&crop=face" alt="Partner" className="w-full h-full object-cover" />
+                    <img src="https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/bdffef563_WhatsApp_Image_2026-06-09_at_061602.jpeg" alt="Partner" className="w-full h-full object-cover" />
                   </div>
                 </div>
               </div>
