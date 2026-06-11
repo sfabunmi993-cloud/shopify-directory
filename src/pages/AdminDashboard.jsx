@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send } from 'lucide-react';
 import { DEFAULT_PRICING } from '@/hooks/usePricing';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -40,6 +40,10 @@ export default function AdminDashboard() {
   const [generatingReviews, setGeneratingReviews] = useState(null);
   const [reviewCountDialog, setReviewCountDialog] = useState(null);
   const [reviewCount, setReviewCount] = useState('10');
+  const [emailBlastDialog, setEmailBlastDialog] = useState(false);
+  const [blastSubject, setBlastSubject] = useState('');
+  const [blastBody, setBlastBody] = useState('');
+  const [sendingBlast, setSendingBlast] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -273,6 +277,10 @@ export default function AdminDashboard() {
           <TabsTrigger value="pricing">
             Pricing
           </TabsTrigger>
+          <TabsTrigger value="email-blast">
+            <Mail className="w-4 h-4 mr-1.5" />
+            Email Blast
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending">
@@ -292,6 +300,11 @@ export default function AdminDashboard() {
         </TabsContent>
         <TabsContent value="pricing">
           <PricingSettings />
+        </TabsContent>
+        <TabsContent value="email-blast">
+          <EmailBlastSection
+            onOpenDialog={() => setEmailBlastDialog(true)}
+          />
         </TabsContent>
       </Tabs>
 
@@ -345,6 +358,66 @@ export default function AdminDashboard() {
                 ? <Loader2 className="w-4 h-4 animate-spin" />
                 : <><Star className="w-4 h-4 mr-1.5" /> Generate {reviewCount || 0} Reviews</>
               }
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Email Blast Dialog */}
+      <Dialog open={emailBlastDialog} onOpenChange={setEmailBlastDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Send Email Blast to All Users</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
+              <p className="font-semibold flex items-center gap-1.5 mb-1">
+                <Mail className="w-4 h-4" />
+                Email Blast Information
+              </p>
+              <p>This will send an email to all registered users in the app. Use this for important updates, announcements, or platform-wide notifications.</p>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Subject *</label>
+              <Input
+                placeholder="e.g. Important Platform Update"
+                value={blastSubject}
+                onChange={e => setBlastSubject(e.target.value)}
+                className="w-full"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Message *</label>
+              <Textarea
+                placeholder="Write your message here..."
+                value={blastBody}
+                onChange={e => setBlastBody(e.target.value)}
+                className="h-48 resize-none"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setEmailBlastDialog(false); setBlastSubject(''); setBlastBody(''); }}>Cancel</Button>
+            <Button 
+              onClick={async () => {
+                setSendingBlast(true);
+                try {
+                  const res = await base44.functions.invoke('sendEmailBlast', {
+                    subject: blastSubject,
+                    body: blastBody,
+                  });
+                  toast.success(res.data.message || 'Email blast sent successfully!');
+                  setEmailBlastDialog(false);
+                  setBlastSubject('');
+                  setBlastBody('');
+                } catch (err) {
+                  toast.error(err.response?.data?.error || 'Failed to send email blast');
+                }
+                setSendingBlast(false);
+              }}
+              disabled={!blastSubject.trim() || !blastBody.trim() || sendingBlast}
+            >
+              {sendingBlast ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <><Send className="w-4 h-4 mr-1.5" /> Send to All Users</>}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -499,6 +572,39 @@ function PartnerList({ partners, onApprove, onRestrict, onEditId, onGenerateRevi
           </div>
         );
       })}
+    </div>
+  );
+}
+
+function EmailBlastSection({ onOpenDialog }) {
+  return (
+    <div className="max-w-2xl">
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+        <div className="flex items-start gap-4 mb-4">
+          <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+            <Mail className="w-6 h-6 text-blue-600" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg text-blue-900">Email Blast</h3>
+            <p className="text-sm text-blue-700 mt-1">
+              Send important updates and announcements to all registered users via Gmail.
+            </p>
+          </div>
+        </div>
+        <div className="bg-white/80 rounded-lg p-4 mb-4">
+          <p className="text-sm text-blue-800 font-medium mb-2">Use cases:</p>
+          <ul className="text-sm text-blue-700 space-y-1 list-disc list-inside">
+            <li>Platform updates and new features</li>
+            <li>Important announcements</li>
+            <li>Policy changes</li>
+            <li>System maintenance notifications</li>
+          </ul>
+        </div>
+        <Button onClick={onOpenDialog} className="w-full bg-blue-600 hover:bg-blue-700">
+          <Send className="w-4 h-4 mr-2" />
+          Compose Email Blast
+        </Button>
+      </div>
     </div>
   );
 }
