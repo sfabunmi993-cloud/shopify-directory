@@ -121,7 +121,7 @@ export default function Home() {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <img src="https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg" alt="Shopify" className="h-7 mt-4 mr-3" />
-                <span className="font-heading font-bold text-white hidden">Partners Directory</span>
+                
               </div>
               <p className="text-sm leading-relaxed">Find the right partner for your business needs.</p>
             </div>
