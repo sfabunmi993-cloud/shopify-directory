@@ -161,6 +161,18 @@ export default function AdminDashboard() {
     } else {
       toast.success('Payment approved!');
     }
+    // Send confirmation email to user
+    try {
+      await base44.functions.invoke('sendPaymentConfirmationEmail', {
+        userEmail: payment.user_email,
+        userName: payment.user_name,
+        paymentType: payment.description || 'Purchase',
+        amount: payment.amount,
+      });
+    } catch (err) {
+      console.error('Failed to send confirmation email:', err);
+      // Don't show error to admin - payment was still approved
+    }
     loadData();
   };
 
