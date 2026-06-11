@@ -45,6 +45,7 @@ export default function NewConversationModal({ isOpen, onClose, user, onCreated 
     await base44.entities.Message.create({
       conversation_id: conversationId,
       partner_id: selectedPartner.id,
+      client_user_id: user.id,
       sender_id: user.id,
       sender_name: user.full_name || user.email,
       sender_role: 'user',
