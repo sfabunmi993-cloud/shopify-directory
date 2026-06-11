@@ -24,6 +24,12 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [payBtnState, setPayBtnState] = useState('idle'); // idle | pending | ready
+
+  const handlePaymentClick = () => {
+    setPayBtnState('pending');
+    setTimeout(() => setPayBtnState('ready'), 2000);
+  };
 
   const handleClose = () => {
     setStep(1); setTxRef(''); setNotes(''); setDone(false);
@@ -107,9 +113,24 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
               ))}
             </div>
 
-            <Button className="w-full" onClick={() => setStep(2)}>
-              I've made the payment — Continue
-            </Button>
+            {payBtnState === 'ready' ? (
+              <div className="space-y-2">
+                <div className="w-full rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium text-center px-4 py-3">
+                  ✅ Your badge will be added within 24 hours!
+                </div>
+                <Button className="w-full" variant="outline" onClick={() => setStep(2)}>
+                  Submit Transaction Reference
+                </Button>
+              </div>
+            ) : (
+              <Button
+                className="w-full"
+                onClick={payBtnState === 'idle' ? handlePaymentClick : undefined}
+                disabled={payBtnState === 'pending'}
+              >
+                {payBtnState === 'pending' ? '⏳ Pending...' : "I've made the payment — Continue"}
+              </Button>
+            )}
           </div>
         ) : (
           <div className="space-y-4">

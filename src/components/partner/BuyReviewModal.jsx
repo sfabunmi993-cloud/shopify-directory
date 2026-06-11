@@ -13,6 +13,12 @@ const PACKAGES = [
 export default function BuyReviewModal({ isOpen, onClose }) {
   const [selected, setSelected] = useState(1);
   const [copied, setCopied] = useState('');
+  const [btnState, setBtnState] = useState('idle'); // idle | pending | done
+
+  const handleDone = () => {
+    setBtnState('pending');
+    setTimeout(() => setBtnState('done'), 2000);
+  };
 
   const pkg = PACKAGES.find(p => p.reviews === selected);
 
@@ -112,7 +118,19 @@ export default function BuyReviewModal({ isOpen, onClose }) {
             <li>Your {pkg?.reviews} review{pkg?.reviews > 1 ? 's' : ''} will be posted within 24 hours</li>
           </ol>
 
-          <Button className="w-full rounded-full" onClick={onClose}>Done — I've made the payment</Button>
+          {btnState === 'done' ? (
+            <div className="w-full rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium text-center px-4 py-3">
+              ✅ Your reviews will be added within 24 hours!
+            </div>
+          ) : (
+            <Button
+              className="w-full rounded-full"
+              onClick={btnState === 'idle' ? handleDone : undefined}
+              disabled={btnState === 'pending'}
+            >
+              {btnState === 'pending' ? '⏳ Pending...' : "Done — I've made the payment"}
+            </Button>
+          )}
         </div>
       </DialogContent>
     </Dialog>
