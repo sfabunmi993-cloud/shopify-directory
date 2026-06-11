@@ -151,6 +151,7 @@ export default function MyProfile() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-1.5">
           <Button
             onClick={() => setBuyReviewOpen(true)}
             className="rounded-full bg-amber-500 hover:bg-amber-600 text-white gap-1.5 shadow-sm"
@@ -158,6 +159,12 @@ export default function MyProfile() {
           >
             <Star className="w-4 h-4 fill-white" /> Buy Reviews
           </Button>
+          {partner?.is_verified && (
+            <span className="inline-flex items-center gap-1 text-xs text-blue-600 font-semibold bg-blue-50 border border-blue-200 rounded-full px-2.5 py-0.5 w-fit">
+              <ShieldCheck className="w-3.5 h-3.5" /> Verified
+            </span>
+          )}
+          </div>
           <div>
             <h1 className="font-heading text-2xl font-bold">My Partner Profile</h1>
             <p className="text-sm text-muted-foreground mt-0.5">Edit how you appear in the directory</p>
