@@ -77,7 +77,7 @@ export default function PartnerOnboarding() {
       const user = await base44.auth.me();
       const partners = await base44.entities.Partner.filter({ created_by_id: user.id });
       if (partners.length > 0) {
-        navigate(`/partner/${partners[0].id}`);
+        navigate(`/partner/${partners[0].slug || partners[0].id}`);
       } else {
         setForm(prev => ({ ...prev, email: user.email || '' }));
       }
@@ -116,6 +116,10 @@ export default function PartnerOnboarding() {
 
   const removeTag = (t) => set('tags', form.tags.filter(tag => tag !== t));
 
+  const generateSlug = (name) => {
+    return name.toLowerCase().replace(/[^a-z0-9]/g, '');
+  };
+
   const handleSubmit = async () => {
     setSaving(true);
     // Generate a unique partner number
@@ -126,9 +130,15 @@ export default function PartnerOnboarding() {
     const nextNum = String(lastNum + 1).padStart(5, '0');
     const partnerNumber = `PB-${nextNum}`;
 
+    // Generate unique slug from name
+    const baseSlug = generateSlug(form.name);
+    const existingSlugs = await base44.entities.Partner.filter({ slug: baseSlug });
+    const slug = existingSlugs.length > 0 ? `${baseSlug}${nextNum}` : baseSlug;
+
     const partner = await base44.entities.Partner.create({
       ...form,
       partner_number: partnerNumber,
+      slug,
       starting_price: form.starting_price ? Number(form.starting_price) : undefined,
       partner_tier: 'standard',
       is_featured: false,
@@ -138,7 +148,7 @@ export default function PartnerOnboarding() {
       status: 'pending',
       flag_count: 0,
     });
-    navigate(`/partner/${partner.id}`);
+    navigate(`/partner/${partner.slug || partner.id}`);
   };
 
   const canProceedStep0 = form.name.trim() && form.description.trim() && form.service_category;

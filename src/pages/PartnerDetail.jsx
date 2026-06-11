@@ -61,7 +61,7 @@ function ServiceRow({ service, description }) {
 }
 
 export default function PartnerDetail() {
-  const { id } = useParams();
+  const { slug } = useParams();
   const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
   const [isFavorited, setIsFavorited] = useState(false);
@@ -72,12 +72,18 @@ export default function PartnerDetail() {
   const [showAllServices, setShowAllServices] = useState(false);
 
   const { data: partners, isLoading } = useQuery({
-    queryKey: ['partner', id],
-    queryFn: () => base44.entities.Partner.filter({ id }),
-    enabled: !!id
+    queryKey: ['partner', slug],
+    queryFn: async () => {
+      // Try slug first, fall back to id for legacy URLs
+      const bySlug = await base44.entities.Partner.filter({ slug });
+      if (bySlug.length > 0) return bySlug;
+      return base44.entities.Partner.filter({ id: slug });
+    },
+    enabled: !!slug
   });
 
   const partner = partners?.[0];
+  const partnerId = partner?.id;
 
   useEffect(() => {
     const init = async () => {
@@ -85,14 +91,15 @@ export default function PartnerDetail() {
       if (!authed) return;
       const me = await base44.auth.me();
       setUser(me);
-      const favs = await base44.entities.Favorite.filter({ user_id: me.id, partner_id: id });
+      if (!partnerId) return;
+      const favs = await base44.entities.Favorite.filter({ user_id: me.id, partner_id: partnerId });
       if (favs.length > 0) {
         setIsFavorited(true);
         setFavoriteId(favs[0].id);
       }
     };
     init();
-  }, [id]);
+  }, [partnerId]);
 
   const handleToggleFavorite = async () => {
     if (!user) {toast.error('Please log in to save favorites.');return;}
@@ -102,7 +109,7 @@ export default function PartnerDetail() {
       setFavoriteId(null);
       toast.success('Removed from favorites');
     } else {
-      const fav = await base44.entities.Favorite.create({ user_id: user.id, partner_id: id });
+      const fav = await base44.entities.Favorite.create({ user_id: user.id, partner_id: partnerId });
       setIsFavorited(true);
       setFavoriteId(fav.id);
       toast.success('Saved to favorites!');
@@ -110,7 +117,7 @@ export default function PartnerDetail() {
   };
 
   const handleReviewAdded = () => {
-    queryClient.invalidateQueries({ queryKey: ['partner', id] });
+    queryClient.invalidateQueries({ queryKey: ['partner', slug] });
   };
 
   if (isLoading) {
@@ -404,7 +411,7 @@ export default function PartnerDetail() {
           {/* Reviews */}
           <div>
             <h2 className="font-heading text-xl font-bold text-foreground mb-4">Reviews</h2>
-            <ReviewSection partnerId={id} onReviewAdded={handleReviewAdded} />
+            <ReviewSection partnerId={partnerId} onReviewAdded={handleReviewAdded} />
           </div>
         </div>
       </div>

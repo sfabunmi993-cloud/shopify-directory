@@ -34,7 +34,7 @@ export default function PartnerCard({ partner, compareSelected, onToggleCompare 
 
       
     <Link
-        to={`/partner/${partner.id}`}
+        to={`/partner/${partner.slug || partner.id}`}
         className="block">
         
       <div className="flex gap-4">

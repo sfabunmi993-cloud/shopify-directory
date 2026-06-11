@@ -6,6 +6,10 @@
       "type": "string",
       "description": "Auto-generated unique partner ID (e.g. PB-00042)"
     },
+    "slug": {
+      "type": "string",
+      "description": "URL-friendly unique identifier derived from partner name (e.g. fabunmisamuelgeorge)"
+    },
     "name": {
       "type": "string",
       "description": "Partner/agency name"

@@ -160,7 +160,7 @@ export default function MyProfile() {
             size="sm"
             className="rounded-full"
             onClick={() => {
-              const url = `${window.location.origin}/partner/${partner?.id}`;
+              const url = `${window.location.origin}/partner/${partner?.slug || partner?.id}`;
               navigator.clipboard.writeText(url);
               toast.success('Profile link copied to clipboard!');
             }}
@@ -168,7 +168,7 @@ export default function MyProfile() {
             <Share2 className="w-4 h-4 mr-1.5" /> Share Profile
           </Button>
           <Button asChild variant="outline" className="rounded-full" size="sm">
-            <Link to={`/partner/${partner?.id}`}><Eye className="w-4 h-4 mr-1.5" /> View Public Profile</Link>
+            <Link to={`/partner/${partner?.slug || partner?.id}`}><Eye className="w-4 h-4 mr-1.5" /> View Public Profile</Link>
           </Button>
         </div>
       </div>
