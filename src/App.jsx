@@ -20,6 +20,7 @@ import MyProfile from '@/pages/MyProfile';
 import AdminDashboard from '@/pages/AdminDashboard';
 import Favorites from '@/pages/Favorites';
 import Messages from '@/pages/Messages.jsx';
+import SupportChat from '@/components/SupportChat';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -77,6 +78,7 @@ function App() {
           <AuthenticatedApp />
         </Router>
         <Toaster />
+        <SupportChat />
       </QueryClientProvider>
     </AuthProvider>
   )
