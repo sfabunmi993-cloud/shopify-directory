@@ -26,44 +26,58 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'No users found in the app' }, { status: 404 });
     }
 
-    // Build RFC 2822 email message
-    const from = 'Shopify Partners Directory';
-    const messageLines = [
-      `From: ${from}`,
-      `To: undisclosed-recipients:;`,
-      `Subject: ${subject}`,
-      'MIME-Version: 1.0',
-      'Content-Type: text/plain; charset="UTF-8"',
-      'Content-Transfer-Encoding: quoted-printable',
-      '',
-      body,
-    ];
-    
-    const rawMessage = messageLines.join('\r\n');
-    const encodedMessage = btoa(rawMessage)
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=+$/, '');
+    let sentCount = 0;
+    let failedCount = 0;
 
-    // Send email via Gmail API
-    const response = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ raw: encodedMessage }),
-    });
+    // Send individual email to each user
+    for (const user of allUsers) {
+      if (!user.email) continue;
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error?.message || 'Failed to send email');
+      try {
+        // Build RFC 2822 email message
+        const from = 'Shopify Partners Directory';
+        const messageLines = [
+          `From: ${from}`,
+          `To: ${user.email}`,
+          `Subject: ${subject}`,
+          'MIME-Version: 1.0',
+          'Content-Type: text/plain; charset="UTF-8"',
+          'Content-Transfer-Encoding: quoted-printable',
+          '',
+          body,
+        ];
+        
+        const rawMessage = messageLines.join('\r\n');
+        const encodedMessage = btoa(rawMessage)
+          .replace(/\+/g, '-')
+          .replace(/\//g, '_')
+          .replace(/=+$/, '');
+
+        // Send email via Gmail API
+        const response = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ raw: encodedMessage }),
+        });
+
+        if (response.ok) {
+          sentCount++;
+        } else {
+          failedCount++;
+        }
+      } catch (err) {
+        failedCount++;
+      }
     }
 
     return Response.json({ 
       success: true, 
-      message: `Email blast sent to ${allUsers.length} users`,
-      recipientCount: allUsers.length 
+      message: `Email blast sent to ${sentCount} users`,
+      recipientCount: sentCount,
+      failedCount: failedCount
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
