@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2 } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2, Star } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
@@ -35,6 +35,7 @@ export default function AdminDashboard() {
   const [editIdDialog, setEditIdDialog] = useState(null);
   const [newPartnerId, setNewPartnerId] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
+  const [generatingReviews, setGeneratingReviews] = useState(null); // partner id
 
   useEffect(() => {
     const init = async () => {
@@ -89,6 +90,42 @@ export default function AdminDashboard() {
     setNewPartnerId('');
     loadData();
     setActionLoading(false);
+  };
+
+  const handleGenerateReviews = async (partner) => {
+    setGeneratingReviews(partner.id);
+    const reviewTemplates = [
+      { name: 'James O.', rating: 5, comment: 'Absolutely fantastic work! Delivered everything on time and exceeded my expectations. Highly recommended.' },
+      { name: 'Sarah M.', rating: 5, comment: 'Professional, responsive, and incredibly skilled. My Shopify store looks amazing now. Will hire again!' },
+      { name: 'David K.', rating: 5, comment: 'Outstanding service from start to finish. Clear communication and top-notch results. 5 stars!' },
+      { name: 'Aisha B.', rating: 5, comment: 'Exceeded all expectations. The attention to detail was remarkable and the turnaround was very fast.' },
+      { name: 'Chris T.', rating: 4, comment: 'Very good work overall. Minor revisions were handled quickly. Would definitely recommend to others.' },
+      { name: 'Fatima Y.', rating: 5, comment: 'Best decision I made for my business! The results were immediate and the quality was superb.' },
+      { name: 'Michael R.', rating: 5, comment: 'Incredible expertise and professionalism. Delivered a high-quality store that my customers love.' },
+      { name: 'Linda A.', rating: 4, comment: 'Great experience working with this partner. Knowledgeable, patient, and delivered solid results.' },
+      { name: 'Emmanuel N.', rating: 5, comment: 'Truly exceptional. From concept to launch, everything was handled seamlessly. Highly recommend!' },
+      { name: 'Grace P.', rating: 5, comment: 'Transformed my online store completely! Sales have increased significantly since the redesign. Thank you!' },
+    ];
+    for (const r of reviewTemplates) {
+      await base44.entities.Review.create({
+        partner_id: partner.id,
+        reviewer_name: r.name,
+        rating: r.rating,
+        comment: r.comment,
+      });
+    }
+    const avgRating = (reviewTemplates.reduce((s, r) => s + r.rating, 0) / reviewTemplates.length).toFixed(1);
+    const newCount = (partner.review_count || 0) + reviewTemplates.length;
+    const newRating = partner.review_count
+      ? (((partner.rating || 0) * partner.review_count + reviewTemplates.reduce((s, r) => s + r.rating, 0)) / newCount).toFixed(1)
+      : avgRating;
+    await base44.entities.Partner.update(partner.id, {
+      review_count: newCount,
+      rating: parseFloat(newRating),
+    });
+    toast.success(`10 reviews generated for ${partner.name}!`);
+    loadData();
+    setGeneratingReviews(null);
   };
 
   const handleDismissFlag = async (flag) => {
@@ -187,13 +224,13 @@ export default function AdminDashboard() {
         </TabsList>
 
         <TabsContent value="pending">
-          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} showApprove />
+          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={handleGenerateReviews} generatingReviews={generatingReviews} showApprove />
         </TabsContent>
         <TabsContent value="approved">
-          <PartnerList partners={approved} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} />
+          <PartnerList partners={approved} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={handleGenerateReviews} generatingReviews={generatingReviews} />
         </TabsContent>
         <TabsContent value="restricted">
-          <PartnerList partners={restricted} onApprove={handleApprove} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} showApprove />
+          <PartnerList partners={restricted} onApprove={handleApprove} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={handleGenerateReviews} generatingReviews={generatingReviews} showApprove />
         </TabsContent>
         <TabsContent value="flags">
           <FlagList flags={pendingFlags} partners={partners} onDismiss={handleDismissFlag} onReviewed={handleMarkFlagReviewed} />
@@ -256,7 +293,7 @@ function getPartnerRank(reviewCount = 0) {
   return { label: 'Basic', color: 'bg-muted text-muted-foreground border-border' };
 }
 
-function PartnerList({ partners, onApprove, onRestrict, onEditId, showApprove }) {
+function PartnerList({ partners, onApprove, onRestrict, onEditId, onGenerateReviews, generatingReviews, showApprove }) {
   if (partners.length === 0) {
     return <p className="text-center text-muted-foreground py-12">No partners in this category.</p>;
   }
@@ -290,6 +327,19 @@ function PartnerList({ partners, onApprove, onRestrict, onEditId, showApprove })
               </Button>
               <Button size="sm" variant="ghost" className="h-8 w-8 p-0" title="Edit Partner ID" onClick={() => onEditId(p)}>
                 <Edit2 className="w-4 h-4" />
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="rounded-full text-amber-700 border-amber-200 hover:bg-amber-50 gap-1"
+                title="Generate 10 reviews"
+                onClick={() => onGenerateReviews(p)}
+                disabled={generatingReviews === p.id}
+              >
+                {generatingReviews === p.id
+                  ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  : <Star className="w-3.5 h-3.5" />}
+                <span className="hidden sm:inline">+10 Reviews</span>
               </Button>
               {showApprove && (
                 <Button size="sm" variant="outline" className="rounded-full text-emerald-700 border-emerald-200 hover:bg-emerald-50"
