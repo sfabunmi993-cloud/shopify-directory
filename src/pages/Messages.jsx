@@ -49,9 +49,22 @@ export default function Messages() {
   const loadConversations = async (me, partner) => {
     let allMessages = [];
     if (partner) {
+      // Partner sees all messages tied to their partner_id (users + their own replies)
       allMessages = await base44.entities.Message.filter({ partner_id: partner.id }, '-created_date', 500);
     } else {
-      allMessages = await base44.entities.Message.filter({ sender_id: me.id }, '-created_date', 500);
+      // User sees all messages in conversations they started (by conversation_id prefix)
+      // Fetch both messages they sent AND replies from partners in their conversations
+      const sentByMe = await base44.entities.Message.filter({ sender_id: me.id }, '-created_date', 500);
+      const myConvIds = [...new Set(sentByMe.map(m => m.conversation_id).filter(Boolean))];
+      // For each conversation, load all messages (partner replies included)
+      if (myConvIds.length > 0) {
+        const allConvMessages = await Promise.all(
+          myConvIds.map(cid => base44.entities.Message.filter({ conversation_id: cid }, '-created_date', 100))
+        );
+        allMessages = allConvMessages.flat();
+      } else {
+        allMessages = sentByMe;
+      }
     }
 
     const convMap = {};
