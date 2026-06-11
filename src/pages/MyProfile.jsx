@@ -13,6 +13,7 @@ import InquiriesDashboard from '@/components/profile/InquiriesDashboard';
 import ServiceDescriptionEditor from '@/components/profile/ServiceDescriptionEditor';
 import ProjectsSection from '@/components/profile/ProjectsSection';
 import BuyReviewModal from '@/components/partner/BuyReviewModal';
+import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
 
 const SERVICE_CATEGORIES = [
   { label: 'Marketing and sales', value: 'marketing_and_sales' },
@@ -55,6 +56,7 @@ export default function MyProfile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [buyReviewOpen, setBuyReviewOpen] = useState(false);
+  const [premiumOpen, setPremiumOpen] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingScreenshot, setUploadingScreenshot] = useState(false);
   const [newService, setNewService] = useState('');
@@ -159,10 +161,17 @@ export default function MyProfile() {
           >
             <Star className="w-4 h-4 fill-white" /> Buy Reviews
           </Button>
-          {partner?.is_verified && (
+          {partner?.is_verified ? (
             <span className="inline-flex items-center gap-1 text-xs text-blue-600 font-semibold bg-blue-50 border border-blue-200 rounded-full px-2.5 py-0.5 w-fit">
               <ShieldCheck className="w-3.5 h-3.5" /> Verified
             </span>
+          ) : (
+            <button
+              onClick={() => setPremiumOpen(true)}
+              className="inline-flex items-center gap-1 text-xs text-amber-700 font-semibold bg-amber-50 border border-amber-200 rounded-full px-2.5 py-0.5 w-fit hover:bg-amber-100 transition-colors"
+            >
+              ✨ Buy Verification Badge
+            </button>
           )}
           </div>
           <div>
@@ -483,6 +492,7 @@ export default function MyProfile() {
       </div>
 
       <BuyReviewModal isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} />
+      <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
     </div>
   );
 }
