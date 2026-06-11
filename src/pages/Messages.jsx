@@ -63,6 +63,12 @@ export default function Messages() {
       }
     }
 
+    // Derive client name from messages in each conversation
+    for (const conv of Object.values(convMap)) {
+      const clientMsg = conv.messages.find(m => m.sender_role === 'user');
+      conv.clientName = clientMsg?.sender_name || 'Client';
+    }
+
     const convList = Object.values(convMap).sort((a, b) =>
       new Date(b.lastMessage.created_date) - new Date(a.lastMessage.created_date)
     );
@@ -184,7 +190,13 @@ export default function Messages() {
                       className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-muted/30 transition-colors border-b border-border/50 last:border-0 ${isActive ? 'bg-primary/5 border-l-2 border-l-primary' : ''}`}
                     >
                       <div className="relative shrink-0">
-                        <PartnerAvatar partner={conv.partner} size="sm" shape="rounded-full" />
+                        {myPartner ? (
+                          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary border border-border/50">
+                            {(conv.clientName || 'C').charAt(0).toUpperCase()}
+                          </div>
+                        ) : (
+                          <PartnerAvatar partner={conv.partner} size="sm" shape="rounded-full" />
+                        )}
                         {unread > 0 && (
                           <span className="absolute -top-1 -right-1 bg-primary text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">{unread}</span>
                         )}
@@ -192,7 +204,7 @@ export default function Messages() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-1">
                           <p className={`text-sm truncate ${unread > 0 ? 'font-semibold text-foreground' : 'font-medium text-foreground/80'}`}>
-                            {conv.partner?.name || 'Partner'}
+                            {myPartner ? (conv.clientName || 'Client') : (conv.partner?.name || 'Partner')}
                           </p>
                           <span className="text-[10px] text-muted-foreground shrink-0">
                             {conv.lastMessage.created_date ? format(new Date(conv.lastMessage.created_date), 'MMM d') : ''}
@@ -228,15 +240,25 @@ export default function Messages() {
                     <button onClick={() => setMobileView('list')} className="md:hidden text-muted-foreground hover:text-foreground">
                       <ChevronLeft className="w-5 h-5" />
                     </button>
-                    <PartnerAvatar partner={selectedConv.partner} size="sm" shape="rounded-full" />
+                    {myPartner ? (
+                      <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary border border-border/50">
+                        {(selectedConv.clientName || 'C').charAt(0).toUpperCase()}
+                      </div>
+                    ) : (
+                      <PartnerAvatar partner={selectedConv.partner} size="sm" shape="rounded-full" />
+                    )}
                     <div>
-                      <p className="font-semibold text-sm text-foreground">{selectedConv.partner?.name || 'Partner'}</p>
-                      <Link
-                        to={`/partner/${selectedConv.partner?.slug || selectedConv.partner?.id}`}
-                        className="text-xs text-primary hover:underline"
-                      >
-                        View profile →
-                      </Link>
+                      <p className="font-semibold text-sm text-foreground">
+                        {myPartner ? (selectedConv.clientName || 'Client') : (selectedConv.partner?.name || 'Partner')}
+                      </p>
+                      {!myPartner && (
+                        <Link
+                          to={`/partner/${selectedConv.partner?.slug || selectedConv.partner?.id}`}
+                          className="text-xs text-primary hover:underline"
+                        >
+                          View profile →
+                        </Link>
+                      )}
                     </div>
                   </div>
 
