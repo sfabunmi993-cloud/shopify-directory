@@ -3,14 +3,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Star, Copy, Check, CreditCard, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
-
-const PACKAGES = [
-  { reviews: 1, price: 2000, label: '1 Review', popular: false },
-  { reviews: 3, price: 5000, label: '3 Reviews', popular: true },
-  { reviews: 5, price: 8000, label: '5 Reviews', popular: false },
-];
+import { usePricing } from '@/hooks/usePricing';
 
 export default function BuyReviewModal({ isOpen, onClose }) {
+  const { pricing } = usePricing();
+  const PACKAGES = [
+    { reviews: 1, price: pricing.reviews_1, label: '1 Review', popular: false },
+    { reviews: 3, price: pricing.reviews_3, label: '3 Reviews', popular: true },
+    { reviews: 5, price: pricing.reviews_5, label: '5 Reviews', popular: false },
+  ];
   const [selected, setSelected] = useState(1);
   const [copied, setCopied] = useState('');
   const [btnState, setBtnState] = useState('idle'); // idle | pending | done

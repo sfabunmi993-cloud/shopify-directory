@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2, Star, BadgeCheck, CreditCard } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign } from 'lucide-react';
+import { DEFAULT_PRICING } from '@/hooks/usePricing';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
@@ -269,6 +270,9 @@ export default function AdminDashboard() {
           <TabsTrigger value="flags">
             Flags <Badge variant="secondary" className="ml-1.5">{pendingFlags.length}</Badge>
           </TabsTrigger>
+          <TabsTrigger value="pricing">
+            Pricing
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending">
@@ -285,6 +289,9 @@ export default function AdminDashboard() {
         </TabsContent>
         <TabsContent value="flags">
           <FlagList flags={pendingFlags} partners={partners} onDismiss={handleDismissFlag} onReviewed={handleMarkFlagReviewed} />
+        </TabsContent>
+        <TabsContent value="pricing">
+          <PricingSettings />
         </TabsContent>
       </Tabs>
 
@@ -492,6 +499,70 @@ function PartnerList({ partners, onApprove, onRestrict, onEditId, onGenerateRevi
           </div>
         );
       })}
+    </div>
+  );
+}
+
+function PricingSettings() {
+  const [prices, setPrices] = useState({ ...DEFAULT_PRICING });
+  const [settingsId, setSettingsId] = useState(null);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    base44.entities.AppSettings.filter({ key: 'pricing' }).then(records => {
+      if (records.length > 0) {
+        setPrices({ ...DEFAULT_PRICING, ...records[0].value });
+        setSettingsId(records[0].id);
+      }
+    });
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    if (settingsId) {
+      await base44.entities.AppSettings.update(settingsId, { value: prices });
+    } else {
+      const rec = await base44.entities.AppSettings.create({ key: 'pricing', value: prices });
+      setSettingsId(rec.id);
+    }
+    toast.success('Prices saved!');
+    setSaving(false);
+  };
+
+  const fields = [
+    { key: 'premium_badge', label: 'Premium Badge', prefix: '$', suffix: 'USD' },
+    { key: 'reviews_1', label: '1 Review Package', prefix: '₦', suffix: 'NGN' },
+    { key: 'reviews_3', label: '3 Reviews Package', prefix: '₦', suffix: 'NGN' },
+    { key: 'reviews_5', label: '5 Reviews Package', prefix: '₦', suffix: 'NGN' },
+  ];
+
+  return (
+    <div className="max-w-md space-y-5">
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
+        <p className="font-semibold flex items-center gap-1.5 mb-1"><DollarSign className="w-4 h-4" /> Pricing Settings</p>
+        <p>Changes here instantly update the prices shown to partners in the Buy Reviews and Premium Badge modals.</p>
+      </div>
+      <div className="bg-white border border-border rounded-xl p-5 space-y-4">
+        {fields.map(f => (
+          <div key={f.key} className="space-y-1">
+            <label className="text-sm font-medium">{f.label}</label>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground w-4">{f.prefix}</span>
+              <Input
+                type="number"
+                min="0"
+                value={prices[f.key] ?? ''}
+                onChange={e => setPrices(p => ({ ...p, [f.key]: parseFloat(e.target.value) || 0 }))}
+                className="flex-1"
+              />
+              <span className="text-xs text-muted-foreground w-8">{f.suffix}</span>
+            </div>
+          </div>
+        ))}
+        <Button className="w-full mt-2" onClick={handleSave} disabled={saving}>
+          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Prices'}
+        </Button>
+      </div>
     </div>
   );
 }

@@ -6,18 +6,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Crown, Copy, Check, CreditCard, Loader2, CheckCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { usePricing } from '@/hooks/usePricing';
 
-// ── PAYMENT ACCOUNT DETAILS ─────────────────────────────────────────────────
 const PAYMENT_DETAILS = {
   bankName: 'OPay',
   accountName: 'ENITAN J OMONIYI',
   accountNumber: '8149375353',
-  amount: '$49',
   currency: 'USD / NGN equivalent',
 };
-// ────────────────────────────────────────────────────────────────────────────
 
 export default function PurchasePremiumModal({ partner, isOpen, onClose, user }) {
+  const { pricing } = usePricing();
   const [step, setStep] = useState(1); // 1 = info, 2 = confirm payment
   const [txRef, setTxRef] = useState('');
   const [notes, setNotes] = useState('');
@@ -51,7 +50,7 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
       user_email: user?.email || '',
       partner_id: partner?.id || '',
       partner_name: partner?.name || '',
-      amount: 49,
+      amount: pricing.premium_badge,
       description: `Premium Badge purchase — Tx Ref: ${txRef.trim()}${notes ? ` | Notes: ${notes}` : ''}`,
       status: 'pending',
     });
@@ -81,7 +80,7 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
           <div className="space-y-4">
             {/* What you get */}
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
-              <p className="font-semibold text-amber-800 flex items-center gap-1.5"><Crown className="w-4 h-4" /> Premium Badge — {PAYMENT_DETAILS.amount}</p>
+              <p className="font-semibold text-amber-800 flex items-center gap-1.5"><Crown className="w-4 h-4" /> Premium Badge — ${pricing.premium_badge}</p>
               <ul className="text-sm text-amber-700 space-y-1 list-disc list-inside">
                 <li>Gold ✨ Premium badge on your profile & directory listing</li>
                 <li>Priority placement in search results</li>
@@ -93,13 +92,13 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
             {/* Payment instructions */}
             <div className="border border-border rounded-xl p-4 space-y-3">
               <p className="font-semibold text-sm flex items-center gap-1.5"><CreditCard className="w-4 h-4 text-primary" /> Payment Instructions</p>
-              <p className="text-xs text-muted-foreground">Transfer {PAYMENT_DETAILS.amount} to the account below, then click Continue to submit your proof.</p>
+              <p className="text-xs text-muted-foreground">Transfer ${pricing.premium_badge} to the account below, then click Continue to submit your proof.</p>
 
               {[
                 { label: 'Bank', value: PAYMENT_DETAILS.bankName },
                 { label: 'Account Name', value: PAYMENT_DETAILS.accountName },
                 { label: 'Account Number', value: PAYMENT_DETAILS.accountNumber },
-                { label: 'Amount', value: `${PAYMENT_DETAILS.amount} (${PAYMENT_DETAILS.currency})` },
+                { label: 'Amount', value: `$${pricing.premium_badge} (${PAYMENT_DETAILS.currency})` },
               ].map(({ label, value }) => (
                 <div key={label} className="flex items-center justify-between gap-2 bg-muted rounded-lg px-3 py-2">
                   <div>
