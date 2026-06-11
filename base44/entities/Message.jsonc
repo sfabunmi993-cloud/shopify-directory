@@ -14,6 +14,10 @@
       "type": "string",
       "description": "User ID of the sender"
     },
+    "client_user_id": {
+      "type": "string",
+      "description": "User ID of the client (non-partner) in the conversation"
+    },
     "sender_name": {
       "type": "string",
       "description": "Display name of the sender"
@@ -62,7 +66,21 @@
     "create": {
       "created_by_id": "{{user.id}}"
     },
-    "read": {},
+    "read": {
+      "$or": [
+        {
+          "client_user_id": "{{user.id}}"
+        },
+        {
+          "sender_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
     "update": {
       "$or": [
         {
