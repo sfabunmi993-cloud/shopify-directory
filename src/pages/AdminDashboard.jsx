@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp } from 'lucide-react';
 import { DEFAULT_PRICING } from '@/hooks/usePricing';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -44,6 +44,8 @@ export default function AdminDashboard() {
   const [blastSubject, setBlastSubject] = useState('');
   const [blastBody, setBlastBody] = useState('');
   const [sendingBlast, setSendingBlast] = useState(false);
+  const [analyticsData, setAnalyticsData] = useState(null);
+  const [analyticsLoading, setAnalyticsLoading] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -293,6 +295,10 @@ export default function AdminDashboard() {
             <Mail className="w-4 h-4 mr-1.5" />
             Email Blast
           </TabsTrigger>
+          <TabsTrigger value="analytics">
+            <BarChart3 className="w-4 h-4 mr-1.5" />
+            Analytics
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending">
@@ -316,6 +322,22 @@ export default function AdminDashboard() {
         <TabsContent value="email-blast">
           <EmailBlastSection
             onOpenDialog={() => setEmailBlastDialog(true)}
+          />
+        </TabsContent>
+        <TabsContent value="analytics">
+          <PartnerAnalytics
+            analyticsData={analyticsData}
+            loading={analyticsLoading}
+            onRefresh={async () => {
+              setAnalyticsLoading(true);
+              try {
+                const res = await base44.functions.invoke('getPartnerAnalytics', {});
+                setAnalyticsData(res.data);
+              } catch (err) {
+                toast.error(err.response?.data?.error || 'Failed to load analytics');
+              }
+              setAnalyticsLoading(false);
+            }}
           />
         </TabsContent>
       </Tabs>
@@ -616,6 +638,84 @@ function EmailBlastSection({ onOpenDialog }) {
           <Send className="w-4 h-4 mr-2" />
           Compose Email Blast
         </Button>
+      </div>
+    </div>
+  );
+}
+
+function PartnerAnalytics({ analyticsData, loading, onRefresh }) {
+  useEffect(() => {
+    if (!analyticsData) {
+      onRefresh();
+    }
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (!analyticsData || analyticsData.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <BarChart3 className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+        <p className="text-muted-foreground">No analytics data available yet.</p>
+        <p className="text-sm text-muted-foreground mt-1">Make sure your Google Analytics is tracking partner page views.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="font-heading text-xl font-bold text-foreground">Partner Profile Analytics</h3>
+          <p className="text-sm text-muted-foreground mt-1">
+            Data from {analyticsData.period?.start} to {analyticsData.period?.end}
+          </p>
+        </div>
+        <Button onClick={onRefresh} variant="outline" size="sm">
+          <TrendingUp className="w-4 h-4 mr-1.5" />
+          Refresh
+        </Button>
+      </div>
+
+      <div className="grid gap-4">
+        {analyticsData.map((partner, index) => (
+          <div
+            key={partner.partner_id}
+            className="bg-white border border-border rounded-xl p-4 flex items-center gap-4"
+          >
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary shrink-0">
+              {index + 1}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="font-semibold text-sm">{partner.partner_name}</p>
+                <Badge variant="outline" className="text-xs">
+                  {partner.slug}
+                </Badge>
+              </div>
+            </div>
+            <div className="flex items-center gap-6">
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">Page Views</p>
+                <p className="text-lg font-bold text-foreground">{partner.total_page_views?.toLocaleString()}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">Events</p>
+                <p className="text-lg font-bold text-foreground">{partner.total_events?.toLocaleString()}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">Users</p>
+                <p className="text-lg font-bold text-foreground">{partner.total_users?.toLocaleString()}</p>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
