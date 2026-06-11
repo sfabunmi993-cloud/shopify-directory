@@ -36,11 +36,13 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
+  const [canReview, setCanReview] = useState(false);
+  const [alreadyReviewed, setAlreadyReviewed] = useState(false);
   const [form, setForm] = useState({ reviewer_name: '', rating: 0, comment: '' });
 
   useEffect(() => {
     loadReviews();
-    checkOwner();
+    checkEligibility();
   }, [partnerId]);
 
   const loadReviews = async () => {
@@ -50,16 +52,30 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
     setLoading(false);
   };
 
-  const checkOwner = async () => {
+  const checkEligibility = async () => {
     const authed = await base44.auth.isAuthenticated();
     if (!authed) return;
     const user = await base44.auth.me();
+
+    // Pre-fill name
+    if (user.full_name) setForm((prev) => ({ ...prev, reviewer_name: user.full_name }));
+
+    // Check if they own this partner profile
     const partners = await base44.entities.Partner.filter({ created_by_id: user.id });
     if (partners.length > 0 && partners[0].id === partnerId) {
       setIsOwner(true);
+      return;
     }
-    // Pre-fill name
-    if (user.full_name) setForm((prev) => ({ ...prev, reviewer_name: user.full_name }));
+
+    // Check if a project was delivered to this user by this partner
+    const projects = await base44.entities.Project.filter({ partner_id: partnerId, client_user_id: user.id });
+    if (projects.length > 0) {
+      setCanReview(true);
+    }
+
+    // Check if user already submitted a review
+    const existingReviews = await base44.entities.Review.filter({ partner_id: partnerId, created_by_id: user.id });
+    if (existingReviews.length > 0) setAlreadyReviewed(true);
   };
 
   const handleSubmit = async (e) => {
@@ -77,6 +93,7 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
     });
 
     toast.success('Review submitted!');
+    setAlreadyReviewed(true);
     setForm((prev) => ({ ...prev, rating: 0, comment: '' }));
     setShowForm(false);
     loadReviews();
@@ -106,12 +123,15 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
             </div>
           }
         </div>
-        
-
-
-
-        
-      </div>
+        {canReview && !isOwner && !showForm && (
+          alreadyReviewed
+            ? <span className="text-xs text-muted-foreground">✅ You reviewed this partner</span>
+            : <Button size="sm" className="rounded-full" onClick={() => setShowForm(true)}>Write a Review</Button>
+        )}
+        {!canReview && !isOwner && !loading && (
+          <span className="text-xs text-muted-foreground italic">Only clients with a delivered project can review</span>
+        )}
+        </div>
 
       {/* Review form */}
       {showForm &&
