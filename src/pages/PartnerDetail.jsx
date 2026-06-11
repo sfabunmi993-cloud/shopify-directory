@@ -276,7 +276,7 @@ export default function PartnerDetail() {
 
             {/* Hire Me button */}
             <button
-              onClick={() => navigate('/messages')}
+              onClick={() => setHireOpen(true)}
               className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-primary text-white hover:bg-primary/90 rounded-full shadow-sm"
             >
               <Briefcase className="w-4 h-4" /> Hire Me

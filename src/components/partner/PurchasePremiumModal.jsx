@@ -9,9 +9,9 @@ import { toast } from 'sonner';
 
 // ── PAYMENT ACCOUNT DETAILS ─────────────────────────────────────────────────
 const PAYMENT_DETAILS = {
-  bankName: 'GTBank (Guaranty Trust Bank)',
-  accountName: 'Shopify Partner Base',
-  accountNumber: '0123456789',       // ← replace with real account number
+  bankName: 'OPay',
+  accountName: 'ENITAN J OMONIYI',
+  accountNumber: '8149375353',
   amount: '$49',
   currency: 'USD / NGN equivalent',
 };
