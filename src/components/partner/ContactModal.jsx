@@ -32,9 +32,14 @@ export default function ContactModal({ partner, isOpen, onClose, mode = 'inquiry
     }
     const user = await base44.auth.me();
     const convId = `${user.id}-${partner.id}-${Date.now()}`;
+    // Resolve partner's user account ID so they can see the message
+    const partnerRecords = await base44.entities.Partner.filter({ id: partner.id });
+    const partnerUserId = partnerRecords[0]?.created_by_id || null;
     await base44.entities.Message.create({
       conversation_id: convId,
       partner_id: partner.id,
+      partner_user_id: partnerUserId,
+      client_user_id: user.id,
       sender_id: user.id,
       sender_name: user.full_name || user.email,
       sender_role: 'user',

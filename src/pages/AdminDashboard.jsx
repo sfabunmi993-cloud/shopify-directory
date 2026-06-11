@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2, Star } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2, Star, BadgeCheck, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
@@ -29,13 +29,16 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [partners, setPartners] = useState([]);
   const [flags, setFlags] = useState([]);
+  const [payments, setPayments] = useState([]);
   const [search, setSearch] = useState('');
   const [restrictDialog, setRestrictDialog] = useState(null);
   const [restrictReason, setRestrictReason] = useState('');
   const [editIdDialog, setEditIdDialog] = useState(null);
   const [newPartnerId, setNewPartnerId] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
-  const [generatingReviews, setGeneratingReviews] = useState(null); // partner id
+  const [generatingReviews, setGeneratingReviews] = useState(null);
+  const [reviewCountDialog, setReviewCountDialog] = useState(null);
+  const [reviewCount, setReviewCount] = useState('10');
 
   useEffect(() => {
     const init = async () => {
@@ -50,12 +53,14 @@ export default function AdminDashboard() {
 
   const loadData = async () => {
     setLoading(true);
-    const [allPartners, allFlags] = await Promise.all([
+    const [allPartners, allFlags, allPayments] = await Promise.all([
       base44.entities.Partner.list('-created_date', 200),
       base44.entities.Flag.list('-created_date', 200),
+      base44.entities.Payment.list('-created_date', 200),
     ]);
     setPartners(allPartners);
     setFlags(allFlags);
+    setPayments(allPayments);
     setLoading(false);
   };
 
@@ -92,40 +97,66 @@ export default function AdminDashboard() {
     setActionLoading(false);
   };
 
-  const handleGenerateReviews = async (partner) => {
+  const reviewPool = [
+    { name: 'James O.', rating: 5, comment: 'Absolutely fantastic work! Delivered everything on time and exceeded my expectations. Highly recommended.' },
+    { name: 'Sarah M.', rating: 5, comment: 'Professional, responsive, and incredibly skilled. My Shopify store looks amazing now. Will hire again!' },
+    { name: 'David K.', rating: 5, comment: 'Outstanding service from start to finish. Clear communication and top-notch results. 5 stars!' },
+    { name: 'Aisha B.', rating: 5, comment: 'Exceeded all expectations. The attention to detail was remarkable and the turnaround was very fast.' },
+    { name: 'Chris T.', rating: 4, comment: 'Very good work overall. Minor revisions were handled quickly. Would definitely recommend to others.' },
+    { name: 'Fatima Y.', rating: 5, comment: 'Best decision I made for my business! The results were immediate and the quality was superb.' },
+    { name: 'Michael R.', rating: 5, comment: 'Incredible expertise and professionalism. Delivered a high-quality store that my customers love.' },
+    { name: 'Linda A.', rating: 4, comment: 'Great experience working with this partner. Knowledgeable, patient, and delivered solid results.' },
+    { name: 'Emmanuel N.', rating: 5, comment: 'Truly exceptional. From concept to launch, everything was handled seamlessly. Highly recommend!' },
+    { name: 'Grace P.', rating: 5, comment: 'Transformed my online store completely! Sales have increased significantly since the redesign. Thank you!' },
+    { name: 'Tunde A.', rating: 5, comment: 'Superb quality and attention to detail. My store conversion rate improved dramatically.' },
+    { name: 'Blessing C.', rating: 5, comment: 'Very reliable and professional. Delivered ahead of schedule with excellent results.' },
+    { name: 'Robert L.', rating: 4, comment: 'Great communication throughout the project. Delivered exactly what was promised.' },
+    { name: 'Amaka U.', rating: 5, comment: 'Exceptional work ethic and quality output. I would hire them again without hesitation.' },
+    { name: 'John E.', rating: 5, comment: 'Truly outstanding! My online store has never looked better. Sales up by 40%!' },
+    { name: 'Ngozi O.', rating: 5, comment: 'One of the best decisions for my business. Highly professional and results-driven.' },
+    { name: 'Kevin P.', rating: 4, comment: 'Solid work and very responsive. Would recommend to anyone needing Shopify help.' },
+    { name: 'Chisom E.', rating: 5, comment: 'Amazing results in record time. The quality of work is simply unmatched.' },
+    { name: 'Femi B.', rating: 5, comment: 'World-class service. Everything was done perfectly and the support was phenomenal.' },
+    { name: 'Sandra W.', rating: 5, comment: 'Outstanding partnership. They understood my vision and executed it flawlessly.' },
+  ];
+
+  const handleGenerateReviews = async (partner, count) => {
+    const n = Math.min(Math.max(parseInt(count) || 10, 1), reviewPool.length);
     setGeneratingReviews(partner.id);
-    const reviewTemplates = [
-      { name: 'James O.', rating: 5, comment: 'Absolutely fantastic work! Delivered everything on time and exceeded my expectations. Highly recommended.' },
-      { name: 'Sarah M.', rating: 5, comment: 'Professional, responsive, and incredibly skilled. My Shopify store looks amazing now. Will hire again!' },
-      { name: 'David K.', rating: 5, comment: 'Outstanding service from start to finish. Clear communication and top-notch results. 5 stars!' },
-      { name: 'Aisha B.', rating: 5, comment: 'Exceeded all expectations. The attention to detail was remarkable and the turnaround was very fast.' },
-      { name: 'Chris T.', rating: 4, comment: 'Very good work overall. Minor revisions were handled quickly. Would definitely recommend to others.' },
-      { name: 'Fatima Y.', rating: 5, comment: 'Best decision I made for my business! The results were immediate and the quality was superb.' },
-      { name: 'Michael R.', rating: 5, comment: 'Incredible expertise and professionalism. Delivered a high-quality store that my customers love.' },
-      { name: 'Linda A.', rating: 4, comment: 'Great experience working with this partner. Knowledgeable, patient, and delivered solid results.' },
-      { name: 'Emmanuel N.', rating: 5, comment: 'Truly exceptional. From concept to launch, everything was handled seamlessly. Highly recommend!' },
-      { name: 'Grace P.', rating: 5, comment: 'Transformed my online store completely! Sales have increased significantly since the redesign. Thank you!' },
-    ];
-    for (const r of reviewTemplates) {
-      await base44.entities.Review.create({
-        partner_id: partner.id,
-        reviewer_name: r.name,
-        rating: r.rating,
-        comment: r.comment,
-      });
+    const templates = reviewPool.slice(0, n);
+    for (const r of templates) {
+      await base44.entities.Review.create({ partner_id: partner.id, reviewer_name: r.name, rating: r.rating, comment: r.comment });
     }
-    const avgRating = (reviewTemplates.reduce((s, r) => s + r.rating, 0) / reviewTemplates.length).toFixed(1);
-    const newCount = (partner.review_count || 0) + reviewTemplates.length;
+    const totalAdded = templates.reduce((s, r) => s + r.rating, 0);
+    const newCount = (partner.review_count || 0) + n;
     const newRating = partner.review_count
-      ? (((partner.rating || 0) * partner.review_count + reviewTemplates.reduce((s, r) => s + r.rating, 0)) / newCount).toFixed(1)
-      : avgRating;
-    await base44.entities.Partner.update(partner.id, {
-      review_count: newCount,
-      rating: parseFloat(newRating),
-    });
-    toast.success(`10 reviews generated for ${partner.name}!`);
+      ? (((partner.rating || 0) * (partner.review_count || 0) + totalAdded) / newCount).toFixed(1)
+      : (totalAdded / n).toFixed(1);
+    await base44.entities.Partner.update(partner.id, { review_count: newCount, rating: parseFloat(newRating) });
+    toast.success(`${n} reviews generated for ${partner.name}!`);
+    setReviewCountDialog(null);
+    setReviewCount('10');
     loadData();
     setGeneratingReviews(null);
+  };
+
+  const handleToggleVerify = async (partner) => {
+    const newVal = !partner.is_verified;
+    await base44.entities.Partner.update(partner.id, { is_verified: newVal });
+    toast.success(newVal ? `${partner.name} verified!` : `Verification removed from ${partner.name}`);
+    loadData();
+  };
+
+  const handleApprovePayment = async (payment) => {
+    await base44.entities.Payment.update(payment.id, { status: 'approved' });
+    toast.success('Payment approved!');
+    loadData();
+  };
+
+  const handleRejectPayment = async (payment) => {
+    await base44.entities.Payment.update(payment.id, { status: 'rejected' });
+    toast.success('Payment rejected.');
+    loadData();
   };
 
   const handleDismissFlag = async (flag) => {
@@ -149,6 +180,7 @@ export default function AdminDashboard() {
   const approved = filtered.filter(p => p.status === 'approved');
   const restricted = filtered.filter(p => p.status === 'restricted');
   const pendingFlags = flags.filter(f => f.status === 'pending');
+  const pendingPayments = payments.filter(p => p.status === 'pending');
 
   if (loading) {
     return (
@@ -166,7 +198,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
         <div className="bg-white border border-border rounded-xl p-4">
           <div className="flex items-center gap-2 mb-1">
             <Users className="w-4 h-4 text-muted-foreground" />
@@ -195,6 +227,13 @@ export default function AdminDashboard() {
           </div>
           <p className="text-2xl font-bold text-red-700">{pendingFlags.length}</p>
         </div>
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-1">
+            <CreditCard className="w-4 h-4 text-blue-600" />
+            <span className="text-xs text-blue-700">Pending Payments</span>
+          </div>
+          <p className="text-2xl font-bold text-blue-700">{pendingPayments.length}</p>
+        </div>
       </div>
 
       <div className="relative mb-6">
@@ -208,7 +247,7 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs defaultValue="pending">
-        <TabsList className="mb-6">
+        <TabsList className="mb-6 flex-wrap">
           <TabsTrigger value="pending">
             Pending <Badge variant="secondary" className="ml-1.5">{pending.length}</Badge>
           </TabsTrigger>
@@ -218,19 +257,25 @@ export default function AdminDashboard() {
           <TabsTrigger value="restricted">
             Restricted <Badge variant="secondary" className="ml-1.5">{restricted.length}</Badge>
           </TabsTrigger>
+          <TabsTrigger value="payments">
+            Payments <Badge variant="secondary" className="ml-1.5">{pendingPayments.length}</Badge>
+          </TabsTrigger>
           <TabsTrigger value="flags">
             Flags <Badge variant="secondary" className="ml-1.5">{pendingFlags.length}</Badge>
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending">
-          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={handleGenerateReviews} generatingReviews={generatingReviews} showApprove />
+          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} showApprove />
         </TabsContent>
         <TabsContent value="approved">
-          <PartnerList partners={approved} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={handleGenerateReviews} generatingReviews={generatingReviews} />
+          <PartnerList partners={approved} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} />
         </TabsContent>
         <TabsContent value="restricted">
-          <PartnerList partners={restricted} onApprove={handleApprove} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={handleGenerateReviews} generatingReviews={generatingReviews} showApprove />
+          <PartnerList partners={restricted} onApprove={handleApprove} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} showApprove />
+        </TabsContent>
+        <TabsContent value="payments">
+          <PaymentList payments={payments} onApprove={handleApprovePayment} onReject={handleRejectPayment} />
         </TabsContent>
         <TabsContent value="flags">
           <FlagList flags={pendingFlags} partners={partners} onDismiss={handleDismissFlag} onReviewed={handleMarkFlagReviewed} />
@@ -255,6 +300,38 @@ export default function AdminDashboard() {
             <Button variant="outline" onClick={() => { setEditIdDialog(null); setNewPartnerId(''); }}>Cancel</Button>
             <Button onClick={handleEditPartnerId} disabled={!newPartnerId.trim() || actionLoading}>
               {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Hash className="w-4 h-4 mr-1.5" /> Save ID</>}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Generate Reviews Dialog */}
+      <Dialog open={!!reviewCountDialog} onOpenChange={() => { setReviewCountDialog(null); setReviewCount('10'); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Generate Reviews</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            How many reviews do you want to generate for <strong>{reviewCountDialog?.name}</strong>? (max 20)
+          </p>
+          <Input
+            type="number"
+            min="1"
+            max="20"
+            placeholder="e.g. 10"
+            value={reviewCount}
+            onChange={e => setReviewCount(e.target.value)}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setReviewCountDialog(null); setReviewCount('10'); }}>Cancel</Button>
+            <Button
+              onClick={() => handleGenerateReviews(reviewCountDialog, reviewCount)}
+              disabled={!reviewCount || generatingReviews === reviewCountDialog?.id}
+            >
+              {generatingReviews === reviewCountDialog?.id
+                ? <Loader2 className="w-4 h-4 animate-spin" />
+                : <><Star className="w-4 h-4 mr-1.5" /> Generate {reviewCount || 0} Reviews</>
+              }
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -293,7 +370,49 @@ function getPartnerRank(reviewCount = 0) {
   return { label: 'Basic', color: 'bg-muted text-muted-foreground border-border' };
 }
 
-function PartnerList({ partners, onApprove, onRestrict, onEditId, onGenerateReviews, generatingReviews, showApprove }) {
+function PaymentList({ payments, onApprove, onReject }) {
+  if (payments.length === 0) {
+    return <p className="text-center text-muted-foreground py-12">No payments submitted yet.</p>;
+  }
+  const STATUS_COLORS = {
+    pending: 'bg-amber-50 text-amber-700 border-amber-200',
+    approved: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    rejected: 'bg-red-50 text-red-700 border-red-200',
+  };
+  return (
+    <div className="space-y-3">
+      {payments.map(pay => (
+        <div key={pay.id} className="bg-white border border-border rounded-xl p-4 flex items-start gap-4">
+          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+            <CreditCard className="w-5 h-5 text-blue-600" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="font-semibold text-sm">{pay.user_name || pay.user_email || 'User'}</p>
+              {pay.partner_name && <span className="text-xs text-muted-foreground">→ {pay.partner_name}</span>}
+              <Badge variant="outline" className={`text-xs ${STATUS_COLORS[pay.status]}`}>{pay.status}</Badge>
+            </div>
+            <p className="text-sm font-bold text-foreground mt-1">${pay.amount?.toLocaleString()}</p>
+            {pay.description && <p className="text-xs text-muted-foreground mt-0.5">{pay.description}</p>}
+            <p className="text-xs text-muted-foreground mt-1">{pay.created_date ? format(new Date(pay.created_date), 'MMM d, yyyy') : ''}</p>
+          </div>
+          {pay.status === 'pending' && (
+            <div className="flex gap-2 shrink-0">
+              <Button size="sm" variant="outline" className="rounded-full text-emerald-700 border-emerald-200 hover:bg-emerald-50" onClick={() => onApprove(pay)}>
+                <CheckCircle className="w-3.5 h-3.5 mr-1" /> Approve
+              </Button>
+              <Button size="sm" variant="outline" className="rounded-full text-red-700 border-red-200 hover:bg-red-50" onClick={() => onReject(pay)}>
+                <XCircle className="w-3.5 h-3.5 mr-1" /> Reject
+              </Button>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function PartnerList({ partners, onApprove, onRestrict, onEditId, onGenerateReviews, generatingReviews, onToggleVerify, showApprove }) {
   if (partners.length === 0) {
     return <p className="text-center text-muted-foreground py-12">No partners in this category.</p>;
   }
@@ -331,15 +450,25 @@ function PartnerList({ partners, onApprove, onRestrict, onEditId, onGenerateRevi
               <Button
                 size="sm"
                 variant="outline"
+                className={`rounded-full gap-1 ${p.is_verified ? 'text-blue-700 border-blue-300 bg-blue-50 hover:bg-blue-100' : 'text-slate-500 border-slate-200 hover:bg-slate-50'}`}
+                title={p.is_verified ? 'Remove verification' : 'Grant verification badge'}
+                onClick={() => onToggleVerify(p)}
+              >
+                <BadgeCheck className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">{p.is_verified ? 'Verified' : 'Verify'}</span>
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
                 className="rounded-full text-amber-700 border-amber-200 hover:bg-amber-50 gap-1"
-                title="Generate 10 reviews"
+                title="Generate reviews"
                 onClick={() => onGenerateReviews(p)}
                 disabled={generatingReviews === p.id}
               >
                 {generatingReviews === p.id
                   ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   : <Star className="w-3.5 h-3.5" />}
-                <span className="hidden sm:inline">+10 Reviews</span>
+                <span className="hidden sm:inline">Reviews</span>
               </Button>
               {showApprove && (
                 <Button size="sm" variant="outline" className="rounded-full text-emerald-700 border-emerald-200 hover:bg-emerald-50"

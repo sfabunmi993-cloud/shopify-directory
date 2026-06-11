@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Star, MapPin, DollarSign, Hash, Briefcase } from 'lucide-react';
+import { Star, MapPin, DollarSign, Hash, Briefcase, BadgeCheck } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import PartnerAvatar from '@/components/directory/PartnerAvatar';
 
@@ -45,8 +45,9 @@ export default function PartnerCard({ partner, compareSelected, onToggleCompare 
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
-              <h3 className="font-heading font-semibold text-foreground text-base group-hover:text-primary transition-colors truncate">
+              <h3 className="font-heading font-semibold text-foreground text-base group-hover:text-primary transition-colors truncate flex items-center gap-1.5">
                 {partner.name}
+                {partner.is_verified && <BadgeCheck className="w-4 h-4 text-blue-500 shrink-0" />}
               </h3>
               {partner.partner_number &&
                 <span className="text-xs text-muted-foreground font-mono flex items-center gap-0.5">

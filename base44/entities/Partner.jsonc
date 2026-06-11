@@ -8,7 +8,7 @@
     },
     "slug": {
       "type": "string",
-      "description": "URL-friendly unique identifier derived from partner name (e.g. fabunmisamuelgeorge)"
+      "description": "URL-friendly unique identifier derived from partner name"
     },
     "name": {
       "type": "string",
@@ -62,7 +62,7 @@
     },
     "tags": {
       "type": "array",
-      "description": "Searchable tags/keywords for this partner",
+      "description": "Searchable tags/keywords",
       "items": {
         "type": "string"
       }
@@ -115,7 +115,7 @@
     },
     "whatsapp_url": {
       "type": "string",
-      "description": "WhatsApp link (e.g. https://wa.me/1234567890)"
+      "description": "WhatsApp link"
     },
     "dashboard_screenshot_url": {
       "type": "string",
@@ -137,6 +137,11 @@
       "default": false,
       "description": "Whether this partner is featured"
     },
+    "is_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this partner has been verified by admin"
+    },
     "status": {
       "type": "string",
       "enum": [
@@ -145,7 +150,7 @@
         "restricted"
       ],
       "default": "pending",
-      "description": "Account status - must be approved by admin"
+      "description": "Account status"
     },
     "flag_count": {
       "type": "number",

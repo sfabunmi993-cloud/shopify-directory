@@ -92,7 +92,7 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
       review_count: allReviews.length
     });
 
-    toast.success('Review submitted!');
+    toast.success('Review submitted! It will appear within 24 hours.');
     setAlreadyReviewed(true);
     setForm((prev) => ({ ...prev, rating: 0, comment: '' }));
     setShowForm(false);
@@ -125,7 +125,10 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
         </div>
         {canReview && !isOwner && !showForm && (
           alreadyReviewed
-            ? <span className="text-xs text-muted-foreground">✅ You reviewed this partner</span>
+            ? <div className="text-right">
+                <span className="text-xs text-muted-foreground">✅ Review submitted</span>
+                <p className="text-xs text-amber-600 mt-0.5">Your review will be added within 24 hours</p>
+              </div>
             : <Button size="sm" className="rounded-full" onClick={() => setShowForm(true)}>Write a Review</Button>
         )}
         {!canReview && !isOwner && !loading && (
