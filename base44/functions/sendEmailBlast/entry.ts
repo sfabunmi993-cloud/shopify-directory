@@ -35,9 +35,10 @@ Deno.serve(async (req) => {
 
       try {
         // Build RFC 2822 email message
-        const from = 'Shopify Partners Directory';
+        const from = 'fabunmi.net@gmail.com';
+        const fromName = 'Shopify Partners Directory';
         const messageLines = [
-          `From: ${from}`,
+          `From: ${fromName} <${from}>`,
           `To: ${user.email}`,
           `Subject: ${subject}`,
           'MIME-Version: 1.0',
