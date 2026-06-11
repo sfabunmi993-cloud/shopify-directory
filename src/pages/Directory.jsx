@@ -102,6 +102,12 @@ export default function Directory() {
       results.sort((a, b) => (b.starting_price || 0) - (a.starting_price || 0));
     }
 
+    // Always put verified partners first, then sort by review count within each group
+    results.sort((a, b) => {
+      if (a.is_verified === b.is_verified) return (b.review_count || 0) - (a.review_count || 0);
+      return a.is_verified ? -1 : 1;
+    });
+
     return results;
   }, [partners, filters, searchQuery, sortBy]);
 
