@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useNavigate, Link } from 'react-router-dom';
-import { Loader2, Send, MessageSquare, ChevronLeft, PackageCheck, CheckCheck, Check, PenSquare, Search } from 'lucide-react';
+import { Loader2, Send, MessageSquare, ChevronLeft, PackageCheck, CheckCheck, Check, PenSquare, Search, Briefcase, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, Star } from 'lucide-react';
 import DeliveryModal from '@/components/partner/DeliveryModal';
 import NewConversationModal from '@/components/messages/NewConversationModal';
+import ReviewForm from '@/components/messages/ReviewForm';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { format, isToday, isYesterday } from 'date-fns';
 import { toast } from 'sonner';
 import PartnerAvatar from '@/components/directory/PartnerAvatar';
-
 function formatConvDate(date) {
   if (!date) return '';
   const d = new Date(date);
@@ -38,6 +39,8 @@ export default function Messages() {
   const [newConvOpen, setNewConvOpen] = useState(false);
   const [mobileView, setMobileView] = useState('list');
   const [search, setSearch] = useState('');
+  const [hireStatus, setHireStatus] = useState({}); // { [convId]: 'pending' | 'approved' | 'completed' | 'rejected' }
+  const [showReviewModal, setShowReviewModal] = useState(false);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const selectedConvRef = useRef(null);
@@ -130,6 +133,17 @@ export default function Messages() {
         base44.entities.Message.update(m.id, { is_read: true });
       }
     }
+    // Load hire status for this conversation
+    const hireMsg = msgs.find(m => m.message_type === 'hire');
+    if (hireMsg && isPartnerSide) {
+      // Check if there's an approved project
+      const projects = await base44.entities.Project.filter({ conversation_id: conv.id });
+      if (projects.length > 0) {
+        setHireStatus(prev => ({ ...prev, [conv.id]: projects[0].status === 'completed' ? 'completed' : 'approved' }));
+      } else {
+        setHireStatus(prev => ({ ...prev, [conv.id]: 'pending' }));
+      }
+    }
   };
 
   const sendReply = async () => {
@@ -149,6 +163,47 @@ export default function Messages() {
       is_read: false,
     });
     setReply('');
+    setSending(false);
+  };
+
+  const handleHireAction = async (action) => {
+    if (!selectedConv) return;
+    setSending(true);
+    try {
+      // Create project record
+      const hireMsg = convMessages.find(m => m.message_type === 'hire');
+      await base44.entities.Project.create({
+        partner_id: selectedConv.partner_id,
+        client_user_id: selectedConv.clientUserId,
+        client_name: selectedConv.clientName,
+        conversation_id: selectedConv.id,
+        title: hireMsg?.subject || 'Project',
+        description: hireMsg?.hire_details || '',
+        status: action === 'approve' ? 'delivered' : 'disputed',
+      });
+      // Send notification message
+      await base44.entities.Message.create({
+        conversation_id: selectedConv.id,
+        partner_id: selectedConv.partner_id,
+        partner_user_id: user.id,
+        client_user_id: selectedConv.clientUserId,
+        sender_id: user.id,
+        sender_name: user.full_name || user.email,
+        sender_role: 'partner',
+        body: action === 'approve'
+          ? `✅ Hire request approved! I'll start working on your project. Let's discuss the details.`
+          : `❌ Hire request declined. Thank you for reaching out.`,
+        message_type: 'reply',
+        is_read: false,
+      });
+      setHireStatus(prev => ({ ...prev, [selectedConv.id]: action === 'approve' ? 'approved' : 'rejected' }));
+      toast.success(action === 'approve' ? 'Hire request approved!' : 'Hire request declined');
+      // Refresh messages
+      const msgs = await base44.entities.Message.filter({ conversation_id: selectedConv.id }, 'created_date', 200);
+      setConvMessages(msgs);
+    } catch (err) {
+      toast.error('Failed to process hire request');
+    }
     setSending(false);
   };
 
@@ -305,12 +360,20 @@ export default function Messages() {
                     );
                   })()}
                 </div>
-                {myPartner && selectedConv.partnerUserId === user?.id && (
-                  <Button onClick={() => setDeliveryOpen(true)} size="sm" className="rounded-full gap-1.5 bg-green-600 hover:bg-green-700 text-white shrink-0">
-                    <PackageCheck className="w-4 h-4" />
-                    <span className="hidden sm:inline">Project Done</span>
-                  </Button>
-                )}
+                <div className="flex items-center gap-2">
+                  {!myPartner && hireStatus[selectedConv.id] === 'completed' && (
+                    <Button onClick={() => setShowReviewModal(true)} size="sm" variant="outline" className="rounded-full">
+                      <Star className="w-4 h-4 mr-1" />
+                      Leave Review
+                    </Button>
+                  )}
+                  {myPartner && selectedConv.partnerUserId === user?.id && (
+                    <Button onClick={() => setDeliveryOpen(true)} size="sm" className="rounded-full gap-1.5 bg-green-600 hover:bg-green-700 text-white shrink-0">
+                      <PackageCheck className="w-4 h-4" />
+                      <span className="hidden sm:inline">Project Done</span>
+                    </Button>
+                  )}
+                </div>
               </div>
 
               {/* Messages */}
@@ -323,11 +386,14 @@ export default function Messages() {
                 {convMessages.map((msg, idx) => {
                   const isMe = msg.sender_id === user.id;
                   const isDelivery = msg.body?.startsWith('✅ Project delivered:');
+                  const isHireRequest = msg.message_type === 'hire';
                   const prevMsg = convMessages[idx - 1];
                   const nextMsg = convMessages[idx + 1];
                   const showDate = !prevMsg || format(new Date(msg.created_date), 'yyyy-MM-dd') !== format(new Date(prevMsg.created_date), 'yyyy-MM-dd');
                   const isLastInGroup = !nextMsg || nextMsg.sender_id !== msg.sender_id;
                   const isLastMsg = idx === convMessages.length - 1;
+                  const isPartnerSide = myPartner && selectedConv.partnerUserId === user?.id;
+                  const currentHireStatus = hireStatus[selectedConv.id];
 
                   return (
                     <React.Fragment key={msg.id}>
@@ -338,47 +404,136 @@ export default function Messages() {
                           </span>
                         </div>
                       )}
-                      <div className={`flex ${isMe ? 'justify-end' : 'justify-start'} ${isLastInGroup ? 'mb-2' : 'mb-0.5'}`}>
-                        {!isMe && (
-                          <div className={`w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-[11px] font-bold text-primary shrink-0 mr-1.5 self-end ${isLastInGroup ? 'opacity-100' : 'opacity-0'}`}>
-                            {(msg.sender_name || '?').charAt(0).toUpperCase()}
-                          </div>
-                        )}
-                        <div className="max-w-[70%] sm:max-w-[60%]">
-                          {isDelivery ? (
-                            <div className="bg-green-50 border border-green-200 rounded-2xl px-4 py-3 text-sm text-green-800 whitespace-pre-line shadow-sm">
-                              {msg.body}
-                            </div>
-                          ) : (
-                            <div className={`px-4 py-2.5 text-sm leading-relaxed shadow-sm
-                              ${isMe
-                                ? 'bg-primary text-white rounded-2xl rounded-br-md'
-                                : 'bg-white text-foreground rounded-2xl rounded-bl-md border border-border/50'
-                              }`}
-                            >
-                              {msg.subject && (
-                                <p className={`text-xs font-semibold mb-1.5 pb-1.5 border-b ${isMe ? 'text-white/70 border-white/20' : 'text-muted-foreground border-border'}`}>{msg.subject}</p>
-                              )}
-                              {msg.hire_details && (
-                                <div className={`text-xs mb-2 p-2 rounded-lg ${isMe ? 'bg-white/15' : 'bg-muted/60'}`}>
-                                  <p className="font-semibold mb-0.5">Hire Details</p>
-                                  <p className="whitespace-pre-line">{msg.hire_details}</p>
+                      {isHireRequest && isPartnerSide && currentHireStatus !== 'completed' && currentHireStatus !== 'approved' && currentHireStatus !== 'rejected' ? (
+                        <div className="flex justify-start mb-3">
+                          <div className="max-w-[80%] sm:max-w-[70%] bg-white border-2 border-primary/20 rounded-2xl p-4 shadow-sm">
+                            <div className="flex items-start gap-3 mb-3">
+                              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                                <Briefcase className="w-4 h-4 text-primary" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-primary mb-1">Hire Request</p>
+                                {msg.subject && <p className="text-xs text-muted-foreground mb-2">{msg.subject}</p>}
+                                <div className="bg-muted/50 rounded-lg p-3 mb-3">
+                                  <p className="text-xs font-semibold mb-1">Project Details</p>
+                                  <p className="text-xs whitespace-pre-line">{msg.hire_details}</p>
                                 </div>
-                              )}
-                              <p className="whitespace-pre-line">{msg.body}</p>
+                                <div className="flex gap-2">
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleHireAction('approve')}
+                                    disabled={sending}
+                                    className="flex-1 bg-green-600 hover:bg-green-700 text-white rounded-full"
+                                  >
+                                    <ThumbsUp className="w-3.5 h-3.5 mr-1" />
+                                    {sending ? '...' : 'Accept'}
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleHireAction('decline')}
+                                    disabled={sending}
+                                    variant="outline"
+                                    className="flex-1 rounded-full border-red-200 text-red-600 hover:bg-red-50"
+                                  >
+                                    <ThumbsDown className="w-3.5 h-3.5 mr-1" />
+                                    {sending ? '...' : 'Decline'}
+                                  </Button>
+                                </div>
+                              </div>
                             </div>
-                          )}
-                          {isLastInGroup && (
-                            <div className={`flex items-center gap-1 mt-0.5 px-1 ${isMe ? 'justify-end' : 'justify-start'}`}>
-                              <span className="text-[10px] text-muted-foreground">{msg.created_date ? format(new Date(msg.created_date), 'h:mm a') : ''}</span>
-                              {isMe && (isLastMsg
-                                ? (msg.is_read ? <CheckCheck className="w-3 h-3 text-primary" /> : <CheckCheck className="w-3 h-3 text-muted-foreground/50" />)
-                                : <Check className="w-3 h-3 text-muted-foreground/40" />
-                              )}
-                            </div>
-                          )}
+                          </div>
                         </div>
-                      </div>
+                      ) : isHireRequest ? (
+                        <div className="flex justify-start mb-3">
+                          <div className={`max-w-[80%] sm:max-w-[70%] rounded-2xl p-4 border-2 shadow-sm ${
+                            currentHireStatus === 'approved' || currentHireStatus === 'completed'
+                              ? 'bg-green-50 border-green-200'
+                              : currentHireStatus === 'rejected'
+                              ? 'bg-red-50 border-red-200'
+                              : 'bg-white border-border'
+                          }`}>
+                            <div className="flex items-start gap-3">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                                currentHireStatus === 'approved' || currentHireStatus === 'completed'
+                                  ? 'bg-green-100'
+                                  : currentHireStatus === 'rejected'
+                                  ? 'bg-red-100'
+                                  : 'bg-primary/10'
+                              }`}>
+                                {currentHireStatus === 'approved' || currentHireStatus === 'completed' ? (
+                                  <CheckCircle2 className="w-4 h-4 text-green-600" />
+                                ) : currentHireStatus === 'rejected' ? (
+                                  <XCircle className="w-4 h-4 text-red-600" />
+                                ) : (
+                                  <Briefcase className="w-4 h-4 text-primary" />
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className={`text-sm font-bold mb-1 ${
+                                  currentHireStatus === 'approved' || currentHireStatus === 'completed'
+                                    ? 'text-green-800'
+                                    : currentHireStatus === 'rejected'
+                                    ? 'text-red-800'
+                                    : 'text-primary'
+                                }`}>
+                                  {currentHireStatus === 'approved' || currentHireStatus === 'completed'
+                                    ? 'Hire Request Accepted'
+                                    : currentHireStatus === 'rejected'
+                                    ? 'Hire Request Declined'
+                                    : 'Hire Request'}
+                                </p>
+                                {msg.subject && <p className="text-xs text-muted-foreground mb-2">{msg.subject}</p>}
+                                <div className="bg-white/60 rounded-lg p-3">
+                                  <p className="text-xs font-semibold mb-1">Project Details</p>
+                                  <p className="text-xs whitespace-pre-line">{msg.hire_details}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className={`flex ${isMe ? 'justify-end' : 'justify-start'} ${isLastInGroup ? 'mb-2' : 'mb-0.5'}`}>
+                          {!isMe && (
+                            <div className={`w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-[11px] font-bold text-primary shrink-0 mr-1.5 self-end ${isLastInGroup ? 'opacity-100' : 'opacity-0'}`}>
+                              {(msg.sender_name || '?').charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                          <div className="max-w-[70%] sm:max-w-[60%]">
+                            {isDelivery ? (
+                              <div className="bg-green-50 border border-green-200 rounded-2xl px-4 py-3 text-sm text-green-800 whitespace-pre-line shadow-sm">
+                                {msg.body}
+                              </div>
+                            ) : (
+                              <div className={`px-4 py-2.5 text-sm leading-relaxed shadow-sm
+                                ${isMe
+                                  ? 'bg-primary text-white rounded-2xl rounded-br-md'
+                                  : 'bg-white text-foreground rounded-2xl rounded-bl-md border border-border/50'
+                                }`}
+                              >
+                                {msg.subject && (
+                                  <p className={`text-xs font-semibold mb-1.5 pb-1.5 border-b ${isMe ? 'text-white/70 border-white/20' : 'text-muted-foreground border-border'}`}>{msg.subject}</p>
+                                )}
+                                {msg.hire_details && (
+                                  <div className={`text-xs mb-2 p-2 rounded-lg ${isMe ? 'bg-white/15' : 'bg-muted/60'}`}>
+                                    <p className="font-semibold mb-0.5">Hire Details</p>
+                                    <p className="whitespace-pre-line">{msg.hire_details}</p>
+                                  </div>
+                                )}
+                                <p className="whitespace-pre-line">{msg.body}</p>
+                              </div>
+                            )}
+                            {isLastInGroup && (
+                              <div className={`flex items-center gap-1 mt-0.5 px-1 ${isMe ? 'justify-end' : 'justify-start'}`}>
+                                <span className="text-[10px] text-muted-foreground">{msg.created_date ? format(new Date(msg.created_date), 'h:mm a') : ''}</span>
+                                {isMe && (isLastMsg
+                                  ? (msg.is_read ? <CheckCheck className="w-3 h-3 text-primary" /> : <CheckCheck className="w-3 h-3 text-muted-foreground/50" />)
+                                  : <Check className="w-3 h-3 text-muted-foreground/40" />
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </React.Fragment>
                   );
                 })}
@@ -434,6 +589,27 @@ export default function Messages() {
             await loadConversations(user, myPartner);
           }}
         />
+      )}
+
+      {showReviewModal && selectedConv && (
+        <Dialog open={showReviewModal} onOpenChange={setShowReviewModal}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Leave a Review for {selectedConv.partner?.name}</DialogTitle>
+            </DialogHeader>
+            <ReviewForm
+              partnerId={selectedConv.partner_id}
+              partnerName={selectedConv.partner?.name}
+              conversationId={selectedConv.id}
+              user={user}
+              onSuccess={() => {
+                setShowReviewModal(false);
+                toast.success('Review submitted!');
+              }}
+              onCancel={() => setShowReviewModal(false)}
+            />
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );
