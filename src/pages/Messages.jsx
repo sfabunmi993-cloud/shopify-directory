@@ -48,27 +48,16 @@ export default function Messages() {
 
   const loadConversations = async (me, partner) => {
     let allMessages = [];
-    if (partner) {
-      // Partner: fetch all messages where they are the partner
-      // RLS allows reading where sender_id = me OR client_user_id = me
-      // Partners need to use their partner's created_by_id — fetch via partner_id filter using service role isn't possible,
-      // so we fetch messages the partner sent + messages sent to this partner (via client_user_id approach)
-      // Since partner created their own replies (sender_id = me.id), and initial messages have client_user_id set,
-      // we fetch both buckets and merge by conversation
-      const sentByPartner = await base44.entities.Message.filter({ sender_id: me.id }, '-created_date', 500);
-      allMessages = sentByPartner;
-    } else {
-      // User: RLS returns messages where client_user_id = me OR sender_id = me — simple list() covers all
-      allMessages = await base44.entities.Message.list('-created_date', 500);
-    }
+    // RLS ensures each user only sees their own messages (client_user_id, partner_user_id, or sender_id match)
+    allMessages = await base44.entities.Message.list('-created_date', 500);
 
     const convMap = {};
     for (const msg of allMessages) {
       const cid = msg.conversation_id || msg.id;
-      if (!convMap[cid]) convMap[cid] = { id: cid, messages: [], partner_id: msg.partner_id, clientUserId: msg.client_user_id, lastMessage: msg };
+      if (!convMap[cid]) convMap[cid] = { id: cid, messages: [], partner_id: msg.partner_id, clientUserId: msg.client_user_id, partnerUserId: msg.partner_user_id, lastMessage: msg };
       convMap[cid].messages.push(msg);
-      // Ensure clientUserId is set if found in any message
       if (msg.client_user_id) convMap[cid].clientUserId = msg.client_user_id;
+      if (msg.partner_user_id) convMap[cid].partnerUserId = msg.partner_user_id;
       if (new Date(msg.created_date) > new Date(convMap[cid].lastMessage.created_date)) {
         convMap[cid].lastMessage = msg;
       }
@@ -103,12 +92,11 @@ export default function Messages() {
     if (!reply.trim() || !selectedConv) return;
     setSending(true);
     const senderRole = myPartner ? 'partner' : 'user';
-    // client_user_id is always the non-partner user in the conversation
-    const clientUserId = myPartner ? selectedConv.clientUserId : user.id;
     await base44.entities.Message.create({
       conversation_id: selectedConv.id,
       partner_id: selectedConv.partner_id,
-      client_user_id: clientUserId,
+      partner_user_id: myPartner ? user.id : selectedConv.partnerUserId,
+      client_user_id: myPartner ? selectedConv.clientUserId : user.id,
       sender_id: user.id,
       sender_name: user.full_name || user.email,
       sender_role: senderRole,
