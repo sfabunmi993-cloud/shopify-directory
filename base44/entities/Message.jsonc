@@ -8,15 +8,19 @@
     },
     "partner_id": {
       "type": "string",
-      "description": "The partner involved in the conversation"
+      "description": "The partner entity ID involved in the conversation"
     },
-    "sender_id": {
+    "partner_user_id": {
       "type": "string",
-      "description": "User ID of the sender"
+      "description": "User account ID of the partner (created_by_id of the partner entity)"
     },
     "client_user_id": {
       "type": "string",
       "description": "User ID of the client (non-partner) in the conversation"
+    },
+    "sender_id": {
+      "type": "string",
+      "description": "User ID of the sender"
     },
     "sender_name": {
       "type": "string",
@@ -70,6 +74,9 @@
       "$or": [
         {
           "client_user_id": "{{user.id}}"
+        },
+        {
+          "partner_user_id": "{{user.id}}"
         },
         {
           "sender_id": "{{user.id}}"
