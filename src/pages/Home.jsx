@@ -115,7 +115,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-foreground text-white/70 py-12">
+      <footer className="text-white/70 py-12 bg-[#466f3e]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid sm:grid-cols-3 gap-8">
             <div>
