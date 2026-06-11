@@ -275,12 +275,12 @@ export default function PartnerDetail() {
             }
 
             {/* Hire Me button */}
-            <button
-              onClick={() => setHireOpen(true)}
-              className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-primary text-white hover:bg-primary/90 rounded-full shadow-sm hidden">
-              
-              <Briefcase className="w-4 h-4" /> Hire Me
-            </button>
+            
+
+
+
+
+            
 
             {/* Get Premium Badge — only for the partner owner without premium */}
             {user && partner.created_by_id === user.id && partner.partner_tier !== 'premium' &&
