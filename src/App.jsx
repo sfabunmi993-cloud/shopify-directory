@@ -19,7 +19,7 @@ import PartnerOnboarding from '@/pages/PartnerOnboarding';
 import MyProfile from '@/pages/MyProfile';
 import AdminDashboard from '@/pages/AdminDashboard';
 import Favorites from '@/pages/Favorites';
-import Messages from '@/pages/Messages';
+import Messages from '@/pages/Messages.jsx';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
