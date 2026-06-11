@@ -149,7 +149,13 @@ export default function AdminDashboard() {
 
   const handleApprovePayment = async (payment) => {
     await base44.entities.Payment.update(payment.id, { status: 'approved' });
-    toast.success('Payment approved!');
+    // If this is a premium badge purchase, upgrade the partner tier
+    if (payment.partner_id && payment.description?.includes('Premium Badge')) {
+      await base44.entities.Partner.update(payment.partner_id, { partner_tier: 'premium' });
+      toast.success('Payment approved & Premium badge granted!');
+    } else {
+      toast.success('Payment approved!');
+    }
     loadData();
   };
 

@@ -12,6 +12,7 @@ import ReviewSection from '@/components/directory/ReviewSection';
 import PartnerAvatar from '@/components/directory/PartnerAvatar';
 import ContactModal from '@/components/partner/ContactModal';
 import FlagModal from '@/components/partner/FlagModal';
+import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
 import { toast } from 'sonner';
 
 const CATEGORY_LABELS = {
@@ -72,6 +73,7 @@ export default function PartnerDetail() {
   const [contactOpen, setContactOpen] = useState(false);
   const [hireOpen, setHireOpen] = useState(false);
   const [flagOpen, setFlagOpen] = useState(false);
+  const [premiumOpen, setPremiumOpen] = useState(false);
   const [showAllServices, setShowAllServices] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -229,6 +231,11 @@ export default function PartnerDetail() {
                 <BadgeCheck className="w-3.5 h-3.5" /> Verified
               </span>
             }
+            {partner.partner_tier === 'premium' &&
+            <span className="inline-flex items-center gap-1 text-xs text-amber-600 font-semibold mt-1">
+                ✨ Premium
+              </span>
+            }
           </div>
 
           {/* Rating */}
@@ -274,6 +281,16 @@ export default function PartnerDetail() {
             >
               <Briefcase className="w-4 h-4" /> Hire Me
             </button>
+
+            {/* Get Premium Badge — only for the partner owner without premium */}
+            {user && partner.created_by_id === user.id && partner.partner_tier !== 'premium' &&
+            <button
+                onClick={() => setPremiumOpen(true)}
+                className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-amber-500 text-white hover:bg-amber-600 rounded-full shadow-sm"
+              >
+                ✨ Get Premium Badge
+              </button>
+            }
             
 
             
@@ -479,6 +496,7 @@ export default function PartnerDetail() {
           <ContactModal partner={partner} isOpen={contactOpen} onClose={() => setContactOpen(false)} mode="inquiry" />
           <ContactModal partner={partner} isOpen={hireOpen} onClose={() => setHireOpen(false)} mode="hire" />
           <FlagModal partner={partner} isOpen={flagOpen} onClose={() => setFlagOpen(false)} />
+          <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
         </>
       }
 
