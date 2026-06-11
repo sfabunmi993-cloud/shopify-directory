@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import InquiriesDashboard from '@/components/profile/InquiriesDashboard';
 import ServiceDescriptionEditor from '@/components/profile/ServiceDescriptionEditor';
 import ProjectsSection from '@/components/profile/ProjectsSection';
+import BuyReviewModal from '@/components/partner/BuyReviewModal';
 
 const SERVICE_CATEGORIES = [
   { label: 'Marketing and sales', value: 'marketing_and_sales' },
@@ -53,6 +54,7 @@ export default function MyProfile() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [buyReviewOpen, setBuyReviewOpen] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingScreenshot, setUploadingScreenshot] = useState(false);
   const [newService, setNewService] = useState('');
@@ -148,12 +150,21 @@ export default function MyProfile() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="font-heading text-2xl font-bold">My Partner Profile</h1>
-          <p className="text-sm text-muted-foreground mt-1">Edit how you appear in the directory</p>
-          {partner?.partner_number && (
-            <p className="text-xs text-muted-foreground font-mono mt-1">ID: {partner.partner_number}</p>
-          )}
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={() => setBuyReviewOpen(true)}
+            className="rounded-full bg-amber-500 hover:bg-amber-600 text-white gap-1.5 shadow-sm"
+            size="sm"
+          >
+            <Star className="w-4 h-4 fill-white" /> Buy Reviews
+          </Button>
+          <div>
+            <h1 className="font-heading text-2xl font-bold">My Partner Profile</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">Edit how you appear in the directory</p>
+            {partner?.partner_number && (
+              <p className="text-xs text-muted-foreground font-mono mt-0.5">ID: {partner.partner_number}</p>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -463,6 +474,8 @@ export default function MyProfile() {
           </Button>
         </div>
       </div>
+
+      <BuyReviewModal isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} />
     </div>
   );
 }
