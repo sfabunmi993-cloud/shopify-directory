@@ -44,9 +44,9 @@ const TIER_CONFIG = {
 };
 
 function getPartnerRank(reviewCount = 0) {
-  if (reviewCount >= 25) return { label: 'Plus Partner', color: 'bg-amber-50 text-amber-700 border-amber-200', medal: '🥇' };
-  if (reviewCount >= 5) return { label: 'Pro Partner', color: 'bg-primary/10 text-primary border-primary/20', medal: '🥈' };
-  return { label: 'Basic Partner', color: 'bg-muted text-muted-foreground border-border', medal: '🥉' };
+  if (reviewCount >= 150) return { label: 'Premium Partner', color: 'bg-amber-50 text-amber-700 border-amber-200', medal: '🥇' };
+  if (reviewCount >= 50) return { label: 'Plus Partner', color: 'bg-primary/10 text-primary border-primary/20', medal: '🥈' };
+  return { label: 'Standard Partner', color: 'bg-muted text-muted-foreground border-border', medal: '🥉' };
 }
 
 function ServiceRow({ service, description }) {

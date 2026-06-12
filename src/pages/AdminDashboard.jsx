@@ -585,9 +585,9 @@ export default function AdminDashboard() {
 }
 
 function getPartnerRank(reviewCount = 0) {
-  if (reviewCount >= 25) return { label: 'Plus', color: 'bg-amber-50 text-amber-700 border-amber-200' };
-  if (reviewCount >= 5) return { label: 'Pro', color: 'bg-primary/10 text-primary border-primary/20' };
-  return { label: 'Basic', color: 'bg-muted text-muted-foreground border-border' };
+  if (reviewCount >= 150) return { label: 'Premium', color: 'bg-amber-50 text-amber-700 border-amber-200' };
+  if (reviewCount >= 50) return { label: 'Plus', color: 'bg-primary/10 text-primary border-primary/20' };
+  return { label: 'Standard', color: 'bg-muted text-muted-foreground border-border' };
 }
 
 function PaymentList({ payments, onApprove, onReject }) {
