@@ -286,11 +286,11 @@ export default function PartnerDetail() {
             }
 
             {/* Hire Me button */}
-            <Button
-              className="w-full rounded-full bg-primary text-white hidden"
-              onClick={() => navigate('/messages')}>
-              <Briefcase className="w-4 h-4 mr-1.5" /> Hire Me
-            </Button>
+            
+
+
+
+            
 
 
 
