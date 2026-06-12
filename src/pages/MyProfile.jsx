@@ -168,7 +168,7 @@ export default function MyProfile() {
 
             <button
               onClick={() => setPremiumOpen(true)}
-              className="inline-flex items-center gap-1 text-xs font-semibold bg-amber-50 border border-amber-200 rounded-full px-2.5 py-0.5 w-fit hover:bg-amber-100 transition-colors">
+              className="inline-flex items-center gap-1 text-xs font-semibold border border-amber-200 rounded-full px-2.5 py-0.5 w-fit hover:bg-amber-100 transition-colors bg-gray-900 text-gray-50">
               
               ✨ Buy Verification Badge
             </button>
