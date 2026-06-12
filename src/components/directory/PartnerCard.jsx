@@ -47,11 +47,11 @@ export default function PartnerCard({ partner, compareSelected, onToggleCompare 
             <div className="min-w-0">
               <h3 className="font-heading font-semibold text-foreground text-base group-hover:text-primary transition-colors truncate flex items-center gap-1.5">
                 {partner.name}
-                {partner.is_verified && <BadgeCheck className="w-4 h-4 text-blue-500 shrink-0" />}
               </h3>
               {partner.partner_number &&
                 <span className="text-xs text-muted-foreground font-mono flex items-center gap-0.5">
                   <Hash className="w-2.5 h-2.5" />{partner.partner_number}
+                  {partner.is_verified && <BadgeCheck className="w-3.5 h-3.5 text-blue-500 shrink-0 ml-0.5" />}
                 </span>
                 }
             </div>
