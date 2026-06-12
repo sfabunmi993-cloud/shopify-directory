@@ -13,6 +13,7 @@ import PartnerAvatar from '@/components/directory/PartnerAvatar';
 import ContactModal from '@/components/partner/ContactModal';
 import FlagModal from '@/components/partner/FlagModal';
 import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
+import BuyReviewModal from '@/components/partner/BuyReviewModal';
 import { toast } from 'sonner';
 
 const CATEGORY_LABELS = {
@@ -74,6 +75,7 @@ export default function PartnerDetail() {
   const [hireOpen, setHireOpen] = useState(false);
   const [flagOpen, setFlagOpen] = useState(false);
   const [premiumOpen, setPremiumOpen] = useState(false);
+  const [buyReviewOpen, setBuyReviewOpen] = useState(false);
   const [showAllServices, setShowAllServices] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -209,6 +211,15 @@ export default function PartnerDetail() {
 
         {/* LEFT SIDEBAR */}
         <div className="border border-border rounded-xl p-6 space-y-5">
+          {/* Buy Reviews button — only for partner owner */}
+          {user && partner.created_by_id === user.id &&
+            <button
+              onClick={() => setBuyReviewOpen(true)}
+              className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-amber-50 border border-amber-300 text-amber-700 hover:bg-amber-100 rounded-full">
+              <Star className="w-4 h-4 fill-amber-400 text-amber-500" /> Buy Reviews
+            </button>
+          }
+
           {/* Logo */}
           <div className="flex flex-col items-center text-center rounded-[999px]">
             <PartnerAvatar partner={partner} size="lg" shape="rounded-full" className="border-2" />
@@ -275,7 +286,12 @@ export default function PartnerDetail() {
             }
 
             {/* Hire Me button */}
-            
+            <Button
+              className="w-full rounded-full bg-primary text-white"
+              onClick={() => navigate('/messages')}>
+              <Briefcase className="w-4 h-4 mr-1.5" /> Hire Me
+            </Button>
+
 
 
 
@@ -497,6 +513,7 @@ export default function PartnerDetail() {
           <ContactModal partner={partner} isOpen={hireOpen} onClose={() => setHireOpen(false)} mode="hire" />
           <FlagModal partner={partner} isOpen={flagOpen} onClose={() => setFlagOpen(false)} />
           <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
+          <BuyReviewModal partner={partner} isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} />
         </>
       }
 
