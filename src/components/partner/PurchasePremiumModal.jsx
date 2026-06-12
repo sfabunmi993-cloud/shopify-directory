@@ -11,8 +11,8 @@ import { usePricing } from '@/hooks/usePricing';
 
 const PAYMENT_DETAILS = {
   bankName: 'OPay',
-  accountName: 'ENITAN J OMONIYI',
-  accountNumber: '8149375353',
+  accountName: 'fabunmi ronke',
+  accountNumber: '7031665045',
   currency: 'USD / NGN equivalent',
 };
 

@@ -100,19 +100,19 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-border">
                 <div>
-                  <p className="text-xs text-muted-foreground">Phone Number</p>
-                  <p className="font-semibold">8149375353</p>
+                  <p className="text-xs text-muted-foreground">Account Number</p>
+                  <p className="font-semibold">7031665045</p>
                 </div>
-                <button onClick={() => copyText('8149375353', 'phone')} className="text-muted-foreground hover:text-foreground">
+                <button onClick={() => copyText('7031665045', 'phone')} className="text-muted-foreground hover:text-foreground">
                   {copied === 'phone' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
                 </button>
               </div>
               <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-border">
                 <div>
                   <p className="text-xs text-muted-foreground">Account Name</p>
-                  <p className="font-semibold">ENITAN J OMONIYI</p>
+                  <p className="font-semibold">fabunmi ronke</p>
                 </div>
-                <button onClick={() => copyText('ENITAN J OMONIYI', 'name')} className="text-muted-foreground hover:text-foreground">
+                <button onClick={() => copyText('fabunmi ronke', 'name')} className="text-muted-foreground hover:text-foreground">
                   {copied === 'name' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
                 </button>
               </div>
@@ -130,9 +130,9 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
 
           {/* Instructions */}
           <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
-            <li>Send <strong>₦{pkg?.price.toLocaleString()}</strong> to the OPay number above</li>
+            <li>Send <strong>₦{pkg?.price.toLocaleString()}</strong> to OPay: <strong>7031665045 (fabunmi ronke)</strong></li>
             <li>Take a screenshot of your payment receipt</li>
-            <li>Send the screenshot to <strong>WhatsApp: 8149375353</strong></li>
+            <li>Upload the screenshot using the upload box above</li>
             <li>Your {pkg?.reviews} review{pkg?.reviews > 1 ? 's' : ''} will be posted within 24 hours</li>
           </ol>
 
