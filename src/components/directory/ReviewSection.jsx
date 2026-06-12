@@ -36,7 +36,7 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
-  const [canReview, setCanReview] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [alreadyReviewed, setAlreadyReviewed] = useState(false);
   const [form, setForm] = useState({ reviewer_name: '', rating: 0, comment: '' });
 
@@ -60,17 +60,13 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
     // Pre-fill name
     if (user.full_name) setForm((prev) => ({ ...prev, reviewer_name: user.full_name }));
 
+    setIsLoggedIn(true);
+
     // Check if they own this partner profile
     const partners = await base44.entities.Partner.filter({ created_by_id: user.id });
     if (partners.length > 0 && partners[0].id === partnerId) {
       setIsOwner(true);
       return;
-    }
-
-    // Check if a project was delivered to this user by this partner
-    const projects = await base44.entities.Project.filter({ partner_id: partnerId, client_user_id: user.id });
-    if (projects.length > 0) {
-      setCanReview(true);
     }
 
     // Check if user has already submitted 2 reviews today
@@ -127,16 +123,13 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
             </div>
           }
         </div>
-        {canReview && !isOwner && !showForm && (
+        {isLoggedIn && !isOwner && !showForm && (
           alreadyReviewed
             ? <div className="text-right">
                 <span className="text-xs text-muted-foreground">✅ Review submitted</span>
                 <p className="text-xs text-amber-600 mt-0.5">Your review will be added within 24 hours</p>
               </div>
             : <Button size="sm" className="rounded-full" onClick={() => setShowForm(true)}>Write a Review</Button>
-        )}
-        {!canReview && !isOwner && !loading && (
-          <span className="text-xs text-muted-foreground italic">Only clients with a delivered project can review</span>
         )}
         </div>
 
