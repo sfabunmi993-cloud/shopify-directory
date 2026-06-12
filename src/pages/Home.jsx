@@ -21,7 +21,9 @@ export default function Home() {
     initialData: []
   });
 
-  const displayPartners = featuredPartners.length > 0 ? featuredPartners : topPartners;
+  const displayPartners = (featuredPartners.length > 0 ? featuredPartners : topPartners)
+    .slice()
+    .sort((a, b) => (b.rating || 0) - (a.rating || 0));
   const loading = isLoading || isLoadingTop;
 
   return (
