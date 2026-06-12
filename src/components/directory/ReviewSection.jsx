@@ -73,9 +73,12 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
       setCanReview(true);
     }
 
-    // Check if user already submitted a review
+    // Check if user has already submitted 2 reviews today
     const existingReviews = await base44.entities.Review.filter({ partner_id: partnerId, created_by_id: user.id });
-    if (existingReviews.length > 0) setAlreadyReviewed(true);
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const reviewsToday = existingReviews.filter(r => new Date(r.created_date) >= todayStart);
+    if (reviewsToday.length >= 2) setAlreadyReviewed(true);
   };
 
   const handleSubmit = async (e) => {
@@ -93,7 +96,8 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
     });
 
     toast.success('Review submitted! It will appear within 24 hours.');
-    setAlreadyReviewed(true);
+    // Re-check eligibility to see if limit reached
+    checkEligibility();
     setForm((prev) => ({ ...prev, rating: 0, comment: '' }));
     setShowForm(false);
     loadReviews();
