@@ -213,9 +213,9 @@ export default function PartnerDetail() {
         <div className="border border-border rounded-xl p-6 space-y-5">
           {/* Buy Reviews button — only for partner owner */}
           {user && partner.created_by_id === user.id &&
-            <button
-              onClick={() => setBuyReviewOpen(true)}
-              className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-amber-50 border border-amber-300 text-amber-700 hover:bg-amber-100 rounded-full">
+          <button
+            onClick={() => setBuyReviewOpen(true)}
+            className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-amber-50 border border-amber-300 text-amber-700 hover:bg-amber-100 rounded-full">
               <Star className="w-4 h-4 fill-amber-400 text-amber-500" /> Buy Reviews
             </button>
           }
@@ -287,7 +287,7 @@ export default function PartnerDetail() {
 
             {/* Hire Me button */}
             <Button
-              className="w-full rounded-full bg-primary text-white"
+              className="w-full rounded-full bg-primary text-white hidden"
               onClick={() => navigate('/messages')}>
               <Briefcase className="w-4 h-4 mr-1.5" /> Hire Me
             </Button>
