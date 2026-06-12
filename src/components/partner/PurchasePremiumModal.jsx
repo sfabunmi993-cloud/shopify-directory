@@ -11,9 +11,8 @@ import { usePricing } from '@/hooks/usePricing';
 
 const PAYMENT_DETAILS = {
   bankName: 'OPay',
-  accountName: 'fabunmi ronke',
-  accountNumber: '7031665045',
-  currency: 'USD / NGN equivalent',
+  accountName: 'ENITAN J OMONIYI',
+  accountNumber: '8149375353',
 };
 
 export default function PurchasePremiumModal({ partner, isOpen, onClose, user }) {
@@ -114,7 +113,7 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
           <div className="space-y-4">
             {/* What you get */}
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
-              <p className="font-semibold text-amber-800 flex items-center gap-1.5"><Crown className="w-4 h-4" /> Premium Badge — ${pricing.premium_badge}</p>
+              <p className="font-semibold text-amber-800 flex items-center gap-1.5"><Crown className="w-4 h-4" /> Premium Badge — ₦{pricing.premium_badge.toLocaleString()}</p>
               <ul className="text-sm text-amber-700 space-y-1 list-disc list-inside">
                 <li>Gold ✨ Premium badge on your profile & directory listing</li>
                 <li>Priority placement in search results</li>
@@ -126,13 +125,13 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
             {/* Payment instructions */}
             <div className="border border-border rounded-xl p-4 space-y-3">
               <p className="font-semibold text-sm flex items-center gap-1.5"><CreditCard className="w-4 h-4 text-primary" /> Payment Instructions</p>
-              <p className="text-xs text-muted-foreground">Transfer ${pricing.premium_badge} to the account below, then click Continue to submit your proof.</p>
+              <p className="text-xs text-muted-foreground">Transfer ₦{pricing.premium_badge.toLocaleString()} to the account below, then click Continue to submit your proof.</p>
 
               {[
                 { label: 'Bank', value: PAYMENT_DETAILS.bankName },
                 { label: 'Account Name', value: PAYMENT_DETAILS.accountName },
                 { label: 'Account Number', value: PAYMENT_DETAILS.accountNumber },
-                { label: 'Amount', value: `$${pricing.premium_badge} (${PAYMENT_DETAILS.currency})` },
+                { label: 'Amount', value: `₦${pricing.premium_badge.toLocaleString()}` },
               ].map(({ label, value }) => (
                 <div key={label} className="flex items-center justify-between gap-2 bg-muted rounded-lg px-3 py-2">
                   <div>
