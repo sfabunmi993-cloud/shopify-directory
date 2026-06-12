@@ -9,10 +9,10 @@ import { base44 } from '@/api/base44Client';
 export default function BuyReviewModal({ isOpen, onClose, partner }) {
   const { pricing } = usePricing();
   const PACKAGES = [
-    { reviews: 5, price: pricing.reviews_5, label: '5 Reviews', popular: true },
-    { reviews: 10, price: pricing.reviews_10 || pricing.reviews_5 * 1.8, label: '10 Reviews', popular: false },
-    { reviews: 20, price: pricing.reviews_20 || pricing.reviews_5 * 3.5, label: '20 Reviews', popular: false },
-  ];
+  { reviews: 5, price: pricing.reviews_5, label: '5 Reviews', popular: true },
+  { reviews: 10, price: pricing.reviews_10 || pricing.reviews_5 * 1.8, label: '10 Reviews', popular: false },
+  { reviews: 20, price: pricing.reviews_20 || pricing.reviews_5 * 3.5, label: '20 Reviews', popular: false }];
+
   const [selected, setSelected] = useState(5);
   const [copied, setCopied] = useState('');
   const [btnState, setBtnState] = useState('idle'); // idle | pending | done
@@ -24,7 +24,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
 
   const handleDone = async () => {
     setBtnState('pending');
-    const pkg = PACKAGES.find(p => p.reviews === selected);
+    const pkg = PACKAGES.find((p) => p.reviews === selected);
     await base44.entities.Payment.create({
       user_id: user?.id || '',
       user_name: user?.full_name || '',
@@ -33,12 +33,12 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
       partner_name: partner?.name || '',
       amount: pkg?.price || 0,
       description: `Buy Reviews — ${pkg?.label} package (₦${pkg?.price?.toLocaleString()})`,
-      status: 'pending',
+      status: 'pending'
     });
     setTimeout(() => setBtnState('done'), 2000);
   };
 
-  const pkg = PACKAGES.find(p => p.reviews === selected);
+  const pkg = PACKAGES.find((p) => p.reviews === selected);
 
   const copyText = (text, key) => {
     navigator.clipboard.writeText(text);
@@ -49,7 +49,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md px-12 py-2 mx-3">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Star className="w-5 h-5 text-amber-500 fill-amber-500" /> Buy Reviews
@@ -67,28 +67,28 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
           <div>
             <p className="text-sm font-semibold mb-2">Choose a package</p>
             <div className="grid grid-cols-3 gap-2">
-              {PACKAGES.map(p => (
-                <button
-                  key={p.reviews}
-                  onClick={() => setSelected(p.reviews)}
-                  className={`relative rounded-xl border-2 p-3 text-center transition-all ${
-                    selected === p.reviews
-                      ? 'border-primary bg-primary/5'
-                      : 'border-border hover:border-primary/40'
-                  }`}
-                >
-                  {p.popular && (
-                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-primary text-white text-[9px] font-bold px-2 py-0.5 rounded-full">Popular</span>
-                  )}
+              {PACKAGES.map((p) =>
+              <button
+                key={p.reviews}
+                onClick={() => setSelected(p.reviews)}
+                className={`relative rounded-xl border-2 p-3 text-center transition-all ${
+                selected === p.reviews ?
+                'border-primary bg-primary/5' :
+                'border-border hover:border-primary/40'}`
+                }>
+                
+                  {p.popular &&
+                <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-primary text-white text-[9px] font-bold px-2 py-0.5 rounded-full">Popular</span>
+                }
                   <div className="flex justify-center gap-0.5 mb-1">
-                    {[...Array(p.reviews)].map((_, i) => (
-                      <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
-                    ))}
+                    {[...Array(p.reviews)].map((_, i) =>
+                  <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+                  )}
                   </div>
                   <p className="text-sm font-semibold">{p.label}</p>
                   <p className="text-xs text-muted-foreground">₦{p.price.toLocaleString()}</p>
                 </button>
-              ))}
+              )}
             </div>
           </div>
 
@@ -136,21 +136,21 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
             <li>Your {pkg?.reviews} review{pkg?.reviews > 1 ? 's' : ''} will be posted within 24 hours</li>
           </ol>
 
-          {btnState === 'done' ? (
-            <div className="w-full rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium text-center px-4 py-3">
+          {btnState === 'done' ?
+          <div className="w-full rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium text-center px-4 py-3">
               ✅ Your reviews will be added within 24 hours!
-            </div>
-          ) : (
-            <Button
-              className="w-full rounded-full"
-              onClick={btnState === 'idle' ? handleDone : undefined}
-              disabled={btnState === 'pending'}
-            >
+            </div> :
+
+          <Button
+            className="w-full rounded-full"
+            onClick={btnState === 'idle' ? handleDone : undefined}
+            disabled={btnState === 'pending'}>
+            
               {btnState === 'pending' ? '⏳ Pending...' : "Done — I've made the payment"}
             </Button>
-          )}
+          }
         </div>
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>);
+
 }
