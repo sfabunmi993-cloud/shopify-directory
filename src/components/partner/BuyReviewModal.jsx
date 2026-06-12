@@ -9,11 +9,11 @@ import { base44 } from '@/api/base44Client';
 export default function BuyReviewModal({ isOpen, onClose, partner }) {
   const { pricing } = usePricing();
   const PACKAGES = [
-    { reviews: 1, price: pricing.reviews_1, label: '1 Review', popular: false },
-    { reviews: 3, price: pricing.reviews_3, label: '3 Reviews', popular: true },
-    { reviews: 5, price: pricing.reviews_5, label: '5 Reviews', popular: false },
+    { reviews: 5, price: pricing.reviews_5, label: '5 Reviews', popular: true },
+    { reviews: 10, price: pricing.reviews_10 || pricing.reviews_5 * 1.8, label: '10 Reviews', popular: false },
+    { reviews: 20, price: pricing.reviews_20 || pricing.reviews_5 * 3.5, label: '20 Reviews', popular: false },
   ];
-  const [selected, setSelected] = useState(1);
+  const [selected, setSelected] = useState(5);
   const [copied, setCopied] = useState('');
   const [btnState, setBtnState] = useState('idle'); // idle | pending | done
   const [user, setUser] = useState(null);

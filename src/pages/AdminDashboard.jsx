@@ -849,9 +849,9 @@ function PricingSettings() {
 
   const fields = [
     { key: 'premium_badge', label: 'Premium Badge', prefix: '$', suffix: 'USD' },
-    { key: 'reviews_1', label: '1 Review Package', prefix: '₦', suffix: 'NGN' },
-    { key: 'reviews_3', label: '3 Reviews Package', prefix: '₦', suffix: 'NGN' },
     { key: 'reviews_5', label: '5 Reviews Package', prefix: '₦', suffix: 'NGN' },
+    { key: 'reviews_10', label: '10 Reviews Package', prefix: '₦', suffix: 'NGN' },
+    { key: 'reviews_20', label: '20 Reviews Package', prefix: '₦', suffix: 'NGN' },
   ];
 
   return (
