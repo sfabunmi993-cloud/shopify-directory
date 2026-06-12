@@ -49,7 +49,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md px-12 py-2 mx-3">
+      <DialogContent className="max-w-md px-12 py-4 mx-3">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Star className="w-5 h-5 text-amber-500 fill-amber-500" /> Buy Reviews
