@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2 } from 'lucide-react';
+import AnnouncementsSection from '@/components/admin/AnnouncementsSection';
 import { DEFAULT_PRICING } from '@/hooks/usePricing';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -18,6 +19,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const STATUS_STYLES = {
   pending: 'bg-amber-50 text-amber-700 border-amber-200',
@@ -46,6 +48,12 @@ export default function AdminDashboard() {
   const [sendingBlast, setSendingBlast] = useState(false);
   const [analyticsData, setAnalyticsData] = useState(null);
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
+  const [announcements, setAnnouncements] = useState([]);
+  const [announcementDialog, setAnnouncementDialog] = useState(false);
+  const [announcementTitle, setAnnouncementTitle] = useState('');
+  const [announcementContent, setAnnouncementContent] = useState('');
+  const [announcementPriority, setAnnouncementPriority] = useState('medium');
+  const [creatingAnnouncement, setCreatingAnnouncement] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -60,14 +68,16 @@ export default function AdminDashboard() {
 
   const loadData = async () => {
     setLoading(true);
-    const [allPartners, allFlags, allPayments] = await Promise.all([
+    const [allPartners, allFlags, allPayments, allAnnouncements] = await Promise.all([
       base44.entities.Partner.list('-created_date', 200),
       base44.entities.Flag.list('-created_date', 200),
       base44.entities.Payment.list('-created_date', 200),
+      base44.entities.Announcement.list('-created_date', 50),
     ]);
     setPartners(allPartners);
     setFlags(allFlags);
     setPayments(allPayments);
+    setAnnouncements(allAnnouncements);
     setLoading(false);
   };
 
@@ -196,6 +206,36 @@ export default function AdminDashboard() {
     loadData();
   };
 
+  const handleCreateAnnouncement = async () => {
+    if (!announcementTitle.trim() || !announcementContent.trim()) return;
+    setCreatingAnnouncement(true);
+    await base44.entities.Announcement.create({
+      title: announcementTitle.trim(),
+      content: announcementContent.trim(),
+      priority: announcementPriority,
+      is_active: true,
+    });
+    toast.success('Announcement created!');
+    setAnnouncementDialog(false);
+    setAnnouncementTitle('');
+    setAnnouncementContent('');
+    setAnnouncementPriority('medium');
+    loadData();
+    setCreatingAnnouncement(false);
+  };
+
+  const handleToggleAnnouncement = async (announcement) => {
+    await base44.entities.Announcement.update(announcement.id, { is_active: !announcement.is_active });
+    toast.success(!announcement.is_active ? 'Announcement activated!' : 'Announcement deactivated');
+    loadData();
+  };
+
+  const handleDeleteAnnouncement = async (announcement) => {
+    await base44.entities.Announcement.delete(announcement.id);
+    toast.success('Announcement deleted');
+    loadData();
+  };
+
   const filtered = partners.filter(p => {
     const q = search.toLowerCase();
     return !q || p.name?.toLowerCase().includes(q) || p.partner_number?.toLowerCase().includes(q) || p.email?.toLowerCase().includes(q);
@@ -299,6 +339,10 @@ export default function AdminDashboard() {
             <BarChart3 className="w-4 h-4 mr-1.5" />
             Analytics
           </TabsTrigger>
+          <TabsTrigger value="announcements">
+            <Megaphone className="w-4 h-4 mr-1.5" />
+            Announcements <Badge variant="secondary" className="ml-1.5">{announcements.length}</Badge>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending">
@@ -338,6 +382,14 @@ export default function AdminDashboard() {
               }
               setAnalyticsLoading(false);
             }}
+          />
+        </TabsContent>
+        <TabsContent value="announcements">
+          <AnnouncementsSection
+            announcements={announcements}
+            onOpenDialog={() => setAnnouncementDialog(true)}
+            onToggle={handleToggleAnnouncement}
+            onDelete={handleDeleteAnnouncement}
           />
         </TabsContent>
       </Tabs>
@@ -452,6 +504,54 @@ export default function AdminDashboard() {
               disabled={!blastSubject.trim() || !blastBody.trim() || sendingBlast}
             >
               {sendingBlast ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <><Send className="w-4 h-4 mr-1.5" /> Send to All Users</>}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Announcement Dialog */}
+      <Dialog open={announcementDialog} onOpenChange={setAnnouncementDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Announcement</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Title *</label>
+              <Input
+                placeholder="e.g. Platform Maintenance Scheduled"
+                value={announcementTitle}
+                onChange={e => setAnnouncementTitle(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Message *</label>
+              <Textarea
+                placeholder="Write your announcement..."
+                value={announcementContent}
+                onChange={e => setAnnouncementContent(e.target.value)}
+                className="h-32 resize-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Priority</label>
+              <Select value={announcementPriority} onValueChange={setAnnouncementPriority}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select priority" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">Low</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="high">High</SelectItem>
+                  <SelectItem value="urgent">Urgent</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setAnnouncementDialog(false); setAnnouncementTitle(''); setAnnouncementContent(''); setAnnouncementPriority('medium'); }}>Cancel</Button>
+            <Button onClick={handleCreateAnnouncement} disabled={!announcementTitle.trim() || !announcementContent.trim() || creatingAnnouncement}>
+              {creatingAnnouncement ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <><Megaphone className="w-4 h-4 mr-1.5" /> Create Announcement</>}
             </Button>
           </DialogFooter>
         </DialogContent>
