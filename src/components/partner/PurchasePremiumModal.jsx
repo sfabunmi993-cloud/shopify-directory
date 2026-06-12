@@ -3,7 +3,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Crown, Copy, Check, CreditCard, Loader2, CheckCircle } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Crown, Copy, Check, CreditCard, Loader2, CheckCircle, Upload, Image } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { usePricing } from '@/hooks/usePricing';
@@ -24,6 +25,37 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
   const [done, setDone] = useState(false);
   const [copied, setCopied] = useState(false);
   const [payBtnState, setPayBtnState] = useState('idle'); // idle | pending | ready
+  const [screenshotFile, setScreenshotFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [screenshotUrl, setScreenshotUrl] = useState(null);
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+    
+    setUploading(true);
+    try {
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const fileData = event.target.result;
+        const { file_url } = await base44.integrations.Core.UploadFile({ file: fileData });
+        setScreenshotFile(file);
+        setScreenshotUrl(file_url);
+        toast.success('Screenshot uploaded!');
+        setUploading(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Upload failed:', error);
+      toast.error('Failed to upload screenshot');
+      setUploading(false);
+    }
+  };
 
   const handlePaymentClick = () => {
     setPayBtnState('pending');
@@ -43,6 +75,7 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
 
   const handleSubmit = async () => {
     if (!txRef.trim()) { toast.error('Please enter your transaction reference.'); return; }
+    if (!screenshotUrl) { toast.error('Please upload your payment screenshot first.'); return; }
     setLoading(true);
     await base44.entities.Payment.create({
       user_id: user?.id || '',
@@ -53,6 +86,7 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
       amount: pricing.premium_badge,
       description: `Premium Badge purchase — Tx Ref: ${txRef.trim()}${notes ? ` | Notes: ${notes}` : ''}`,
       status: 'pending',
+      screenshot_url: screenshotUrl,
     });
     setDone(true);
     setLoading(false);
@@ -134,7 +168,7 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
         ) : (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Please enter your bank transaction reference / receipt number so we can verify your payment quickly.
+              Please enter your transaction reference and upload your payment screenshot so we can verify your payment quickly.
             </p>
             <div className="space-y-2">
               <label className="text-sm font-medium">Transaction Reference *</label>
@@ -144,6 +178,67 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
                 onChange={e => setTxRef(e.target.value)}
               />
             </div>
+            
+            {/* Screenshot Upload */}
+            <div className="space-y-2">
+              <Label className="text-sm font-semibold">Payment Screenshot *</Label>
+              <div className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:border-primary/40 transition-colors">
+                {screenshotUrl ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-center gap-2 text-green-600">
+                      <Check className="w-5 h-5" />
+                      <span className="text-sm font-medium">Screenshot uploaded!</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2">
+                      <Image className="w-8 h-8 text-muted-foreground" />
+                      <span className="text-xs text-muted-foreground truncate max-w-[200px]">
+                        {screenshotFile?.name}
+                      </span>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setScreenshotFile(null);
+                        setScreenshotUrl(null);
+                      }}
+                      className="text-xs"
+                    >
+                      Upload Different Image
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Upload className="w-8 h-8 text-muted-foreground mx-auto" />
+                    <p className="text-sm text-muted-foreground">
+                      Upload your payment receipt screenshot
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Supported formats: JPG, PNG, WEBP
+                    </p>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      disabled={uploading}
+                      className="hidden"
+                      id="premium-screenshot-upload"
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      asChild
+                      disabled={uploading}
+                    >
+                      <label htmlFor="premium-screenshot-upload" className="cursor-pointer">
+                        {uploading ? '⏳ Uploading...' : '📷 Choose Image'}
+                      </label>
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+            
             <div className="space-y-2">
               <label className="text-sm font-medium">Additional Notes (optional)</label>
               <Textarea
@@ -155,8 +250,8 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
             </div>
             <div className="flex gap-2">
               <Button variant="outline" className="flex-1" onClick={() => setStep(1)}>Back</Button>
-              <Button className="flex-1" onClick={handleSubmit} disabled={loading || !txRef.trim()}>
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Submit Payment'}
+              <Button className="flex-1" onClick={handleSubmit} disabled={loading || !txRef.trim() || !screenshotUrl || uploading}>
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : '✅ Submit Payment'}
               </Button>
             </div>
           </div>
