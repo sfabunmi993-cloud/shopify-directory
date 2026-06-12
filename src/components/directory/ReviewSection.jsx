@@ -74,7 +74,7 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
     const reviewsToday = existingReviews.filter(r => new Date(r.created_date) >= todayStart);
-    if (reviewsToday.length >= 2) setAlreadyReviewed(true);
+    if (reviewsToday.length >= 1) setAlreadyReviewed(true);
   };
 
   const handleSubmit = async (e) => {
