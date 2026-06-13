@@ -247,6 +247,11 @@ export default function PartnerDetail() {
                 ✨ Premium
               </span>
             }
+            {partner.partner_tier === 'plus' &&
+            <span className="inline-flex items-center gap-1 text-xs text-primary font-semibold mt-1">
+                ⭐ Plus
+              </span>
+            }
           </div>
 
           {/* Rating */}
