@@ -6,88 +6,82 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
 
 function StarPicker({ value, onChange }) {
   const [hovered, setHovered] = useState(0);
   return (
     <div className="flex gap-1">
-      {[1, 2, 3, 4, 5].map((n) =>
-      <button
-        key={n}
-        type="button"
-        onMouseEnter={() => setHovered(n)}
-        onMouseLeave={() => setHovered(0)}
-        onClick={() => onChange(n)}
-        className="focus:outline-none">
-        
-          <Star
-          className={`w-7 h-7 transition-colors ${n <= (hovered || value) ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground/30'}`} />
-        
+      {[1, 2, 3, 4, 5].map((n) => (
+        <button
+          key={n}
+          type="button"
+          onMouseEnter={() => setHovered(n)}
+          onMouseLeave={() => setHovered(0)}
+          onClick={() => onChange(n)}
+          className="focus:outline-none">
+          <Star className={`w-7 h-7 transition-colors ${n <= (hovered || value) ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground/30'}`} />
         </button>
-      )}
-    </div>);
-
+      ))}
+    </div>
+  );
 }
 
-export default function ReviewSection({ partnerId, onReviewAdded, unlimitedReviews }) {
+export default function ReviewSection({ partnerId, onReviewAdded }) {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
-  const [alreadyReviewed, setAlreadyReviewed] = useState(false);
-  const [form, setForm] = useState({ reviewer_name: '', rating: 0, comment: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState({ reviewer_name: '', rating: 0, comment: '' });
 
   useEffect(() => {
+    if (!partnerId) return;
     loadReviews();
     checkOwner();
   }, [partnerId]);
 
   const loadReviews = async () => {
     setLoading(true);
-    const data = await base44.entities.Review.filter({ partner_id: partnerId }, '-created_date');
-    setReviews(data);
-    setLoading(false);
+    try {
+      const data = await base44.entities.Review.filter({ partner_id: partnerId }, '-created_date');
+      setReviews(data);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const checkOwner = async () => {
-    const authed = await base44.auth.isAuthenticated();
-    if (!authed) return;
-    const user = await base44.auth.me();
-    if (user.full_name) setForm((prev) => ({ ...prev, reviewer_name: user.full_name }));
-    const partners = await base44.entities.Partner.filter({ created_by_id: user.id });
-    if (partners.some((p) => p.id === partnerId)) {
-      setIsOwner(true);
-    }
+    try {
+      const authed = await base44.auth.isAuthenticated();
+      if (!authed) return;
+      const user = await base44.auth.me();
+      if (user?.full_name) setForm((prev) => ({ ...prev, reviewer_name: user.full_name }));
+      const myPartners = await base44.entities.Partner.filter({ created_by_id: user.id });
+      setIsOwner(myPartners.some((p) => p.id === partnerId));
+    } catch (_) {}
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.rating) { toast.error('Please select a rating'); return; }
     if (!form.reviewer_name.trim()) { toast.error('Please enter your name'); return; }
+    if (!partnerId) { toast.error('Partner not found'); return; }
 
     setSubmitting(true);
-
     try {
-      const newReview = await base44.entities.Review.create({ ...form, partner_id: partnerId });
+      await base44.entities.Review.create({ ...form, partner_id: partnerId });
 
-      // Optimistically add review to list immediately
-      const optimisticReview = { ...form, partner_id: partnerId, id: newReview?.id || Date.now(), created_date: new Date().toISOString() };
-      setReviews((prev) => [optimisticReview, ...prev]);
-
-      // Recalculate partner rating via backend function (works for all users)
+      // Update partner rating (best-effort)
       try {
         await base44.functions.invoke('updatePartnerRating', { partner_id: partnerId });
-      } catch (_) {
-        // Non-critical — review is still saved
-      }
+      } catch (_) {}
 
       toast.success('Review submitted!');
       setSubmitted(true);
       setShowForm(false);
-      setTimeout(() => loadReviews(), 1500);
+      setForm((prev) => ({ ...prev, rating: 0, comment: '' }));
+      await loadReviews();
       if (onReviewAdded) onReviewAdded();
     } catch (err) {
       toast.error('Failed to submit review. Please try again.');
@@ -96,9 +90,9 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     }
   };
 
-  const avgRating = reviews.length > 0 ?
-  Math.round(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length * 10) / 10 :
-  0;
+  const avgRating = reviews.length > 0
+    ? Math.round(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length * 10) / 10
+    : 0;
 
   return (
     <div className="bg-white border border-border rounded-2xl p-6">
@@ -106,38 +100,37 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
       <div className="flex items-center justify-between mb-5 mt-2">
         <div>
           <h2 className="font-heading text-lg font-semibold">Reviews</h2>
-          {reviews.length > 0 &&
-          <div className="flex items-center gap-2 mt-1">
+          {reviews.length > 0 && (
+            <div className="flex items-center gap-2 mt-1">
               <div className="flex">
-                {[1, 2, 3, 4, 5].map((n) =>
-              <Star key={n} className={`w-4 h-4 ${n <= Math.round(avgRating) ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground/20'}`} />
-              )}
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <Star key={n} className={`w-4 h-4 ${n <= Math.round(avgRating) ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground/20'}`} />
+                ))}
               </div>
               <span className="text-sm font-medium">{avgRating}</span>
               <span className="text-sm text-muted-foreground">({reviews.length} review{reviews.length !== 1 ? 's' : ''})</span>
             </div>
-          }
+          )}
         </div>
         {!isOwner && !showForm && (
           submitted
             ? <div className="text-right">
                 <span className="text-xs text-muted-foreground">✅ Review submitted</span>
-                <p className="text-xs text-amber-600 mt-0.5">Thank you for your review!</p>
+                <p className="text-xs text-amber-600 mt-0.5">Thank you!</p>
               </div>
             : <Button size="sm" className="rounded-full" onClick={() => setShowForm(true)}>Write a Review</Button>
         )}
-        </div>
+      </div>
 
       {/* Review form */}
-      {showForm &&
-      <form onSubmit={handleSubmit} className="mb-6 p-4 bg-muted/30 rounded-xl border border-border space-y-4">
+      {showForm && (
+        <form onSubmit={handleSubmit} className="mb-6 p-4 bg-muted/30 rounded-xl border border-border space-y-4">
           <div className="space-y-1.5">
-            <Label>Your name</Label>
+            <Label>Your name <span className="text-destructive">*</span></Label>
             <Input
-            placeholder="e.g. John Smith"
-            value={form.reviewer_name}
-            onChange={(e) => setForm((prev) => ({ ...prev, reviewer_name: e.target.value }))} />
-          
+              placeholder="e.g. John Smith"
+              value={form.reviewer_name}
+              onChange={(e) => setForm((prev) => ({ ...prev, reviewer_name: e.target.value }))} />
           </div>
           <div className="space-y-1.5">
             <Label>Rating <span className="text-destructive">*</span></Label>
@@ -146,11 +139,10 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
           <div className="space-y-1.5">
             <Label>Your review</Label>
             <Textarea
-            placeholder="Share your experience working with this partner..."
-            value={form.comment}
-            onChange={(e) => setForm((prev) => ({ ...prev, comment: e.target.value }))}
-            className="h-24 resize-none" />
-          
+              placeholder="Share your experience working with this partner..."
+              value={form.comment}
+              onChange={(e) => setForm((prev) => ({ ...prev, comment: e.target.value }))}
+              className="h-24 resize-none" />
           </div>
           <div className="flex gap-2">
             <Button type="submit" className="rounded-full" disabled={submitting}>
@@ -159,17 +151,17 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
             <Button type="button" variant="ghost" className="rounded-full" onClick={() => setShowForm(false)}>Cancel</Button>
           </div>
         </form>
-      }
+      )}
 
       {/* Reviews list */}
-      {loading ?
-      <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground" /></div> :
-      reviews.length === 0 ?
-      <p className="text-sm text-muted-foreground text-center py-8">No reviews yet. Be the first to leave one!</p> :
-
-      <div className="space-y-4">
-          {reviews.map((review) =>
-        <div key={review.id} className="border-t border-border pt-4 first:border-0 first:pt-0">
+      {loading ? (
+        <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground" /></div>
+      ) : reviews.length === 0 ? (
+        <p className="text-sm text-muted-foreground text-center py-8">No reviews yet. Be the first to leave one!</p>
+      ) : (
+        <div className="space-y-4">
+          {reviews.map((review) => (
+            <div key={review.id} className="border-t border-border pt-4 first:border-0 first:pt-0">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
@@ -177,23 +169,21 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
                       {(review.reviewer_name || 'A').charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium">{review.reviewer_name || 'Anonymous'}</p>
-                  </div>
+                  <p className="text-sm font-medium">{review.reviewer_name || 'Anonymous'}</p>
                 </div>
                 <div className="flex shrink-0">
-                  {[1, 2, 3, 4, 5].map((n) =>
-              <Star key={n} className={`w-3.5 h-3.5 ${n <= review.rating ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground/20'}`} />
-              )}
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <Star key={n} className={`w-3.5 h-3.5 ${n <= review.rating ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground/20'}`} />
+                  ))}
                 </div>
               </div>
-              {review.comment &&
-          <p className="text-sm text-muted-foreground mt-2 ml-10 leading-relaxed">{review.comment}</p>
-          }
+              {review.comment && (
+                <p className="text-sm text-muted-foreground mt-2 ml-10 leading-relaxed">{review.comment}</p>
+              )}
             </div>
-        )}
+          ))}
         </div>
-      }
-    </div>);
-
+      )}
+    </div>
+  );
 }
