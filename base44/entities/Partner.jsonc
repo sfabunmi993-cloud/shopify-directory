@@ -142,6 +142,11 @@
       "default": false,
       "description": "Whether this partner has been verified by admin"
     },
+    "unlimited_reviews": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this partner is approved for unlimited review purchases"
+    },
     "status": {
       "type": "string",
       "enum": [

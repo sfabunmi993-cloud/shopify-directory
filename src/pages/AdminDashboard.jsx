@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2 } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2, Infinity } from 'lucide-react';
 import AnnouncementsSection from '@/components/admin/AnnouncementsSection';
 import { DEFAULT_PRICING } from '@/hooks/usePricing';
 import { toast } from 'sonner';
@@ -161,6 +161,13 @@ export default function AdminDashboard() {
     const newVal = !partner.is_verified;
     await base44.entities.Partner.update(partner.id, { is_verified: newVal });
     toast.success(newVal ? `${partner.name} verified!` : `Verification removed from ${partner.name}`);
+    loadData();
+  };
+
+  const handleToggleUnlimitedReviews = async (partner) => {
+    const newVal = !partner.unlimited_reviews;
+    await base44.entities.Partner.update(partner.id, { unlimited_reviews: newVal });
+    toast.success(newVal ? `${partner.name} approved for unlimited reviews!` : `Unlimited reviews revoked for ${partner.name}`);
     loadData();
   };
 
@@ -346,13 +353,13 @@ export default function AdminDashboard() {
         </TabsList>
 
         <TabsContent value="pending">
-          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} showApprove />
+          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} showApprove />
         </TabsContent>
         <TabsContent value="approved">
-          <PartnerList partners={approved} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} />
+          <PartnerList partners={approved} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} />
         </TabsContent>
         <TabsContent value="restricted">
-          <PartnerList partners={restricted} onApprove={handleApprove} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} showApprove />
+          <PartnerList partners={restricted} onApprove={handleApprove} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} showApprove />
         </TabsContent>
         <TabsContent value="payments">
           <PaymentList payments={payments} onApprove={handleApprovePayment} onReject={handleRejectPayment} />
@@ -632,7 +639,7 @@ function PaymentList({ payments, onApprove, onReject }) {
   );
 }
 
-function PartnerList({ partners, onApprove, onRestrict, onEditId, onGenerateReviews, generatingReviews, onToggleVerify, showApprove }) {
+function PartnerList({ partners, onApprove, onRestrict, onEditId, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, showApprove }) {
   if (partners.length === 0) {
     return <p className="text-center text-muted-foreground py-12">No partners in this category.</p>;
   }
@@ -689,6 +696,16 @@ function PartnerList({ partners, onApprove, onRestrict, onEditId, onGenerateRevi
                   ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   : <Star className="w-3.5 h-3.5" />}
                 <span className="hidden sm:inline">Reviews</span>
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className={`rounded-full gap-1 ${p.unlimited_reviews ? 'text-purple-700 border-purple-300 bg-purple-50 hover:bg-purple-100' : 'text-slate-500 border-slate-200 hover:bg-slate-50'}`}
+                title={p.unlimited_reviews ? 'Revoke unlimited reviews' : 'Approve unlimited reviews'}
+                onClick={() => onToggleUnlimitedReviews(p)}
+              >
+                <Infinity className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">{p.unlimited_reviews ? 'Unlimited ✓' : 'Unlimited'}</span>
               </Button>
               {showApprove && (
                 <Button size="sm" variant="outline" className="rounded-full text-emerald-700 border-emerald-200 hover:bg-emerald-50"
