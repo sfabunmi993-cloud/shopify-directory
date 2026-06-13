@@ -101,7 +101,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
               <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-border">
                 <div>
                   <p className="text-xs text-muted-foreground">Account Number</p>
-                  <p className="font-semibold">8149375353</p>
+                  <p className="font-semibold">703166504</p>
                 </div>
                 <button onClick={() => copyText('8149375353', 'phone')} className="text-muted-foreground hover:text-foreground">
                   {copied === 'phone' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
