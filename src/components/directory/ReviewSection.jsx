@@ -26,7 +26,7 @@ function StarPicker({ value, onChange }) {
   );
 }
 
-export default function ReviewSection({ partnerId, onReviewAdded, unlimitedReviews }) {
+export default function ReviewSection({ partnerId, onReviewAdded, unlimitedReviews, partnerStatus }) {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -64,13 +64,16 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     }
   };
 
+  // Restricted partners OR non-unlimited partners are limited to 1 review/day
+  const isDailyLimited = !unlimitedReviews || partnerStatus === 'restricted';
+
   const loadReviews = async () => {
     setLoading(true);
     try {
       const data = await base44.entities.Review.filter({ partner_id: partnerId }, '-created_date');
       setReviews(data);
       // Check if any review was submitted today (global, DB-based limit)
-      if (!unlimitedReviews) {
+      if (isDailyLimited) {
         const startOfToday = new Date();
         startOfToday.setHours(0, 0, 0, 0);
         const reviewedToday = data.some(r => new Date(r.created_date) >= startOfToday);
@@ -99,7 +102,7 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     if (!partnerId) { toast.error('Partner not found'); return; }
 
     // Double-check daily limit before submitting
-    if (!unlimitedReviews) {
+    if (isDailyLimited) {
       const key = `review_submitted_${partnerId}`;
       const stored = localStorage.getItem(key);
       if (stored) {
@@ -123,8 +126,8 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
         await base44.functions.invoke('updatePartnerRating', { partner_id: partnerId });
       } catch (_) {}
 
-      // Record daily limit in localStorage if not unlimited
-      if (!unlimitedReviews) {
+      // Record daily limit in localStorage if limited
+      if (isDailyLimited) {
         localStorage.setItem(`review_submitted_${partnerId}`, new Date().toISOString());
         setDailyLimitReached(true);
       }
