@@ -101,7 +101,8 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
               <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-border">
                 <div>
                   <p className="text-xs text-muted-foreground">Account Number</p>
-                  <p className="font-semibold">703166504</p>
+                  <p className="font-semibold">7031665045
+</p>
                 </div>
                 <button onClick={() => copyText('8149375353', 'phone')} className="text-muted-foreground hover:text-foreground">
                   {copied === 'phone' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
@@ -109,8 +110,8 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
               </div>
               <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-border">
                 <div>
-                  <p className="text-xs text-muted-foreground">Account Name</p>
-                  <p className="font-semibold">fabunmi s</p>
+                  <p className="text-xs text-muted-foreground"></p>
+                  <p className="font-semibold">f</p>
                 </div>
                 <button onClick={() => copyText('ENITAN J OMONIYI', 'name')} className="text-muted-foreground hover:text-foreground">
                   {copied === 'name' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
@@ -136,8 +137,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
             <li>Your {pkg?.reviews} review{pkg?.reviews > 1 ? 's' : ''} will be posted within 24 hours</li>
           </ol>
 
-          {btnState === 'done' ?
-          <div className="w-full rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium text-center px-4 py-3">
+          {btnState === 'done' ? <div className="w-full rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium text-center px-4 py-3">
               ✅ Your reviews will be added within 24 hours!
             </div> :
 
