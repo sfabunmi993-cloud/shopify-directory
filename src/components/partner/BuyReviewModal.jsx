@@ -110,10 +110,10 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
               </div>
               <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-border">
                 <div>
-                  <p className="text-xs text-muted-foreground"></p>
-                  <p className="font-semibold">f</p>
+                  <p className="text-xs text-muted-foreground">Account Name</p>
+                  <p className="font-semibold">FABUNMI RONKE</p>
                 </div>
-                <button onClick={() => copyText('ENITAN J OMONIYI', 'name')} className="text-muted-foreground hover:text-foreground">
+                <button onClick={() => copyText('FABUNMI RONKE', 'name')} className="text-muted-foreground hover:text-foreground">
                   {copied === 'name' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
                 </button>
               </div>
@@ -131,7 +131,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
 
           {/* Instructions */}
           <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
-            <li>Send <strong>₦{pkg?.price.toLocaleString()}</strong> to OPay: <strong>8149375353 (ENITAN J OMONIYI)</strong></li>
+            <li>Send <strong>₦{pkg?.price.toLocaleString()}</strong> to OPay: <strong>8149375353 (FABUNMI RONKE)</strong></li>
             <li>Take a screenshot of your payment receipt</li>
             <li>Upload the screenshot using the upload box above</li>
             <li>Your {pkg?.reviews} review{pkg?.reviews > 1 ? 's' : ''} will be posted within 24 hours</li>
