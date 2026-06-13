@@ -26,20 +26,36 @@ function StarPicker({ value, onChange }) {
   );
 }
 
-export default function ReviewSection({ partnerId, onReviewAdded }) {
+export default function ReviewSection({ partnerId, onReviewAdded, unlimitedReviews }) {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [dailyLimitReached, setDailyLimitReached] = useState(false);
   const [form, setForm] = useState({ reviewer_name: '', rating: 0, comment: '' });
 
   useEffect(() => {
     if (!partnerId) return;
     loadReviews();
     checkOwner();
+    if (!unlimitedReviews) checkDailyLimit();
   }, [partnerId]);
+
+  const checkDailyLimit = () => {
+    const key = `review_submitted_${partnerId}`;
+    const stored = localStorage.getItem(key);
+    if (stored) {
+      const submittedDate = new Date(stored);
+      const now = new Date();
+      const isSameDay =
+        submittedDate.getFullYear() === now.getFullYear() &&
+        submittedDate.getMonth() === now.getMonth() &&
+        submittedDate.getDate() === now.getDate();
+      if (isSameDay) setDailyLimitReached(true);
+    }
+  };
 
   const loadReviews = async () => {
     setLoading(true);
@@ -77,6 +93,12 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
         await base44.functions.invoke('updatePartnerRating', { partner_id: partnerId });
       } catch (_) {}
 
+      // Record daily limit in localStorage if not unlimited
+      if (!unlimitedReviews) {
+        localStorage.setItem(`review_submitted_${partnerId}`, new Date().toISOString());
+        setDailyLimitReached(true);
+      }
+
       toast.success('Review submitted!');
       setSubmitted(true);
       setShowForm(false);
@@ -113,10 +135,12 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
           )}
         </div>
         {!isOwner && !showForm && (
-          submitted
+          submitted || dailyLimitReached
             ? <div className="text-right">
                 <span className="text-xs text-muted-foreground">✅ Review submitted</span>
-                <p className="text-xs text-amber-600 mt-0.5">Thank you!</p>
+                {dailyLimitReached && !submitted && (
+                  <p className="text-xs text-amber-600 mt-0.5">1 review per day allowed</p>
+                )}
               </div>
             : <Button size="sm" className="rounded-full" onClick={() => setShowForm(true)}>Write a Review</Button>
         )}
