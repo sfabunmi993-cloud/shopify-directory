@@ -36,13 +36,13 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [alreadyReviewed, setAlreadyReviewed] = useState(false);
   const [form, setForm] = useState({ reviewer_name: '', rating: 0, comment: '' });
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     loadReviews();
-    checkEligibility();
+    checkOwner();
   }, [partnerId]);
 
   const loadReviews = async () => {
@@ -52,38 +52,23 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     setLoading(false);
   };
 
-  const checkEligibility = async () => {
+  const checkOwner = async () => {
     const authed = await base44.auth.isAuthenticated();
     if (!authed) return;
     const user = await base44.auth.me();
-
-    // Pre-fill name
     if (user.full_name) setForm((prev) => ({ ...prev, reviewer_name: user.full_name }));
-
-    setIsLoggedIn(true);
-
-    // Check if they own this partner profile
     const partners = await base44.entities.Partner.filter({ created_by_id: user.id });
     if (partners.length > 0 && partners[0].id === partnerId) {
       setIsOwner(true);
-      return;
     }
-
-    // If partner has unlimited reviews enabled, skip the limit check
-    if (unlimitedReviews) return;
-
-    // Check if user has already submitted a review today
-    const existingReviews = await base44.entities.Review.filter({ partner_id: partnerId, created_by_id: user.id });
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
-    const reviewsToday = existingReviews.filter(r => new Date(r.created_date) >= todayStart);
-    if (reviewsToday.length >= 1) setAlreadyReviewed(true);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.rating) {toast.error('Please select a rating');return;}
+    if (!form.rating) { toast.error('Please select a rating'); return; }
+    if (!form.reviewer_name.trim()) { toast.error('Please enter your name'); return; }
     setSubmitting(true);
+
     await base44.entities.Review.create({ ...form, partner_id: partnerId });
 
     // Recalculate partner rating
@@ -94,9 +79,12 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
       review_count: allReviews.length
     });
 
-    toast.success('Review submitted! It will appear within 24 hours.');
-    // Reload page after brief delay to refresh all data
-    setTimeout(() => window.location.reload(), 800);
+    toast.success('Review submitted!');
+    setSubmitted(true);
+    setSubmitting(false);
+    setShowForm(false);
+    loadReviews();
+    if (onReviewAdded) onReviewAdded();
   };
 
   const avgRating = reviews.length > 0 ?
@@ -121,11 +109,11 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
             </div>
           }
         </div>
-        {isLoggedIn && !isOwner && !showForm && (
-          alreadyReviewed
+        {!isOwner && !showForm && (
+          submitted
             ? <div className="text-right">
                 <span className="text-xs text-muted-foreground">✅ Review submitted</span>
-                <p className="text-xs text-amber-600 mt-0.5">Your review will be added within 24 hours</p>
+                <p className="text-xs text-amber-600 mt-0.5">Thank you for your review!</p>
               </div>
             : <Button size="sm" className="rounded-full" onClick={() => setShowForm(true)}>Write a Review</Button>
         )}
