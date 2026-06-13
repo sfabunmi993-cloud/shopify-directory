@@ -9,6 +9,11 @@
     "partner_id": {
       "type": "string",
       "description": "ID of the favorited partner"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional note about why this partner was saved (up to 1000 characters)",
+      "maxLength": 1000
     }
   },
   "required": [

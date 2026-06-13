@@ -10,6 +10,11 @@
       "type": "object",
       "description": "Settings value as JSON object",
       "additionalProperties": true
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description for this settings entry (up to 1000 characters)",
+      "maxLength": 1000
     }
   },
   "required": [

@@ -17,6 +17,11 @@
     "comment": {
       "type": "string",
       "description": "Review text"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional additional description for this review (up to 1000 characters)",
+      "maxLength": 1000
     }
   },
   "required": [
