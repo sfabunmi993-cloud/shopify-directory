@@ -58,7 +58,7 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     const user = await base44.auth.me();
     if (user.full_name) setForm((prev) => ({ ...prev, reviewer_name: user.full_name }));
     const partners = await base44.entities.Partner.filter({ created_by_id: user.id });
-    if (partners.length > 0 && partners[0].id === partnerId) {
+    if (partners.some((p) => p.id === partnerId)) {
       setIsOwner(true);
     }
   };
