@@ -30,7 +30,7 @@ function StarPicker({ value, onChange }) {
 
 }
 
-export default function ReviewSection({ partnerId, onReviewAdded }) {
+export default function ReviewSection({ partnerId, onReviewAdded, unlimitedReviews }) {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -69,7 +69,10 @@ export default function ReviewSection({ partnerId, onReviewAdded }) {
       return;
     }
 
-    // Check if user has already submitted 2 reviews today
+    // If partner has unlimited reviews enabled, skip the limit check
+    if (unlimitedReviews) return;
+
+    // Check if user has already submitted a review today
     const existingReviews = await base44.entities.Review.filter({ partner_id: partnerId, created_by_id: user.id });
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);

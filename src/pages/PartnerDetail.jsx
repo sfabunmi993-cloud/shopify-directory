@@ -506,7 +506,7 @@ export default function PartnerDetail() {
           {/* Reviews */}
           <div>
             <h2 className="font-heading text-xl font-bold text-foreground mb-4">Reviews</h2>
-            <ReviewSection partnerId={partnerId} onReviewAdded={handleReviewAdded} />
+            <ReviewSection partnerId={partnerId} onReviewAdded={handleReviewAdded} unlimitedReviews={partner?.unlimited_reviews} />
           </div>
         </div>
       </div>
