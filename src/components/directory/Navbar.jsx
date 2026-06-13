@@ -77,6 +77,12 @@ export default function Navbar() {
             <Link to="/directory" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Browse
             </Link>
+            <Link to="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              About
+            </Link>
+            <Link to="/contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Contact
+            </Link>
 
             {user ?
             <>
@@ -172,6 +178,8 @@ export default function Navbar() {
             </form>
             <div className="flex flex-col gap-3">
               <Link to="/directory" className="text-sm font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Browse All</Link>
+              <Link to="/about" className="text-sm font-medium py-2" onClick={() => setMobileMenuOpen(false)}>About</Link>
+              <Link to="/contact" className="text-sm font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
               {user ?
             <>
                   {hasPartnerProfile ?

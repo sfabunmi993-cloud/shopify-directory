@@ -20,6 +20,8 @@ import MyProfile from '@/pages/MyProfile';
 import AdminDashboard from '@/pages/AdminDashboard';
 import Favorites from '@/pages/Favorites';
 import Messages from '@/pages/Messages.jsx';
+import About from '@/pages/About';
+import Contact from '@/pages/Contact';
 import SupportChat from '@/components/SupportChat';
 
 const AuthenticatedApp = () => {
@@ -61,6 +63,8 @@ const AuthenticatedApp = () => {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/messages" element={<Messages />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
