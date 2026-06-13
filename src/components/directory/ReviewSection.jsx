@@ -69,27 +69,31 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     if (!form.reviewer_name.trim()) { toast.error('Please enter your name'); return; }
     setSubmitting(true);
 
-    const newReview = await base44.entities.Review.create({ ...form, partner_id: partnerId });
+    try {
+      const newReview = await base44.entities.Review.create({ ...form, partner_id: partnerId });
 
-    // Optimistically add review to list immediately
-    const optimisticReview = { ...form, partner_id: partnerId, id: newReview?.id || Date.now(), created_date: new Date().toISOString() };
-    setReviews((prev) => [optimisticReview, ...prev]);
+      // Optimistically add review to list immediately
+      const optimisticReview = { ...form, partner_id: partnerId, id: newReview?.id || Date.now(), created_date: new Date().toISOString() };
+      setReviews((prev) => [optimisticReview, ...prev]);
 
-    // Recalculate partner rating
-    const allReviews = await base44.entities.Review.filter({ partner_id: partnerId });
-    const avg = allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length;
-    await base44.entities.Partner.update(partnerId, {
-      rating: Math.round(avg * 10) / 10,
-      review_count: allReviews.length
-    });
+      // Recalculate partner rating
+      const allReviews = await base44.entities.Review.filter({ partner_id: partnerId });
+      const avg = allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length;
+      await base44.entities.Partner.update(partnerId, {
+        rating: Math.round(avg * 10) / 10,
+        review_count: allReviews.length
+      });
 
-    toast.success('Review submitted!');
-    setSubmitted(true);
-    setSubmitting(false);
-    setShowForm(false);
-    // Reload after short delay to get server-confirmed data
-    setTimeout(() => loadReviews(), 1500);
-    if (onReviewAdded) onReviewAdded();
+      toast.success('Review submitted!');
+      setSubmitted(true);
+      setShowForm(false);
+      setTimeout(() => loadReviews(), 1500);
+      if (onReviewAdded) onReviewAdded();
+    } catch (err) {
+      toast.error('Failed to submit review. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const avgRating = reviews.length > 0 ?
