@@ -95,13 +95,8 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     });
 
     toast.success('Review submitted! It will appear within 24 hours.');
-    // Re-check eligibility to see if limit reached
-    checkEligibility();
-    setForm((prev) => ({ ...prev, rating: 0, comment: '' }));
-    setShowForm(false);
-    loadReviews();
-    if (onReviewAdded) onReviewAdded();
-    setSubmitting(false);
+    // Reload page after brief delay to refresh all data
+    setTimeout(() => window.location.reload(), 800);
   };
 
   const avgRating = reviews.length > 0 ?
