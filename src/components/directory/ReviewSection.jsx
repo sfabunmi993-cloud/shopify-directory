@@ -68,12 +68,6 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     if (!form.rating) { toast.error('Please select a rating'); return; }
     if (!form.reviewer_name.trim()) { toast.error('Please enter your name'); return; }
 
-    const authed = await base44.auth.isAuthenticated();
-    if (!authed) {
-      toast.error('Please log in to submit a review.');
-      return;
-    }
-
     setSubmitting(true);
 
     try {
