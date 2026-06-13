@@ -69,7 +69,11 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     if (!form.reviewer_name.trim()) { toast.error('Please enter your name'); return; }
     setSubmitting(true);
 
-    await base44.entities.Review.create({ ...form, partner_id: partnerId });
+    const newReview = await base44.entities.Review.create({ ...form, partner_id: partnerId });
+
+    // Optimistically add review to list immediately
+    const optimisticReview = { ...form, partner_id: partnerId, id: newReview?.id || Date.now(), created_date: new Date().toISOString() };
+    setReviews((prev) => [optimisticReview, ...prev]);
 
     // Recalculate partner rating
     const allReviews = await base44.entities.Review.filter({ partner_id: partnerId });
@@ -83,7 +87,8 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     setSubmitted(true);
     setSubmitting(false);
     setShowForm(false);
-    loadReviews();
+    // Reload after short delay to get server-confirmed data
+    setTimeout(() => loadReviews(), 1500);
     if (onReviewAdded) onReviewAdded();
   };
 
