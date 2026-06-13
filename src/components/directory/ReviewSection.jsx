@@ -42,11 +42,13 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     checkOwner();
   }, [partnerId]);
 
-  // Re-run daily limit check whenever unlimitedReviews resolves (partner data loads async)
+  // Re-run when unlimitedReviews resolves so DB-based limit check fires correctly
   useEffect(() => {
-    if (!partnerId || unlimitedReviews) return;
-    checkDailyLimit();
-  }, [partnerId, unlimitedReviews]);
+    if (!partnerId) return;
+    loadReviews();
+  }, [unlimitedReviews]);
+
+
 
   const checkDailyLimit = () => {
     const key = `review_submitted_${partnerId}`;
@@ -67,6 +69,13 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     try {
       const data = await base44.entities.Review.filter({ partner_id: partnerId }, '-created_date');
       setReviews(data);
+      // Check if any review was submitted today (global, DB-based limit)
+      if (!unlimitedReviews) {
+        const startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
+        const reviewedToday = data.some(r => new Date(r.created_date) >= startOfToday);
+        if (reviewedToday) setDailyLimitReached(true);
+      }
     } finally {
       setLoading(false);
     }
