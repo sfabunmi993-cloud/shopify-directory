@@ -40,8 +40,13 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     if (!partnerId) return;
     loadReviews();
     checkOwner();
-    if (!unlimitedReviews) checkDailyLimit();
   }, [partnerId]);
+
+  // Re-run daily limit check whenever unlimitedReviews resolves (partner data loads async)
+  useEffect(() => {
+    if (!partnerId || unlimitedReviews) return;
+    checkDailyLimit();
+  }, [partnerId, unlimitedReviews]);
 
   const checkDailyLimit = () => {
     const key = `review_submitted_${partnerId}`;
@@ -83,6 +88,22 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     if (!form.rating) { toast.error('Please select a rating'); return; }
     if (!form.reviewer_name.trim()) { toast.error('Please enter your name'); return; }
     if (!partnerId) { toast.error('Partner not found'); return; }
+
+    // Double-check daily limit before submitting
+    if (!unlimitedReviews) {
+      const key = `review_submitted_${partnerId}`;
+      const stored = localStorage.getItem(key);
+      if (stored) {
+        const d = new Date(stored);
+        const now = new Date();
+        if (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate()) {
+          toast.error('You can only submit one review per day for this partner.');
+          setDailyLimitReached(true);
+          setShowForm(false);
+          return;
+        }
+      }
+    }
 
     setSubmitting(true);
     try {
