@@ -76,16 +76,11 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
       const optimisticReview = { ...form, partner_id: partnerId, id: newReview?.id || Date.now(), created_date: new Date().toISOString() };
       setReviews((prev) => [optimisticReview, ...prev]);
 
-      // Recalculate partner rating (best-effort, may fail if user is not owner)
+      // Recalculate partner rating via backend function (works for all users)
       try {
-        const allReviews = await base44.entities.Review.filter({ partner_id: partnerId });
-        const avg = allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length;
-        await base44.entities.Partner.update(partnerId, {
-          rating: Math.round(avg * 10) / 10,
-          review_count: allReviews.length
-        });
+        await base44.functions.invoke('updatePartnerRating', { partner_id: partnerId });
       } catch (_) {
-        // Rating update may fail for non-owners; review is still saved
+        // Non-critical — review is still saved
       }
 
       toast.success('Review submitted!');

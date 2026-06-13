@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Star, Copy, Check, CreditCard, AlertCircle, Upload, X, Infinity, Lock } from 'lucide-react';
+import { Star, Copy, Check, CreditCard, AlertCircle, Upload, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { usePricing } from '@/hooks/usePricing';
 import { base44 } from '@/api/base44Client';
@@ -97,20 +97,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
         </DialogHeader>
 
         <div className="space-y-5 pt-1">
-          {/* Unlimited reviews status */}
-          {partner?.unlimited_reviews ? (
-            <div className="bg-purple-50 border border-purple-200 rounded-xl px-4 py-3 text-sm text-purple-800 flex gap-2 items-center">
-              <Infinity className="w-4 h-4 shrink-0" />
-              <p><strong>Unlimited Reviews Enabled</strong> — You can purchase review packages without restriction.</p>
-            </div>
-          ) : (
-            <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-800 flex gap-2 items-start">
-              <Lock className="w-4 h-4 shrink-0 mt-0.5" />
-              <p><strong>Not available.</strong> Your account has not been approved for review purchases. Please contact support to get approved.</p>
-            </div>
-          )}
-
-          {partner?.unlimited_reviews && <>
+          {<>
           {/* Info */}
           <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800 flex gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
