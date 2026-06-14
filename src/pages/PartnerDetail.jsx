@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Star, MapPin, Globe, Mail, ArrowLeft, Award, Heart, Flag, MessageSquare, Hash, ShieldAlert, ChevronDown, ChevronUp, CheckCircle, Share2, Copy, Check, Send, Briefcase, BadgeCheck } from 'lucide-react';
+import { Star, MapPin, Globe, Mail, ArrowLeft, Award, Heart, Flag, MessageSquare, Hash, ShieldAlert, ChevronDown, ChevronUp, CheckCircle, Share2, Copy, Check, Send, Briefcase, BadgeCheck, Bell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
@@ -204,6 +204,16 @@ export default function PartnerDetail() {
       <div className="mb-4 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 flex items-center gap-2 text-amber-700 text-sm">
           <ShieldAlert className="w-4 h-4 shrink-0" />
           <span>This profile is pending admin approval and is not yet visible in the directory.</span>
+        </div>
+      }
+
+      {partner.admin_banner &&
+      <div className="mb-4 bg-orange-50 border border-orange-300 rounded-xl px-4 py-3 flex items-start gap-2 text-orange-800 text-sm">
+          <Bell className="w-4 h-4 shrink-0 mt-0.5 text-orange-600" />
+          <div>
+            <p className="font-semibold text-orange-900 mb-0.5">Message from Admin</p>
+            <p>{partner.admin_banner}</p>
+          </div>
         </div>
       }
 
