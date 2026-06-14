@@ -208,7 +208,7 @@ export default function PartnerDetail() {
       }
 
       {partner.admin_banner &&
-      <div className="mb-4 bg-orange-50 border border-orange-300 rounded-xl px-4 py-3 flex items-start gap-2 text-orange-800 text-sm">
+      <div className="mb-4 border border-orange-300 rounded-xl px-4 py-3 flex items-start gap-2 text-sm text-gray-50 bg-[#d21e1e]">
           <Bell className="w-4 h-4 shrink-0 mt-0.5 text-orange-600" />
           <div>
             <p className="font-semibold text-orange-900 mb-0.5">Message from Admin</p>
