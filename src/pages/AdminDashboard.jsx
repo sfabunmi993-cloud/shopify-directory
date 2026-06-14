@@ -235,8 +235,20 @@ export default function AdminDashboard() {
 
   const handleSetBanner = async () => {
     if (!bannerDialog) return;
-    await base44.entities.Partner.update(bannerDialog.id, { admin_banner: bannerMessage.trim() || null });
-    toast.success(bannerMessage.trim() ? `Banner set for ${bannerDialog.name}` : `Banner cleared for ${bannerDialog.name}`);
+    const trimmed = bannerMessage.trim();
+    await base44.entities.Partner.update(bannerDialog.id, { admin_banner: trimmed || null });
+    if (trimmed && bannerDialog.email) {
+      try {
+        await base44.functions.invoke('sendBannerNotification', {
+          partnerEmail: bannerDialog.email,
+          partnerName: bannerDialog.name,
+          message: trimmed,
+        });
+      } catch (err) {
+        console.error('Failed to send banner email:', err);
+      }
+    }
+    toast.success(trimmed ? `Banner set & email sent to ${bannerDialog.name}` : `Banner cleared for ${bannerDialog.name}`);
     setBannerDialog(null);
     setBannerMessage('');
     loadData();
