@@ -9,14 +9,22 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Home() {
-  const { data: verifiedPartners, isLoading } = useQuery({
-    queryKey: ['verified-partners'],
-    queryFn: () => base44.entities.Partner.filter({ is_verified: true }, '-rating', 50),
+  const { data: featuredPartners, isLoading } = useQuery({
+    queryKey: ['featured-partners'],
+    queryFn: () => base44.entities.Partner.filter({ is_featured: true }, '-rating', 6),
     initialData: []
   });
 
-  const displayPartners = verifiedPartners.slice().sort((a, b) => (b.rating || 0) - (a.rating || 0));
-  const loading = isLoading;
+  const { data: topPartners, isLoading: isLoadingTop } = useQuery({
+    queryKey: ['top-partners'],
+    queryFn: () => base44.entities.Partner.list('-rating', 8),
+    initialData: []
+  });
+
+  const displayPartners = (featuredPartners.length > 0 ? featuredPartners : topPartners)
+    .slice()
+    .sort((a, b) => (b.rating || 0) - (a.rating || 0));
+  const loading = isLoading || isLoadingTop;
 
   return (
     <div>
@@ -131,13 +139,13 @@ export default function Home() {
               <h4 className="font-semibold text-white mb-3 text-sm">Company</h4>
               <ul className="space-y-2 text-sm">
                 <li><Link to="/login" className="hover:text-white transition-colors">Log in</Link></li>
-                <li></li>
+                <li><Link to="/become-a-partner" className="hover:text-white transition-colors">Become a Partner</Link></li>
               </ul>
             </div>
           </div>
-          
-
-          
+          <div className="mt-10 pt-6 border-t border-white/10 text-xs text-white/40">
+            © {new Date().getFullYear()} Partners Directory. All rights reserved.
+          </div>
         </div>
       </footer>
     </div>);
