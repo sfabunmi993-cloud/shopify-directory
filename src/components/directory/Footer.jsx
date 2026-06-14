@@ -14,9 +14,9 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto">
         {/* Top Section - Logo and 4 Columns */}
         <div className="flex gap-16 mb-16">
-          <div className="shrink-0 hidden">
-            <ShopifyBag />
-          </div>
+          
+
+          
 
           <div className="grid grid-cols-4 gap-12 flex-1">
             {/* Shopify */}
