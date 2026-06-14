@@ -21,9 +21,9 @@ export default function Home() {
     initialData: []
   });
 
-  const displayPartners = (featuredPartners.length > 0 ? featuredPartners : topPartners)
-    .slice()
-    .sort((a, b) => (b.rating || 0) - (a.rating || 0));
+  const displayPartners = (featuredPartners.length > 0 ? featuredPartners : topPartners).
+  slice().
+  sort((a, b) => (b.rating || 0) - (a.rating || 0));
   const loading = isLoading || isLoadingTop;
 
   return (
@@ -139,11 +139,11 @@ export default function Home() {
               <h4 className="font-semibold text-white mb-3 text-sm">Company</h4>
               <ul className="space-y-2 text-sm">
                 <li><Link to="/login" className="hover:text-white transition-colors">Log in</Link></li>
-                <li><Link to="/become-a-partner" className="hover:text-white transition-colors">Become a Partner</Link></li>
+                <li><Link to="/become-a-partner" className="hover:text-white transition-colors hidden">Become a Partner</Link></li>
               </ul>
             </div>
           </div>
-          <div className="mt-10 pt-6 border-t border-white/10 text-xs text-white/40">
+          <div className="mt-10 pt-6 border-t border-white/10 text-xs text-white/40 hidden">
             © {new Date().getFullYear()} Partners Directory. All rights reserved.
           </div>
         </div>
