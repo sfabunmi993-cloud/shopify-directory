@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock, Share2, Star, TrendingUp, Upload, ImageIcon, Lock } from 'lucide-react';
+import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock, Share2, Star, TrendingUp, Upload, ImageIcon, Lock, Bell } from 'lucide-react';
 import { toast } from 'sonner';
 import InquiriesDashboard from '@/components/profile/InquiriesDashboard';
 import ServiceDescriptionEditor from '@/components/profile/ServiceDescriptionEditor';
@@ -225,6 +225,17 @@ export default function MyProfile() {
           </div>);
 
       })()}
+
+      {/* Admin Banner */}
+      {partner?.admin_banner &&
+      <div className="mb-4 bg-orange-50 border border-orange-300 rounded-xl px-4 py-3 flex items-start gap-2 text-orange-800 text-sm">
+          <Bell className="w-4 h-4 shrink-0 mt-0.5 text-orange-600" />
+          <div>
+            <p className="font-semibold text-orange-900 mb-0.5">Message from Admin</p>
+            <p>{partner.admin_banner}</p>
+          </div>
+        </div>
+      }
 
       {/* Status Banner */}
       {partner?.status === 'pending' &&

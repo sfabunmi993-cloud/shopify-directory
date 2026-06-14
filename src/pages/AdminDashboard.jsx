@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2, Infinity } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2, Infinity, Bell } from 'lucide-react';
 import AnnouncementsSection from '@/components/admin/AnnouncementsSection';
 import { DEFAULT_PRICING } from '@/hooks/usePricing';
 import { toast } from 'sonner';
@@ -54,6 +54,8 @@ export default function AdminDashboard() {
   const [announcementContent, setAnnouncementContent] = useState('');
   const [announcementPriority, setAnnouncementPriority] = useState('medium');
   const [creatingAnnouncement, setCreatingAnnouncement] = useState(false);
+  const [bannerDialog, setBannerDialog] = useState(null);
+  const [bannerMessage, setBannerMessage] = useState('');
 
   useEffect(() => {
     const init = async () => {
@@ -231,6 +233,15 @@ export default function AdminDashboard() {
     setCreatingAnnouncement(false);
   };
 
+  const handleSetBanner = async () => {
+    if (!bannerDialog) return;
+    await base44.entities.Partner.update(bannerDialog.id, { admin_banner: bannerMessage.trim() || null });
+    toast.success(bannerMessage.trim() ? `Banner set for ${bannerDialog.name}` : `Banner cleared for ${bannerDialog.name}`);
+    setBannerDialog(null);
+    setBannerMessage('');
+    loadData();
+  };
+
   const handleToggleAnnouncement = async (announcement) => {
     await base44.entities.Announcement.update(announcement.id, { is_active: !announcement.is_active });
     toast.success(!announcement.is_active ? 'Announcement activated!' : 'Announcement deactivated');
@@ -353,13 +364,13 @@ export default function AdminDashboard() {
         </TabsList>
 
         <TabsContent value="pending">
-          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} showApprove />
+          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} showApprove />
         </TabsContent>
         <TabsContent value="approved">
-          <PartnerList partners={approved} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} />
+          <PartnerList partners={approved} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} />
         </TabsContent>
         <TabsContent value="restricted">
-          <PartnerList partners={restricted} onApprove={handleApprove} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} showApprove />
+          <PartnerList partners={restricted} onApprove={handleApprove} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} showApprove />
         </TabsContent>
         <TabsContent value="payments">
           <PaymentList payments={payments} onApprove={handleApprovePayment} onReject={handleRejectPayment} />
@@ -564,6 +575,35 @@ export default function AdminDashboard() {
         </DialogContent>
       </Dialog>
 
+      {/* Banner Dialog */}
+      <Dialog open={!!bannerDialog} onOpenChange={() => { setBannerDialog(null); setBannerMessage(''); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Set Admin Banner for {bannerDialog?.name}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            This message will appear as a banner on the partner's profile page. Leave empty to clear any existing banner.
+          </p>
+          <Textarea
+            placeholder="e.g. Your account is under review. Please update your profile information."
+            value={bannerMessage}
+            onChange={e => setBannerMessage(e.target.value)}
+            className="h-28 resize-none"
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setBannerDialog(null); setBannerMessage(''); }}>Cancel</Button>
+            {bannerDialog?.admin_banner && (
+              <Button variant="ghost" className="text-red-600" onClick={() => { setBannerMessage(''); }} >
+                Clear Banner
+              </Button>
+            )}
+            <Button onClick={handleSetBanner}>
+              <Bell className="w-4 h-4 mr-1.5" /> {bannerMessage.trim() ? 'Set Banner' : 'Clear Banner'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Restrict Dialog */}
       <Dialog open={!!restrictDialog} onOpenChange={() => { setRestrictDialog(null); setRestrictReason(''); }}>
         <DialogContent>
@@ -639,7 +679,7 @@ function PaymentList({ payments, onApprove, onReject }) {
   );
 }
 
-function PartnerList({ partners, onApprove, onRestrict, onEditId, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, showApprove }) {
+function PartnerList({ partners, onApprove, onRestrict, onEditId, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove }) {
   if (partners.length === 0) {
     return <p className="text-center text-muted-foreground py-12">No partners in this category.</p>;
   }
@@ -713,6 +753,16 @@ function PartnerList({ partners, onApprove, onRestrict, onEditId, onGenerateRevi
                   <CheckCircle className="w-3.5 h-3.5 mr-1" /> Approve
                 </Button>
               )}
+              <Button
+                size="sm"
+                variant="outline"
+                className={`rounded-full gap-1 ${p.admin_banner ? 'text-orange-700 border-orange-300 bg-orange-50 hover:bg-orange-100' : 'text-slate-500 border-slate-200 hover:bg-slate-50'}`}
+                title={p.admin_banner ? 'Edit admin banner' : 'Set admin banner'}
+                onClick={() => onSetBanner(p)}
+              >
+                <Bell className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">{p.admin_banner ? 'Banner ✓' : 'Banner'}</span>
+              </Button>
               {p.status !== 'restricted' && (
                 <Button size="sm" variant="outline" className="rounded-full text-red-700 border-red-200 hover:bg-red-50"
                   onClick={() => onRestrict(p)}>

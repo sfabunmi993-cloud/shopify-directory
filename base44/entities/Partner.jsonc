@@ -165,6 +165,10 @@
     "restriction_reason": {
       "type": "string",
       "description": "Reason for account restriction by admin"
+    },
+    "admin_banner": {
+      "type": "string",
+      "description": "Custom banner message set by admin, visible only to this partner on their profile"
     }
   },
   "required": [
