@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock, Share2, Star, TrendingUp, Upload, ImageIcon } from 'lucide-react';
+import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock, Share2, Star, TrendingUp, Upload, ImageIcon, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import InquiriesDashboard from '@/components/profile/InquiriesDashboard';
 import ServiceDescriptionEditor from '@/components/profile/ServiceDescriptionEditor';
@@ -62,6 +62,8 @@ export default function MyProfile() {
   const [newService, setNewService] = useState('');
   const [newTag, setNewTag] = useState('');
   const [form, setForm] = useState({});
+  const [passwordForm, setPasswordForm] = useState({ newPassword: '', confirmPassword: '' });
+  const [savingPassword, setSavingPassword] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -487,6 +489,60 @@ export default function MyProfile() {
         <div className="pt-2">
           <Button className="w-full rounded-full" onClick={handleSave} disabled={saving}>
             {saving ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> Saving...</> : <><Save className="w-4 h-4 mr-1.5" /> Save Changes</>}
+          </Button>
+        </div>
+      </div>
+
+      {/* Settings */}
+      <div className="bg-white border border-border rounded-2xl p-6 mt-6">
+        <h2 className="font-semibold text-base mb-4 flex items-center gap-2">
+          <Lock className="w-4 h-4 text-muted-foreground" /> Account Settings
+        </h2>
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground">Change your password</p>
+          <div className="space-y-1.5">
+            <Label>New password</Label>
+            <Input
+              type="password"
+              placeholder="Enter new password"
+              value={passwordForm.newPassword}
+              onChange={(e) => setPasswordForm((prev) => ({ ...prev, newPassword: e.target.value }))}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label>Confirm new password</Label>
+            <Input
+              type="password"
+              placeholder="Confirm new password"
+              value={passwordForm.confirmPassword}
+              onChange={(e) => setPasswordForm((prev) => ({ ...prev, confirmPassword: e.target.value }))}
+            />
+          </div>
+          <Button
+            className="rounded-full"
+            disabled={savingPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
+            onClick={async () => {
+              if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+                toast.error('Passwords do not match');
+                return;
+              }
+              if (passwordForm.newPassword.length < 6) {
+                toast.error('Password must be at least 6 characters');
+                return;
+              }
+              setSavingPassword(true);
+              try {
+                await base44.auth.updateMe({ password: passwordForm.newPassword });
+                toast.success('Password updated successfully!');
+                setPasswordForm({ newPassword: '', confirmPassword: '' });
+              } catch (err) {
+                toast.error(err.message || 'Failed to update password');
+              } finally {
+                setSavingPassword(false);
+              }
+            }}
+          >
+            {savingPassword ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> Updating...</> : 'Update Password'}
           </Button>
         </div>
       </div>
