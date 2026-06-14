@@ -23,7 +23,10 @@ export default function Home() {
 
   const displayPartners = (featuredPartners.length > 0 ? featuredPartners : topPartners).
   slice().
-  sort((a, b) => (b.rating || 0) - (a.rating || 0));
+  sort((a, b) => {
+    if (a.is_verified !== b.is_verified) return b.is_verified ? 1 : -1;
+    return (b.rating || 0) - (a.rating || 0);
+  });
   const loading = isLoading || isLoadingTop;
 
   return (
