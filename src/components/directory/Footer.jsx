@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Youtube, Instagram, TrendingUp, Linkedin } from 'lucide-react';
+import { Facebook, Twitter, Youtube, Instagram, Linkedin } from 'lucide-react';
 
 const ShopifyBag = () => (
-  <svg className="w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M20.067 8.478c.492.88.556 2.014.3 3.327-.74 3.806-3.276 5.12-6.514 5.12h-.5a.805.805 0 0 0-.794.68l-.04.22-.63 4.002-.028.15a.806.806 0 0 1-.795.68h-2.89a.59.59 0 0 1-.584-.678l2.502-15.876a.816.816 0 0 1 .806-.68h3.02c2.3 0 3.876.502 4.627 1.395z"/>
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15.337 5.24c-.07-.52-.51-.91-1.04-.91h-1.56c-.17-1.06-1.08-1.87-2.18-1.87s-2.01.81-2.18 1.87H6.8c-.53 0-.97.39-1.04.91L4.5 18.24c-.04.29.06.58.26.8.2.21.48.34.78.34h11.91c.3 0 .58-.13.78-.34.2-.22.3-.51.26-.8L17.33 5.24zM10.557 4.33c.26-.31.64-.51 1.07-.51s.81.2 1.07.51c.19.22.31.5.34.8h-2.82c.03-.3.15-.58.34-.8zM7.82 17.18l.96-9.94h6.45l.96 9.94H7.82z"/>
   </svg>
 );
 
@@ -100,7 +100,7 @@ export default function Footer() {
               <Instagram className="w-5 h-5" />
             </a>
             <a href="https://www.tiktok.com/@shopify" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center hover:opacity-80 transition-opacity">
-              <TrendingUp className="w-5 h-5" />
+              <svg viewBox="0 0 24 24" fill="black" className="w-5 h-5"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.88a8.27 8.27 0 0 0 4.84 1.56V7.01a4.85 4.85 0 0 1-1.07-.32z"/></svg>
             </a>
             <a href="https://www.linkedin.com/company/shopify" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center hover:opacity-80 transition-opacity">
               <Linkedin className="w-5 h-5" />
