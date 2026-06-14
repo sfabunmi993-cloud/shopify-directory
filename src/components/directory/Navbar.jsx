@@ -57,7 +57,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img src="https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/fff880ec6_download-removebg-preview.png" alt="Shopify" style={{ height: '36px', width: 'auto' }} className="my-3 mx-1" />
+            <img src="https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/fff880ec6_download-removebg-preview.png" alt="Shopify" style={{ height: '36px', width: 'auto' }} className="px-4 mx-1" />
             <span className="font-bold text-lg text-foreground hidden sm:block capitalize italic [font-family:'Alegreya',_serif]">Partners Directory</span>
           </Link>
 
