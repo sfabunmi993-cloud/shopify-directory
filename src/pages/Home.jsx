@@ -22,6 +22,7 @@ export default function Home() {
   });
 
   const displayPartners = (featuredPartners.length > 0 ? featuredPartners : topPartners)
+    .filter((partner) => partner.is_verified)
     .slice()
     .sort((a, b) => (b.rating || 0) - (a.rating || 0));
   const loading = isLoading || isLoadingTop;
