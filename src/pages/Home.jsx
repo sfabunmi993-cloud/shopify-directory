@@ -9,23 +9,11 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Home() {
-  const { data: featuredPartners, isLoading } = useQuery({
-    queryKey: ['featured-partners'],
-    queryFn: () => base44.entities.Partner.filter({ is_featured: true }, '-rating', 6),
+  const { data: displayPartners, isLoading: loading } = useQuery({
+    queryKey: ['verified-partners'],
+    queryFn: () => base44.entities.Partner.filter({ is_verified: true }, '-rating', 50),
     initialData: []
   });
-
-  const { data: topPartners, isLoading: isLoadingTop } = useQuery({
-    queryKey: ['top-partners'],
-    queryFn: () => base44.entities.Partner.list('-rating', 8),
-    initialData: []
-  });
-
-  const displayPartners = (featuredPartners.length > 0 ? featuredPartners : topPartners)
-    .filter((partner) => partner.is_verified)
-    .slice()
-    .sort((a, b) => (b.rating || 0) - (a.rating || 0));
-  const loading = isLoading || isLoadingTop;
 
   return (
     <div>
