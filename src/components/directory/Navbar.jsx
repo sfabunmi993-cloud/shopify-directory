@@ -58,7 +58,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 shrink-0">
             
-            <span className="font-heading font-bold text-lg text-foreground hidden sm:block py-6 my-2">Shopify Partners Directory</span>
+            <span className="font-heading font-bold text-lg text-foreground hidden sm:block py-6 my-2 h-7 mt-4 mr-3">Shopify Partners Directory</span>
           </Link>
 
           <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl mx-8">
