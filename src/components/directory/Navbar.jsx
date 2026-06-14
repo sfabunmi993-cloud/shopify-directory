@@ -57,8 +57,10 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            
-            <span className="font-heading font-bold text-lg text-foreground hidden sm:block py-6 my-2 h-7 mt-4 mr-3">Shopify Partners Directory</span>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="#008060">
+              <path d="M15.337 5.24c-.07-.52-.51-.91-1.04-.91h-1.56c-.17-1.06-1.08-1.87-2.18-1.87s-2.01.81-2.18 1.87H6.8c-.53 0-.97.39-1.04.91L4.5 18.24c-.04.29.06.58.26.8.2.21.48.34.78.34h11.91c.3 0 .58-.13.78-.34.2-.22.3-.51.26-.8L17.33 5.24zM10.557 4.33c.26-.31.64-.51 1.07-.51s.81.2 1.07.51c.19.22.31.5.34.8h-2.82c.03-.3.15-.58.34-.8zM7.82 17.18l.96-9.94h6.45l.96 9.94H7.82z"/>
+            </svg>
+            <span className="font-heading font-bold text-lg text-foreground hidden sm:block">Shopify Partners Directory</span>
           </Link>
 
           <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl mx-8">
