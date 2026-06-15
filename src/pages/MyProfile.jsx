@@ -7,13 +7,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock, Share2, Star, TrendingUp, Upload, ImageIcon, Lock, Bell } from 'lucide-react';
+import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock, Share2, Star, TrendingUp, Upload, ImageIcon, Lock, Bell, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 import InquiriesDashboard from '@/components/profile/InquiriesDashboard';
 import ServiceDescriptionEditor from '@/components/profile/ServiceDescriptionEditor';
 import ProjectsSection from '@/components/profile/ProjectsSection';
 import BuyReviewModal from '@/components/partner/BuyReviewModal';
 import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
+import BuyDomainModal from '@/components/partner/BuyDomainModal';
 
 const SERVICE_CATEGORIES = [
 { label: 'Marketing and sales', value: 'marketing_and_sales' },
@@ -57,6 +58,7 @@ export default function MyProfile() {
   const [saving, setSaving] = useState(false);
   const [buyReviewOpen, setBuyReviewOpen] = useState(false);
   const [premiumOpen, setPremiumOpen] = useState(false);
+  const [buyDomainOpen, setBuyDomainOpen] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingScreenshot, setUploadingScreenshot] = useState(false);
   const [newService, setNewService] = useState('');
@@ -239,9 +241,17 @@ export default function MyProfile() {
 
       {/* Status Banner */}
       {partner?.status === 'pending' &&
-      <div className="mb-4 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-center gap-2 text-amber-700 text-sm">
-          <Clock className="w-4 h-4 shrink-0" />
-          <span><strong>Pending approval.</strong> Your profile is under review. You'll be visible in the directory once approved by an admin.</span>
+      <div className="mb-4 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-start gap-3 text-amber-700 text-sm">
+          <Clock className="w-4 h-4 shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <span><strong>Pending approval.</strong> Your profile is under review. You'll be visible in the directory once approved by an admin.</span>
+          </div>
+          <button
+            onClick={() => setBuyDomainOpen(true)}
+            className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-600 text-white hover:bg-amber-700 transition-colors"
+          >
+            <Globe className="w-3.5 h-3.5" /> Buy Domain
+          </button>
         </div>
       }
       {partner?.status === 'approved' &&
@@ -560,6 +570,7 @@ export default function MyProfile() {
 
       <BuyReviewModal isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} partner={partner} />
       <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
+      <BuyDomainModal partner={partner} isOpen={buyDomainOpen} onClose={() => setBuyDomainOpen(false)} user={user} />
     </div>);
 
 }
