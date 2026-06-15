@@ -11,8 +11,8 @@ import { usePricing } from '@/hooks/usePricing';
 
 const PAYMENT_DETAILS = {
   bankName: 'OPay',
-  accountName: 'ENITAN J OMONIYI',
-  accountNumber: '8149375353',
+  accountName: 'FABUNMI RONKE',
+  accountNumber: '7031665045',
 };
 
 export default function PurchasePremiumModal({ partner, isOpen, onClose, user }) {
