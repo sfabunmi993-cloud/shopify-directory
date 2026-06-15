@@ -207,7 +207,7 @@ export default function PartnerDetail() {
         </div>
       }
 
-      {partner.admin_banner &&
+      {partner.admin_banner && user && (user.id === partner.created_by_id || user.role === 'admin') &&
       <div className="mb-4 border border-orange-300 rounded-xl px-4 py-3 flex items-start gap-2 text-sm text-gray-50 bg-[#d21e1e]">
           <Bell className="w-4 h-4 shrink-0 mt-0.5 text-[#fdf9f7]" />
           <div>
