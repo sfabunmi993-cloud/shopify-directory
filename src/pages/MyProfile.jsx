@@ -165,6 +165,11 @@ export default function MyProfile() {
               
             <Star className="w-4 h-4 fill-white" /> Buy Reviews
           </Button>
+          <button
+            onClick={() => setBuyDomainOpen(true)}
+            className="inline-flex items-center gap-1 text-xs font-semibold border border-blue-200 rounded-full px-2.5 py-0.5 w-fit hover:bg-blue-100 transition-colors bg-blue-600 text-white">
+            <Globe className="w-3 h-3" /> Buy Domain
+          </button>
           {partner?.is_verified ?
             <span className="inline-flex items-center gap-1 text-xs text-blue-600 font-semibold bg-blue-50 border border-blue-200 rounded-full px-2.5 py-0.5 w-fit">
               <ShieldCheck className="w-3.5 h-3.5" /> Verified
