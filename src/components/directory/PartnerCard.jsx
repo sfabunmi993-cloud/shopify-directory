@@ -24,7 +24,7 @@ export default function PartnerCard({ partner, compareSelected, onToggleCompare 
   const extraCount = (partner.services?.length || 0) - 4;
 
   return (
-    <div className={`relative bg-white border rounded-xl p-5 hover:shadow-md transition-all duration-200 group my-2 ${compareSelected ? 'border-primary ring-1 ring-primary/30' : 'border-border hover:border-border/80'}`}>
+    <div className={`relative border rounded-xl p-5 hover:shadow-md transition-all duration-200 group my-2 text-[#1a2438] bg-gray-950 ${compareSelected ? 'border-primary ring-1 ring-primary/30' : 'border-border hover:border-border/80'}`}>
       
 
 
