@@ -12,7 +12,7 @@ const CATEGORIES = [
 
 export default function HeroSection() {
   return (
-    <section className="bg-gradient-to-br from-muted/40 via-white to-muted/60 pt-16 pb-20 md:pt-20 md:pb-28">
+    <section className="bg-gradient-to-br from-muted/40 via-background to-muted/60 pt-16 pb-20 md:pt-20 md:pb-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
@@ -27,7 +27,7 @@ export default function HeroSection() {
               <Link
                 key={cat.value}
                 to={`/directory?category=${cat.value}`}
-                className="inline-flex items-center px-4 py-2.5 rounded-full border border-border bg-white text-sm font-medium text-foreground hover:border-foreground hover:shadow-sm transition-all duration-200">
+                className="inline-flex items-center px-4 py-2.5 rounded-full border border-border bg-background text-sm font-medium text-foreground hover:border-foreground hover:shadow-sm transition-all duration-200">
                 
                   {cat.label}
                 </Link>
@@ -38,10 +38,10 @@ export default function HeroSection() {
             <div className="relative">
               <div className="w-72 h-72 lg:w-80 lg:h-80 rounded-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
                 <div className="grid grid-cols-2 gap-4 p-8">
-                  <div className="w-28 h-28 rounded-2xl bg-white shadow-lg border border-border/50 flex items-center justify-center overflow-hidden">
+                  <div className="w-28 h-28 rounded-2xl bg-card shadow-lg border border-border/50 flex items-center justify-center overflow-hidden">
                     <img src="https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/a811d5dd6_pskv.PNG" alt="Partner" className="w-full h-full object-cover" />
                   </div>
-                  <div className="w-28 h-28 rounded-2xl bg-white shadow-lg border border-border/50 flex items-center justify-center overflow-hidden mt-6">
+                  <div className="w-28 h-28 rounded-2xl bg-card shadow-lg border border-border/50 flex items-center justify-center overflow-hidden mt-6">
                     <img src="https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/bdffef563_WhatsApp_Image_2026-06-09_at_061602.jpeg" alt="Partner" className="w-full h-full object-cover" />
                   </div>
                 </div>

@@ -20,7 +20,7 @@ export default function Home() {
       <HeroSection />
 
       {/* Stats */}
-      <section className="border-y border-border bg-white">
+      <section className="border-y border-border bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
             <div>
@@ -49,7 +49,7 @@ export default function Home() {
       </section>
 
       {/* Featured Partners */}
-      <section className="bg-white py-16 md:py-20">
+      <section className="bg-background py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-8">
             <div>
@@ -106,7 +106,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="text-white/70 py-12 bg-[#466f3e]">
+      <footer className="text-primary-foreground/70 py-12 bg-primary">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid sm:grid-cols-3 gap-8">
             <div>
