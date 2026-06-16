@@ -137,12 +137,45 @@ export default function AdminDashboard() {
     { name: 'Chisom E.', rating: 5, comment: 'Amazing results in record time. The quality of work is simply unmatched.' },
     { name: 'Femi B.', rating: 5, comment: 'World-class service. Everything was done perfectly and the support was phenomenal.' },
     { name: 'Sandra W.', rating: 5, comment: 'Outstanding partnership. They understood my vision and executed it flawlessly.' },
+    { name: 'Toyin A.', rating: 5, comment: 'Highly skilled and dedicated. The store redesign brought in more customers within days.' },
+    { name: 'Marcus J.', rating: 5, comment: 'I was impressed by the level of expertise and attention to my brand needs. Top-tier work.' },
+    { name: 'Priya K.', rating: 5, comment: 'Seamless experience from start to finish. My store now converts much better than before.' },
+    { name: 'Ahmed L.', rating: 4, comment: 'Very thorough and detail-oriented. Got exactly what I was looking for on this project.' },
+    { name: 'Oluwaseun B.', rating: 5, comment: 'Delivered a stunning store. The checkout flow is now smooth and customers love it.' },
+    { name: 'Rachel T.', rating: 5, comment: 'Knowledgeable, patient, and incredibly easy to work with. Results speak for themselves.' },
+    { name: 'Victor M.', rating: 5, comment: 'Our sales improved significantly after the store optimization. Truly worth every penny.' },
+    { name: 'Adaeze C.', rating: 5, comment: 'Very professional approach and creative solutions. The new design exceeded our goals.' },
+    { name: 'Samuel D.', rating: 4, comment: 'Good understanding of eCommerce best practices. Project was delivered cleanly and on time.' },
+    { name: 'Ifeoma G.', rating: 5, comment: 'Brought fresh ideas that elevated the store. Our bounce rate dropped significantly.' },
+    { name: 'Patrick H.', rating: 5, comment: 'Exceptional Shopify knowledge. Solved complex problems quickly and professionally.' },
+    { name: 'Zainab F.', rating: 5, comment: 'I am so happy with the final result. The store looks premium and performs excellently.' },
+    { name: 'Daniel I.', rating: 5, comment: 'The level of detail and care put into this project was outstanding. Highly recommend!' },
+    { name: 'Nkechi O.', rating: 5, comment: 'Transformed our underperforming store into a revenue machine. Absolutely brilliant work.' },
+    { name: 'Tom W.', rating: 4, comment: 'Good communicator and skilled developer. Happy with the outcome overall.' },
+    { name: 'Chidinma E.', rating: 5, comment: 'Incredible results! Our Shopify store is now fast, clean, and optimized for sales.' },
+    { name: 'Ben A.', rating: 5, comment: 'Took the time to understand our brand before making any changes. Perfect execution.' },
+    { name: 'Funke S.', rating: 5, comment: 'One of the most capable eCommerce experts I have worked with. Truly impressive work.' },
+    { name: 'George N.', rating: 5, comment: 'Every recommendation was on point. Store performance improved greatly after the project.' },
+    { name: 'Amara T.', rating: 5, comment: 'Went above and beyond to make sure everything was perfect. Highly professional service.' },
+    { name: 'Liam C.', rating: 4, comment: 'Very competent Shopify specialist. Delivered solid results and was easy to collaborate with.' },
+    { name: 'Yemi B.', rating: 5, comment: 'Our revenue grew after the store revamp. I credit this partner entirely for that success.' },
+    { name: 'Sofia R.', rating: 5, comment: 'Fantastic experience! Clean design, fast load time, and great customer journey.' },
+    { name: 'Emeka O.', rating: 5, comment: 'Smart, skilled, and incredibly professional. The store looks and performs beautifully now.' },
+    { name: 'Hannah K.', rating: 5, comment: 'Prompt responses and flawless execution. One of the best partners I have ever worked with.' },
+    { name: 'Chukwuemeka A.', rating: 5, comment: 'Turned our vision into reality with precision. The finished store exceeded all expectations.' },
+    { name: 'Lucy M.', rating: 4, comment: 'Thorough and reliable. The project was completed neatly and delivered on schedule.' },
+    { name: 'Bola F.', rating: 5, comment: 'An absolute expert in Shopify. The results were transformative and immediate.' },
+    { name: 'Owen D.', rating: 5, comment: 'Took charge of our store and made it world-class. I am thrilled with the outcome.' },
+    { name: 'Taiwo A.', rating: 5, comment: 'Brilliant work from start to finish. Sales doubled within a month of the launch.' },
+    { name: 'Nina P.', rating: 5, comment: 'Strategic, creative, and results-driven. Exactly the kind of partner every brand needs.' },
   ];
 
   const handleGenerateReviews = async (partner, count) => {
     const n = Math.min(Math.max(parseInt(count) || 10, 1), reviewPool.length);
     setGeneratingReviews(partner.id);
-    const templates = reviewPool.slice(0, n);
+    // Shuffle pool randomly so each profile gets different reviews
+    const shuffled = [...reviewPool].sort(() => Math.random() - 0.5);
+    const templates = shuffled.slice(0, n);
     for (const r of templates) {
       await base44.entities.Review.create({ partner_id: partner.id, reviewer_name: r.name, rating: r.rating, comment: r.comment });
     }
