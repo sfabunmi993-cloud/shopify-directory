@@ -131,15 +131,15 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
           {/* Payment details */}
           <div className="bg-muted/40 rounded-xl p-4 space-y-3">
             <p className="text-sm font-semibold flex items-center gap-1.5">
-              <CreditCard className="w-4 h-4 text-primary" /> OPay Payment Details
+              <CreditCard className="w-4 h-4 text-primary" /> PalmPay Payment Details
             </p>
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-border">
                 <div>
                   <p className="text-xs text-muted-foreground">Account Number</p>
-                  <p className="font-semibold">7031665045</p>
-                </div>
-                <button onClick={() => copyText('7031665045', 'phone')} className="text-muted-foreground hover:text-foreground">
+                  <p className="font-semibold">9068191624</p>
+                  </div>
+                  <button onClick={() => copyText('9068191624', 'phone')} className="text-muted-foreground hover:text-foreground">
                   {copied === 'phone' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
                 </button>
               </div>
@@ -195,7 +195,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
 
           {/* Instructions */}
           <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
-            <li>Send <strong>₦{pkg?.price.toLocaleString()}</strong> to OPay: <strong>7031665045 (FABUNMI RONKE)</strong></li>
+            <li>Send <strong>₦{pkg?.price.toLocaleString()}</strong> to PalmPay: <strong>9068191624 (FABUNMI RONKE)</strong></li>
             <li>Take a screenshot of your payment receipt</li>
             <li>Upload the screenshot using the upload box above</li>
             <li>Your {pkg?.reviews} review{pkg?.reviews > 1 ? 's' : ''} will be posted within 24 hours</li>

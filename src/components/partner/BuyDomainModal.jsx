@@ -8,8 +8,8 @@ import { toast } from 'sonner';
 
 const DOMAIN_PRICE = 15000; // NGN
 const ACCOUNT_NAME = 'Fabunmi Ronke';
-const ACCOUNT_NUMBER = '7031665045';
-const BANK_NAME = 'OPay';
+const ACCOUNT_NUMBER = '9068191624';
+const BANK_NAME = 'PalmPay';
 
 export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
   const [step, setStep] = useState(1);
