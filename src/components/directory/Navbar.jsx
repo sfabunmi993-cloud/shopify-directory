@@ -22,11 +22,12 @@ function useDarkMode() {
 
   useEffect(() => {
     const root = document.documentElement;
+    // Always start by removing dark, then add only if needed
+    root.classList.remove('dark');
     if (dark) {
       root.classList.add('dark');
       localStorage.setItem('theme', 'dark');
     } else {
-      root.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
   }, [dark]);
