@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Star, Loader2 } from 'lucide-react';
+import { Star, Loader2, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -32,8 +32,10 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [dailyLimitReached, setDailyLimitReached] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
   const [form, setForm] = useState({ reviewer_name: '', rating: 0, comment: '' });
 
   useEffect(() => {
@@ -90,9 +92,21 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
       if (!authed) return;
       const user = await base44.auth.me();
       if (user?.full_name) setForm((prev) => ({ ...prev, reviewer_name: user.full_name }));
+      if (user?.role === 'admin') setIsAdmin(true);
       const myPartners = await base44.entities.Partner.filter({ created_by_id: user.id });
       setIsOwner(myPartners.some((p) => p.id === partnerId));
     } catch (_) {}
+  };
+
+  const handleDeleteReview = async (review) => {
+    if (!window.confirm(`Delete review by "${review.reviewer_name}"?`)) return;
+    setDeletingId(review.id);
+    await base44.entities.Review.delete(review.id);
+    try { await base44.functions.invoke('updatePartnerRating', { partner_id: partnerId }); } catch (_) {}
+    toast.success('Review deleted');
+    await loadReviews();
+    if (onReviewAdded) onReviewAdded();
+    setDeletingId(null);
   };
 
   const handleSubmit = async (e) => {
@@ -228,10 +242,22 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
                   </div>
                   <p className="text-sm font-medium">{review.reviewer_name || 'Anonymous'}</p>
                 </div>
-                <div className="flex shrink-0">
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <Star key={n} className={`w-3.5 h-3.5 ${n <= review.rating ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground/20'}`} />
-                  ))}
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <Star key={n} className={`w-3.5 h-3.5 ${n <= review.rating ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground/20'}`} />
+                    ))}
+                  </div>
+                  {isAdmin && (
+                    <button
+                      onClick={() => handleDeleteReview(review)}
+                      disabled={deletingId === review.id}
+                      className="p-1 rounded hover:bg-red-50 text-muted-foreground hover:text-red-500 transition-colors"
+                      title="Delete review"
+                    >
+                      {deletingId === review.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                    </button>
+                  )}
                 </div>
               </div>
               {review.comment && (

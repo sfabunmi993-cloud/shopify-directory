@@ -56,6 +56,10 @@ export default function AdminDashboard() {
   const [creatingAnnouncement, setCreatingAnnouncement] = useState(false);
   const [bannerDialog, setBannerDialog] = useState(null);
   const [bannerMessage, setBannerMessage] = useState('');
+  const [manualReviewMode, setManualReviewMode] = useState(false);
+  const [manualReviewName, setManualReviewName] = useState('');
+  const [manualReviewComment, setManualReviewComment] = useState('');
+  const [manualReviewRating, setManualReviewRating] = useState(5);
 
   useEffect(() => {
     const init = async () => {
@@ -188,6 +192,30 @@ export default function AdminDashboard() {
     toast.success(`${n} reviews generated for ${partner.name}!`);
     setReviewCountDialog(null);
     setReviewCount('10');
+    loadData();
+    setGeneratingReviews(null);
+  };
+
+  const handleAddManualReview = async (partner) => {
+    if (!manualReviewName.trim() || !manualReviewComment.trim()) return;
+    setGeneratingReviews(partner.id);
+    await base44.entities.Review.create({
+      partner_id: partner.id,
+      reviewer_name: manualReviewName.trim(),
+      rating: manualReviewRating,
+      comment: manualReviewComment.trim(),
+    });
+    const newCount = (partner.review_count || 0) + 1;
+    const newRating = partner.review_count
+      ? (((partner.rating || 0) * (partner.review_count || 0) + manualReviewRating) / newCount).toFixed(1)
+      : manualReviewRating.toFixed(1);
+    await base44.entities.Partner.update(partner.id, { review_count: newCount, rating: parseFloat(newRating) });
+    toast.success(`Review added for ${partner.name}!`);
+    setReviewCountDialog(null);
+    setManualReviewMode(false);
+    setManualReviewName('');
+    setManualReviewComment('');
+    setManualReviewRating(5);
     loadData();
     setGeneratingReviews(null);
   };
@@ -481,34 +509,99 @@ export default function AdminDashboard() {
       </Dialog>
 
       {/* Generate Reviews Dialog */}
-      <Dialog open={!!reviewCountDialog} onOpenChange={() => { setReviewCountDialog(null); setReviewCount('10'); }}>
-        <DialogContent>
+      <Dialog open={!!reviewCountDialog} onOpenChange={() => { setReviewCountDialog(null); setReviewCount('10'); setManualReviewMode(false); setManualReviewName(''); setManualReviewComment(''); setManualReviewRating(5); }}>
+        <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Generate Reviews</DialogTitle>
+            <DialogTitle>Manage Reviews — {reviewCountDialog?.name}</DialogTitle>
           </DialogHeader>
-          <p className="text-sm text-muted-foreground">
-            How many reviews do you want to generate for <strong>{reviewCountDialog?.name}</strong>? (max 20)
-          </p>
-          <Input
-            type="number"
-            min="1"
-            max="20"
-            placeholder="e.g. 10"
-            value={reviewCount}
-            onChange={e => setReviewCount(e.target.value)}
-          />
-          <DialogFooter>
-            <Button variant="outline" onClick={() => { setReviewCountDialog(null); setReviewCount('10'); }}>Cancel</Button>
-            <Button
-              onClick={() => handleGenerateReviews(reviewCountDialog, reviewCount)}
-              disabled={!reviewCount || generatingReviews === reviewCountDialog?.id}
+
+          {/* Tab toggle */}
+          <div className="flex rounded-lg border border-border overflow-hidden text-sm font-medium">
+            <button
+              className={`flex-1 py-2 transition-colors ${!manualReviewMode ? 'bg-primary text-primary-foreground' : 'bg-white text-muted-foreground hover:bg-muted'}`}
+              onClick={() => setManualReviewMode(false)}
             >
-              {generatingReviews === reviewCountDialog?.id
-                ? <Loader2 className="w-4 h-4 animate-spin" />
-                : <><Star className="w-4 h-4 mr-1.5" /> Generate {reviewCount || 0} Reviews</>
-              }
-            </Button>
-          </DialogFooter>
+              Auto-Generate
+            </button>
+            <button
+              className={`flex-1 py-2 transition-colors ${manualReviewMode ? 'bg-primary text-primary-foreground' : 'bg-white text-muted-foreground hover:bg-muted'}`}
+              onClick={() => setManualReviewMode(true)}
+            >
+              Paste / Manual
+            </button>
+          </div>
+
+          {!manualReviewMode ? (
+            <>
+              <p className="text-sm text-muted-foreground">
+                How many reviews to auto-generate for <strong>{reviewCountDialog?.name}</strong>? (max 20)
+              </p>
+              <Input
+                type="number"
+                min="1"
+                max="20"
+                placeholder="e.g. 10"
+                value={reviewCount}
+                onChange={e => setReviewCount(e.target.value)}
+              />
+              <DialogFooter>
+                <Button variant="outline" onClick={() => { setReviewCountDialog(null); setReviewCount('10'); }}>Cancel</Button>
+                <Button
+                  onClick={() => handleGenerateReviews(reviewCountDialog, reviewCount)}
+                  disabled={!reviewCount || generatingReviews === reviewCountDialog?.id}
+                >
+                  {generatingReviews === reviewCountDialog?.id
+                    ? <Loader2 className="w-4 h-4 animate-spin" />
+                    : <><Star className="w-4 h-4 mr-1.5" /> Generate {reviewCount || 0} Reviews</>
+                  }
+                </Button>
+              </DialogFooter>
+            </>
+          ) : (
+            <>
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <label className="text-sm font-medium">Reviewer Name *</label>
+                  <Input
+                    placeholder="e.g. John Smith"
+                    value={manualReviewName}
+                    onChange={e => setManualReviewName(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-medium">Rating *</label>
+                  <div className="flex gap-1">
+                    {[1,2,3,4,5].map(n => (
+                      <button key={n} type="button" onClick={() => setManualReviewRating(n)}>
+                        <Star className={`w-7 h-7 transition-colors ${n <= manualReviewRating ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground/30'}`} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-medium">Review Comment *</label>
+                  <Textarea
+                    placeholder="Paste or type the review comment here..."
+                    value={manualReviewComment}
+                    onChange={e => setManualReviewComment(e.target.value)}
+                    className="h-28 resize-none"
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => { setReviewCountDialog(null); setManualReviewMode(false); setManualReviewName(''); setManualReviewComment(''); setManualReviewRating(5); }}>Cancel</Button>
+                <Button
+                  onClick={() => handleAddManualReview(reviewCountDialog)}
+                  disabled={!manualReviewName.trim() || !manualReviewComment.trim() || generatingReviews === reviewCountDialog?.id}
+                >
+                  {generatingReviews === reviewCountDialog?.id
+                    ? <Loader2 className="w-4 h-4 animate-spin" />
+                    : <><Star className="w-4 h-4 mr-1.5" /> Add Review</>
+                  }
+                </Button>
+              </DialogFooter>
+            </>
+          )}
         </DialogContent>
       </Dialog>
 
