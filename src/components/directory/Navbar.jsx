@@ -77,7 +77,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-background border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-gray-50 bg-gray-700">
         {/* Desktop & tablet row */}
         <div className="flex items-center justify-between h-16 gap-4">
           {/* Logo */}
@@ -109,13 +109,13 @@ export default function Navbar() {
             <button
               onClick={() => setDark(!dark)}
               className="p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-              title={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
+              title={dark ? 'Switch to light mode' : 'Switch to dark mode'}>
+              
               {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
 
-            {user ? (
-              <>
+            {user ?
+            <>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
@@ -131,16 +131,16 @@ export default function Navbar() {
                       <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                     </div>
                     <DropdownMenuSeparator />
-                    {isAdmin && (
-                      <>
+                    {isAdmin &&
+                  <>
                         <DropdownMenuItem asChild>
                           <Link to="/admin"><ShieldCheck className="w-4 h-4 mr-2" /> Admin Dashboard</Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                       </>
-                    )}
-                    {hasPartnerProfile ? (
-                      <>
+                  }
+                    {hasPartnerProfile ?
+                  <>
                         <DropdownMenuItem asChild>
                           <Link to="/my-profile"><User className="w-4 h-4 mr-2" /> My Profile</Link>
                         </DropdownMenuItem>
@@ -148,15 +148,15 @@ export default function Navbar() {
                           <Link to={`/partner/${partnerId}`}><LayoutDashboard className="w-4 h-4 mr-2" /> View Public Profile</Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                      </>
-                    ) : (
-                      <>
+                      </> :
+
+                  <>
                         <DropdownMenuItem asChild>
                           <Link to="/become-a-partner"><User className="w-4 h-4 mr-2" /> Become a Partner</Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                       </>
-                    )}
+                  }
                     <DropdownMenuItem asChild>
                       <Link to="/favorites"><Heart className="w-4 h-4 mr-2" /> Saved Partners</Link>
                     </DropdownMenuItem>
@@ -169,9 +169,9 @@ export default function Navbar() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              </>
-            ) : (
-              <div className="flex items-center gap-2">
+              </> :
+
+            <div className="flex items-center gap-2">
                 <Button asChild variant="ghost" size="sm">
                   <Link to="/login">Log in</Link>
                 </Button>
@@ -179,7 +179,7 @@ export default function Navbar() {
                   <Link to="/register">Become a Partner</Link>
                 </Button>
               </div>
-            )}
+            }
           </nav>
 
           {/* Mobile: dark toggle + hamburger */}
@@ -187,8 +187,8 @@ export default function Navbar() {
             <button
               onClick={() => setDark(!dark)}
               className="p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground"
-              title={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
+              title={dark ? 'Switch to light mode' : 'Switch to dark mode'}>
+              
               {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
             <button className="p-2 rounded-full hover:bg-muted transition-colors" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -199,7 +199,7 @@ export default function Navbar() {
 
         {/* Mobile search bar — always visible on mobile below the top row */}
         <div className="md:hidden pb-3">
-          <form onSubmit={(e) => { handleSearch(e); setMobileMenuOpen(false); }}>
+          <form onSubmit={(e) => {handleSearch(e);setMobileMenuOpen(false);}}>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
@@ -213,10 +213,10 @@ export default function Navbar() {
         </div>
 
         {/* Mobile menu drawer */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-border py-4 space-y-1">
-            {user && (
-              <div className="flex items-center gap-3 px-2 py-3 mb-2 bg-muted/40 rounded-xl">
+        {mobileMenuOpen &&
+        <div className="md:hidden border-t border-border py-4 space-y-1">
+            {user &&
+          <div className="flex items-center gap-3 px-2 py-3 mb-2 bg-muted/40 rounded-xl">
                 <Avatar className="w-9 h-9">
                   <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">{initials}</AvatarFallback>
                 </Avatar>
@@ -225,34 +225,34 @@ export default function Navbar() {
                   <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                 </div>
               </div>
-            )}
+          }
             <MobileLink to="/directory" onClick={() => setMobileMenuOpen(false)}>Browse All</MobileLink>
             <MobileLink to="/about" onClick={() => setMobileMenuOpen(false)}>About</MobileLink>
             <MobileLink to="/contact" onClick={() => setMobileMenuOpen(false)}>Contact</MobileLink>
-            {user ? (
-              <>
+            {user ?
+          <>
                 {isAdmin && <MobileLink to="/admin" onClick={() => setMobileMenuOpen(false)} highlight>Admin Dashboard</MobileLink>}
-                {hasPartnerProfile ? (
-                  <>
+                {hasPartnerProfile ?
+            <>
                     <MobileLink to="/my-profile" onClick={() => setMobileMenuOpen(false)}>My Profile</MobileLink>
                     <MobileLink to={`/partner/${partnerId}`} onClick={() => setMobileMenuOpen(false)}>View Public Profile</MobileLink>
-                  </>
-                ) : (
-                  <MobileLink to="/become-a-partner" onClick={() => setMobileMenuOpen(false)}>Become a Partner</MobileLink>
-                )}
+                  </> :
+
+            <MobileLink to="/become-a-partner" onClick={() => setMobileMenuOpen(false)}>Become a Partner</MobileLink>
+            }
                 <MobileLink to="/favorites" onClick={() => setMobileMenuOpen(false)}>Saved Partners</MobileLink>
                 <MobileLink to="/messages" onClick={() => setMobileMenuOpen(false)}>Messages</MobileLink>
                 <div className="pt-2 mt-2 border-t border-border">
                   <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-3 py-2.5 text-sm font-medium text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
-                  >
+                onClick={handleLogout}
+                className="w-full text-left px-3 py-2.5 text-sm font-medium text-destructive hover:bg-destructive/10 rounded-lg transition-colors">
+                
                     Log out
                   </button>
                 </div>
-              </>
-            ) : (
-              <div className="flex flex-col gap-2 pt-2">
+              </> :
+
+          <div className="flex flex-col gap-2 pt-2">
                 <Button asChild variant="outline" className="w-full rounded-full">
                   <Link to="/login" onClick={() => setMobileMenuOpen(false)}>Log in</Link>
                 </Button>
@@ -260,12 +260,12 @@ export default function Navbar() {
                   <Link to="/register" onClick={() => setMobileMenuOpen(false)}>Become a Partner</Link>
                 </Button>
               </div>
-            )}
+          }
           </div>
-        )}
+        }
       </div>
-    </header>
-  );
+    </header>);
+
 }
 
 function MobileLink({ to, onClick, children, highlight }) {
@@ -273,9 +273,9 @@ function MobileLink({ to, onClick, children, highlight }) {
     <Link
       to={to}
       onClick={onClick}
-      className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors hover:bg-muted ${highlight ? 'text-primary' : 'text-foreground'}`}
-    >
+      className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors hover:bg-muted ${highlight ? 'text-primary' : 'text-foreground'}`}>
+      
       {children}
-    </Link>
-  );
+    </Link>);
+
 }
