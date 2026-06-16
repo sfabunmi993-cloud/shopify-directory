@@ -57,9 +57,7 @@ export default function AdminDashboard() {
   const [bannerDialog, setBannerDialog] = useState(null);
   const [bannerMessage, setBannerMessage] = useState('');
   const [manualReviewMode, setManualReviewMode] = useState(false);
-  const [manualReviewName, setManualReviewName] = useState('');
-  const [manualReviewComment, setManualReviewComment] = useState('');
-  const [manualReviewRating, setManualReviewRating] = useState(5);
+  const [manualReviews, setManualReviews] = useState([{ name: '', rating: 5, comment: '' }]);
 
   useEffect(() => {
     const init = async () => {
@@ -197,25 +195,22 @@ export default function AdminDashboard() {
   };
 
   const handleAddManualReview = async (partner) => {
-    if (!manualReviewName.trim() || !manualReviewComment.trim()) return;
+    const valid = manualReviews.filter(r => r.name.trim() && r.comment.trim());
+    if (valid.length === 0) return;
     setGeneratingReviews(partner.id);
-    await base44.entities.Review.create({
-      partner_id: partner.id,
-      reviewer_name: manualReviewName.trim(),
-      rating: manualReviewRating,
-      comment: manualReviewComment.trim(),
-    });
-    const newCount = (partner.review_count || 0) + 1;
-    const newRating = partner.review_count
-      ? (((partner.rating || 0) * (partner.review_count || 0) + manualReviewRating) / newCount).toFixed(1)
-      : manualReviewRating.toFixed(1);
-    await base44.entities.Partner.update(partner.id, { review_count: newCount, rating: parseFloat(newRating) });
-    toast.success(`Review added for ${partner.name}!`);
+    for (const r of valid) {
+      await base44.entities.Review.create({
+        partner_id: partner.id,
+        reviewer_name: r.name.trim(),
+        rating: r.rating,
+        comment: r.comment.trim(),
+      });
+    }
+    try { await base44.functions.invoke('updatePartnerRating', { partner_id: partner.id }); } catch (_) {}
+    toast.success(`${valid.length} review${valid.length > 1 ? 's' : ''} added for ${partner.name}!`);
     setReviewCountDialog(null);
     setManualReviewMode(false);
-    setManualReviewName('');
-    setManualReviewComment('');
-    setManualReviewRating(5);
+    setManualReviews([{ name: '', rating: 5, comment: '' }]);
     loadData();
     setGeneratingReviews(null);
   };
@@ -509,7 +504,7 @@ export default function AdminDashboard() {
       </Dialog>
 
       {/* Generate Reviews Dialog */}
-      <Dialog open={!!reviewCountDialog} onOpenChange={() => { setReviewCountDialog(null); setReviewCount('10'); setManualReviewMode(false); setManualReviewName(''); setManualReviewComment(''); setManualReviewRating(5); }}>
+      <Dialog open={!!reviewCountDialog} onOpenChange={() => { setReviewCountDialog(null); setReviewCount('10'); setManualReviewMode(false); setManualReviews([{ name: '', rating: 5, comment: '' }]); }}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>Manage Reviews — {reviewCountDialog?.name}</DialogTitle>
@@ -559,44 +554,58 @@ export default function AdminDashboard() {
             </>
           ) : (
             <>
-              <div className="space-y-3">
-                <div className="space-y-1">
-                  <label className="text-sm font-medium">Reviewer Name *</label>
-                  <Input
-                    placeholder="e.g. John Smith"
-                    value={manualReviewName}
-                    onChange={e => setManualReviewName(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-sm font-medium">Rating *</label>
-                  <div className="flex gap-1">
-                    {[1,2,3,4,5].map(n => (
-                      <button key={n} type="button" onClick={() => setManualReviewRating(n)}>
-                        <Star className={`w-7 h-7 transition-colors ${n <= manualReviewRating ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground/30'}`} />
-                      </button>
-                    ))}
+              <div className="max-h-[55vh] overflow-y-auto space-y-4 pr-1">
+                {manualReviews.map((r, idx) => (
+                  <div key={idx} className="border border-border rounded-lg p-3 space-y-2 bg-muted/30 relative">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-muted-foreground">Review #{idx + 1}</span>
+                      {manualReviews.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => setManualReviews(prev => prev.filter((_, i) => i !== idx))}
+                          className="text-red-400 hover:text-red-600 transition-colors"
+                        >
+                          <XCircle className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                    <Input
+                      placeholder="Reviewer name *"
+                      value={r.name}
+                      onChange={e => setManualReviews(prev => prev.map((x, i) => i === idx ? { ...x, name: e.target.value } : x))}
+                    />
+                    <div className="flex gap-1">
+                      {[1,2,3,4,5].map(n => (
+                        <button key={n} type="button" onClick={() => setManualReviews(prev => prev.map((x, i) => i === idx ? { ...x, rating: n } : x))}>
+                          <Star className={`w-6 h-6 transition-colors ${n <= r.rating ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground/30'}`} />
+                        </button>
+                      ))}
+                    </div>
+                    <Textarea
+                      placeholder="Review comment *"
+                      value={r.comment}
+                      onChange={e => setManualReviews(prev => prev.map((x, i) => i === idx ? { ...x, comment: e.target.value } : x))}
+                      className="h-20 resize-none"
+                    />
                   </div>
-                </div>
-                <div className="space-y-1">
-                  <label className="text-sm font-medium">Review Comment *</label>
-                  <Textarea
-                    placeholder="Paste or type the review comment here..."
-                    value={manualReviewComment}
-                    onChange={e => setManualReviewComment(e.target.value)}
-                    className="h-28 resize-none"
-                  />
-                </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setManualReviews(prev => [...prev, { name: '', rating: 5, comment: '' }])}
+                  className="w-full flex items-center justify-center gap-1.5 text-sm text-primary border border-dashed border-primary/40 rounded-lg py-2 hover:bg-primary/5 transition-colors"
+                >
+                  <Plus className="w-4 h-4" /> Add Another Review
+                </button>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => { setReviewCountDialog(null); setManualReviewMode(false); setManualReviewName(''); setManualReviewComment(''); setManualReviewRating(5); }}>Cancel</Button>
+                <Button variant="outline" onClick={() => { setReviewCountDialog(null); setManualReviewMode(false); setManualReviews([{ name: '', rating: 5, comment: '' }]); }}>Cancel</Button>
                 <Button
                   onClick={() => handleAddManualReview(reviewCountDialog)}
-                  disabled={!manualReviewName.trim() || !manualReviewComment.trim() || generatingReviews === reviewCountDialog?.id}
+                  disabled={manualReviews.filter(r => r.name.trim() && r.comment.trim()).length === 0 || generatingReviews === reviewCountDialog?.id}
                 >
                   {generatingReviews === reviewCountDialog?.id
                     ? <Loader2 className="w-4 h-4 animate-spin" />
-                    : <><Star className="w-4 h-4 mr-1.5" /> Add Review</>
+                    : <><Star className="w-4 h-4 mr-1.5" /> Add {manualReviews.filter(r => r.name.trim() && r.comment.trim()).length || ''} Review{manualReviews.filter(r => r.name.trim() && r.comment.trim()).length !== 1 ? 's' : ''}</>
                   }
                 </Button>
               </DialogFooter>
