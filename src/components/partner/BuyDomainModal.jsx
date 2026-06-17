@@ -6,7 +6,7 @@ import { Loader2, Copy, Check, Upload, Globe } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
-const DOMAIN_PRICE = 15000; // NGN
+const DOMAIN_PRICE = 10000; // NGN
 const ACCOUNT_NAME = 'Fabunmi Ronke';
 const ACCOUNT_NUMBER = '9068191624';
 const BANK_NAME = 'PalmPay';
