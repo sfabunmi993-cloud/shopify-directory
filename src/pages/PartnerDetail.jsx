@@ -205,7 +205,7 @@ export default function PartnerDetail() {
       {partner.status === 'pending' &&
       <div className="mb-4 bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-3 flex items-center gap-2 text-amber-600 dark:text-amber-400 text-sm">
           <ShieldAlert className="w-4 h-4 shrink-0" />
-          <span>This profile is pending admin approval and is not yet visible in the directory.</span>
+          <span>This profile is pending admin approval and is not yet visible in the directory. to make it visible  you need to pur</span>
         </div>
       }
 
