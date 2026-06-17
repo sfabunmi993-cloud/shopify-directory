@@ -142,6 +142,11 @@
       "default": false,
       "description": "Whether this partner has been verified by admin"
     },
+    "is_hidden": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this partner is hidden from the directory by admin"
+    },
     "unlimited_reviews": {
       "type": "boolean",
       "default": false,

@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2, Infinity, Bell } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, EyeOff, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2, Infinity, Bell } from 'lucide-react';
 import AnnouncementsSection from '@/components/admin/AnnouncementsSection';
 import { DEFAULT_PRICING } from '@/hooks/usePricing';
 import { toast } from 'sonner';
@@ -222,6 +222,20 @@ export default function AdminDashboard() {
     loadData();
   };
 
+  const handleToggleHide = async (partner) => {
+    const newVal = !partner.is_hidden;
+    await base44.entities.Partner.update(partner.id, { is_hidden: newVal });
+    toast.success(newVal ? `${partner.name} hidden from directory` : `${partner.name} is now visible in directory`);
+    loadData();
+  };
+
+  const handleDeletePartner = async (partner) => {
+    if (!confirm(`Are you sure you want to permanently delete "${partner.name}"? This action cannot be undone.`)) return;
+    await base44.entities.Partner.delete(partner.id);
+    toast.success(`${partner.name} has been permanently deleted`);
+    loadData();
+  };
+
   const handleToggleUnlimitedReviews = async (partner) => {
     const newVal = !partner.unlimited_reviews;
     await base44.entities.Partner.update(partner.id, { unlimited_reviews: newVal });
@@ -432,13 +446,13 @@ export default function AdminDashboard() {
         </TabsList>
 
         <TabsContent value="pending">
-          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} showApprove />
+          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} showApprove onToggleHide={handleToggleHide} onDelete={handleDeletePartner} />
         </TabsContent>
         <TabsContent value="approved">
-          <PartnerList partners={approved} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} />
+          <PartnerList partners={approved} onRestrict={setRestrictDialog} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} />
         </TabsContent>
         <TabsContent value="restricted">
-          <PartnerList partners={restricted} onApprove={handleApprove} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} showApprove />
+          <PartnerList partners={restricted} onApprove={handleApprove} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} showApprove onToggleHide={handleToggleHide} onDelete={handleDeletePartner} />
         </TabsContent>
         <TabsContent value="payments">
           <PaymentList payments={payments} onApprove={handleApprovePayment} onReject={handleRejectPayment} />
@@ -826,7 +840,8 @@ function PaymentList({ payments, onApprove, onReject }) {
   );
 }
 
-function PartnerList({ partners, onApprove, onRestrict, onEditId, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove }) {
+function PartnerList(props) {
+  const { partners, onApprove, onRestrict, onEditId, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete } = props;
   if (partners.length === 0) {
     return <p className="text-center text-muted-foreground py-12">No partners in this category.</p>;
   }
@@ -835,87 +850,113 @@ function PartnerList({ partners, onApprove, onRestrict, onEditId, onGenerateRevi
       {partners.map(p => {
         const rank = getPartnerRank(p.review_count);
         return (
-          <div key={p.id} className="bg-white border border-border rounded-xl p-4 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-              {p.logo_url
-                ? <img src={p.logo_url} className="w-10 h-10 rounded-lg object-cover" alt={p.name} />
-                : <span className="font-bold text-primary">{p.name?.charAt(0)}</span>
-              }
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <p className="font-semibold text-sm">{p.name}</p>
-                {p.partner_number && <span className="text-xs text-muted-foreground font-mono">#{p.partner_number}</span>}
-                <Badge variant="outline" className={`text-xs ${STATUS_STYLES[p.status] || ''}`}>{p.status}</Badge>
-                <Badge variant="outline" className={`text-xs ${rank.color}`}>{rank.label}</Badge>
+          <div key={p.id} className="bg-white border border-border rounded-xl p-4">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                {p.logo_url
+                  ? <img src={p.logo_url} className="w-10 h-10 rounded-lg object-cover" alt={p.name} />
+                  : <span className="font-bold text-primary">{p.name?.charAt(0)}</span>
+                }
               </div>
-              <p className="text-xs text-muted-foreground truncate">{p.description}</p>
-              {p.restriction_reason && (
-                <p className="text-xs text-red-600 mt-1">Reason: {p.restriction_reason}</p>
-              )}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="font-semibold text-sm">{p.name}</p>
+                  {p.partner_number && <span className="text-xs text-muted-foreground font-mono">#{p.partner_number}</span>}
+                  <Badge variant="outline" className={`text-xs ${STATUS_STYLES[p.status] || ''}`}>{p.status}</Badge>
+                  <Badge variant="outline" className={`text-xs ${rank.color}`}>{rank.label}</Badge>
+                  {p.is_hidden && <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200">Hidden</Badge>}
+                </div>
+                <p className="text-xs text-muted-foreground truncate">{p.description}</p>
+                {p.restriction_reason && (
+                  <p className="text-xs text-red-600 mt-1">Reason: {p.restriction_reason}</p>
+                )}
+              </div>
+              <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                <Button asChild variant="ghost" size="icon" className="h-8 w-8">
+                  <Link to={`/partner/${p.id}`}><Eye className="w-4 h-4" /></Link>
+                </Button>
+                <Button size="sm" variant="ghost" className="h-8 w-8 p-0" title="Edit Partner ID" onClick={() => onEditId(p)}>
+                  <Edit2 className="w-4 h-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className={`rounded-full gap-1 ${p.is_verified ? 'text-blue-700 border-blue-300 bg-blue-50 hover:bg-blue-100' : 'text-slate-500 border-slate-200 hover:bg-slate-50'}`}
+                  title={p.is_verified ? 'Remove verification' : 'Grant verification badge'}
+                  onClick={() => onToggleVerify(p)}
+                >
+                  <BadgeCheck className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{p.is_verified ? 'Verified' : 'Verify'}</span>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="rounded-full text-amber-700 border-amber-200 hover:bg-amber-50 gap-1"
+                  title="Generate reviews"
+                  onClick={() => onGenerateReviews(p)}
+                  disabled={generatingReviews === p.id}
+                >
+                  {generatingReviews === p.id
+                    ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    : <Star className="w-3.5 h-3.5" />}
+                  <span className="hidden sm:inline">Reviews</span>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className={`rounded-full gap-1 ${p.unlimited_reviews ? 'text-purple-700 border-purple-300 bg-purple-50 hover:bg-purple-100' : 'text-slate-500 border-slate-200 hover:bg-slate-50'}`}
+                  title={p.unlimited_reviews ? 'Revoke unlimited reviews' : 'Approve unlimited reviews'}
+                  onClick={() => onToggleUnlimitedReviews(p)}
+                >
+                  <Infinity className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{p.unlimited_reviews ? 'Unlimited ✓' : 'Unlimited'}</span>
+                </Button>
+                {showApprove && (
+                  <Button size="sm" variant="outline" className="rounded-full text-emerald-700 border-emerald-200 hover:bg-emerald-50"
+                    onClick={() => onApprove(p)}>
+                    <CheckCircle className="w-3.5 h-3.5 mr-1" /> Approve
+                  </Button>
+                )}
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className={`rounded-full gap-1 ${p.admin_banner ? 'text-orange-700 border-orange-300 bg-orange-50 hover:bg-orange-100' : 'text-slate-500 border-slate-200 hover:bg-slate-50'}`}
+                  title={p.admin_banner ? 'Edit admin banner' : 'Set admin banner'}
+                  onClick={() => onSetBanner(p)}
+                >
+                  <Bell className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{p.admin_banner ? 'Banner ✓' : 'Banner'}</span>
+                </Button>
+                {p.status !== 'restricted' && (
+                  <Button size="sm" variant="outline" className="rounded-full text-red-700 border-red-200 hover:bg-red-50"
+                    onClick={() => onRestrict(p)}>
+                    <XCircle className="w-3.5 h-3.5 mr-1" /> Restrict
+                  </Button>
+                )}
+              </div>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <Button asChild variant="ghost" size="icon" className="h-8 w-8">
-                <Link to={`/partner/${p.id}`}><Eye className="w-4 h-4" /></Link>
-              </Button>
-              <Button size="sm" variant="ghost" className="h-8 w-8 p-0" title="Edit Partner ID" onClick={() => onEditId(p)}>
-                <Edit2 className="w-4 h-4" />
+            {/* Extra actions row: Hide/Unhide + Delete */}
+            <div className="flex justify-end gap-2 pt-2 border-t border-border mt-3">
+              <Button
+                size="sm"
+                variant="ghost"
+                className={`rounded-full gap-1 text-xs ${p.is_hidden ? 'text-amber-600 hover:bg-amber-50' : 'text-muted-foreground hover:bg-slate-50'}`}
+                onClick={() => onToggleHide?.(p)}
+                title={p.is_hidden ? 'Unhide from directory' : 'Hide from directory'}
+              >
+                <EyeOff className="w-3 h-3" />
+                {p.is_hidden ? 'Unhide' : 'Hide'}
               </Button>
               <Button
                 size="sm"
-                variant="outline"
-                className={`rounded-full gap-1 ${p.is_verified ? 'text-blue-700 border-blue-300 bg-blue-50 hover:bg-blue-100' : 'text-slate-500 border-slate-200 hover:bg-slate-50'}`}
-                title={p.is_verified ? 'Remove verification' : 'Grant verification badge'}
-                onClick={() => onToggleVerify(p)}
+                variant="ghost"
+                className="rounded-full gap-1 text-xs text-red-500 hover:bg-red-50"
+                onClick={() => onDelete?.(p)}
+                title="Permanently delete this partner"
               >
-                <BadgeCheck className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">{p.is_verified ? 'Verified' : 'Verify'}</span>
+                <Trash2 className="w-3 h-3" />
+                Delete
               </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                className="rounded-full text-amber-700 border-amber-200 hover:bg-amber-50 gap-1"
-                title="Generate reviews"
-                onClick={() => onGenerateReviews(p)}
-                disabled={generatingReviews === p.id}
-              >
-                {generatingReviews === p.id
-                  ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  : <Star className="w-3.5 h-3.5" />}
-                <span className="hidden sm:inline">Reviews</span>
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                className={`rounded-full gap-1 ${p.unlimited_reviews ? 'text-purple-700 border-purple-300 bg-purple-50 hover:bg-purple-100' : 'text-slate-500 border-slate-200 hover:bg-slate-50'}`}
-                title={p.unlimited_reviews ? 'Revoke unlimited reviews' : 'Approve unlimited reviews'}
-                onClick={() => onToggleUnlimitedReviews(p)}
-              >
-                <Infinity className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">{p.unlimited_reviews ? 'Unlimited ✓' : 'Unlimited'}</span>
-              </Button>
-              {showApprove && (
-                <Button size="sm" variant="outline" className="rounded-full text-emerald-700 border-emerald-200 hover:bg-emerald-50"
-                  onClick={() => onApprove(p)}>
-                  <CheckCircle className="w-3.5 h-3.5 mr-1" /> Approve
-                </Button>
-              )}
-              <Button
-                size="sm"
-                variant="outline"
-                className={`rounded-full gap-1 ${p.admin_banner ? 'text-orange-700 border-orange-300 bg-orange-50 hover:bg-orange-100' : 'text-slate-500 border-slate-200 hover:bg-slate-50'}`}
-                title={p.admin_banner ? 'Edit admin banner' : 'Set admin banner'}
-                onClick={() => onSetBanner(p)}
-              >
-                <Bell className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">{p.admin_banner ? 'Banner ✓' : 'Banner'}</span>
-              </Button>
-              {p.status !== 'restricted' && (
-                <Button size="sm" variant="outline" className="rounded-full text-red-700 border-red-200 hover:bg-red-50"
-                  onClick={() => onRestrict(p)}>
-                  <XCircle className="w-3.5 h-3.5 mr-1" /> Restrict
-                </Button>
-              )}
             </div>
           </div>
         );

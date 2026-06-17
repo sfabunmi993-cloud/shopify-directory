@@ -61,6 +61,9 @@ export default function Directory() {
   const filteredPartners = useMemo(() => {
     let results = [...partners];
 
+    // Exclude hidden partners from directory view
+    results = results.filter(p => !p.is_hidden && p.status === 'approved');
+
     if (searchQuery) {
       const q = searchQuery.toLowerCase().trim();
       results = results.filter(p =>
