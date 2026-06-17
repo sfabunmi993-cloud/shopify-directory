@@ -205,9 +205,9 @@ export default function PartnerDetail() {
       {partner.status === 'pending' &&
       <div className="mb-4 bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-3 flex items-center gap-2 text-amber-600 dark:text-amber-400 text-sm">
           <ShieldAlert className="w-4 h-4 shrink-0" />
-          <span>This profile is pending admin approval and is not yet visible in the directory. to make it visible  you need to purchase a domain name in few days</span>
-        </div>
-      }
+          <span>This profile is pending admin approval and is not yet visible in the directory. to make it visible  you need to purchase a domain name in few days or your account will be deleted 
+</span>
+        </div>}
 
       {partner.admin_banner && user && (user.id === partner.created_by_id || user.role === 'admin') &&
       <div className="mb-4 border border-destructive/40 rounded-xl px-4 py-3 flex items-start gap-2 text-sm text-destructive-foreground bg-destructive">
