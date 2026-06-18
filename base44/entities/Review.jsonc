@@ -22,6 +22,11 @@
       "type": "string",
       "description": "Optional additional description for this review (up to 1000 characters)",
       "maxLength": 1000
+    },
+    "is_purchased": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this review was submitted as part of a purchased review package"
     }
   },
   "required": [

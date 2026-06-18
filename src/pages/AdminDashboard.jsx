@@ -183,7 +183,7 @@ export default function AdminDashboard() {
     const shuffled = [...reviewPool].sort(() => Math.random() - 0.5);
     const templates = shuffled.slice(0, n);
     for (const r of templates) {
-      await base44.entities.Review.create({ partner_id: partner.id, reviewer_name: r.name, rating: r.rating, comment: r.comment });
+      await base44.entities.Review.create({ partner_id: partner.id, reviewer_name: r.name, rating: r.rating, comment: r.comment, is_purchased: true });
     }
     const totalAdded = templates.reduce((s, r) => s + r.rating, 0);
     const newCount = (partner.review_count || 0) + n;
@@ -208,6 +208,7 @@ export default function AdminDashboard() {
         reviewer_name: r.name.trim(),
         rating: r.rating,
         comment: r.comment.trim(),
+        is_purchased: true,
       });
     }
     try { await base44.functions.invoke('updatePartnerRating', { partner_id: partner.id }); } catch (_) {}

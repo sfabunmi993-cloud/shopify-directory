@@ -60,11 +60,11 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     try {
       const data = await base44.entities.Review.filter({ partner_id: partnerId }, '-created_date');
       setReviews(data);
-      // Count how many reviews were submitted today
+      // Only count purchased reviews toward the daily limit
       const startOfToday = new Date();
       startOfToday.setHours(0, 0, 0, 0);
-      const reviewsToday = data.filter(r => new Date(r.created_date) >= startOfToday).length;
-      if (reviewsToday >= DAILY_LIMIT) setDailyLimitReached(true);
+      const purchasedToday = data.filter(r => r.is_purchased && new Date(r.created_date) >= startOfToday).length;
+      if (purchasedToday >= DAILY_LIMIT) setDailyLimitReached(true);
     } finally {
       setLoading(false);
     }
@@ -99,31 +99,18 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     if (!form.reviewer_name.trim()) { toast.error('Please enter your name'); return; }
     if (!partnerId) { toast.error('Partner not found'); return; }
 
-    // Double-check daily limit before submitting
-    const startOfToday = new Date();
-    startOfToday.setHours(0, 0, 0, 0);
-    const reviewsToday = reviews.filter(r => new Date(r.created_date) >= startOfToday).length;
-    if (reviewsToday >= DAILY_LIMIT) {
-      toast.error(`This partner has reached the ${DAILY_LIMIT} reviews per day limit.`);
-      setDailyLimitReached(true);
-      setShowForm(false);
-      return;
-    }
+    // Daily limit only applies to purchased reviews, not organic ones
 
     setSubmitting(true);
     try {
-      await base44.entities.Review.create({ ...form, partner_id: partnerId });
+      await base44.entities.Review.create({ ...form, partner_id: partnerId, is_purchased: false });
 
       // Update partner rating (best-effort)
       try {
         await base44.functions.invoke('updatePartnerRating', { partner_id: partnerId });
       } catch (_) {}
 
-      // Re-check limit after submission
-      const nowStart = new Date();
-      nowStart.setHours(0, 0, 0, 0);
-      const updatedTodayCount = reviewsToday + 1;
-      if (updatedTodayCount >= DAILY_LIMIT) setDailyLimitReached(true);
+
 
       toast.success('Review submitted!');
       setSubmitted(true);
