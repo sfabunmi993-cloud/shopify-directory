@@ -52,35 +52,19 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
 
 
 
-  const checkDailyLimit = () => {
-    const key = `review_submitted_${partnerId}`;
-    const stored = localStorage.getItem(key);
-    if (stored) {
-      const submittedDate = new Date(stored);
-      const now = new Date();
-      const isSameDay =
-        submittedDate.getFullYear() === now.getFullYear() &&
-        submittedDate.getMonth() === now.getMonth() &&
-        submittedDate.getDate() === now.getDate();
-      if (isSameDay) setDailyLimitReached(true);
-    }
-  };
 
-  // Restricted partners OR non-unlimited partners are limited to 1 review/day
-  const isDailyLimited = !unlimitedReviews || partnerStatus === 'restricted';
+  const DAILY_LIMIT = 6;
 
   const loadReviews = async () => {
     setLoading(true);
     try {
       const data = await base44.entities.Review.filter({ partner_id: partnerId }, '-created_date');
       setReviews(data);
-      // Check if any review was submitted today (global, DB-based limit)
-      if (isDailyLimited) {
-        const startOfToday = new Date();
-        startOfToday.setHours(0, 0, 0, 0);
-        const reviewedToday = data.some(r => new Date(r.created_date) >= startOfToday);
-        if (reviewedToday) setDailyLimitReached(true);
-      }
+      // Count how many reviews were submitted today
+      const startOfToday = new Date();
+      startOfToday.setHours(0, 0, 0, 0);
+      const reviewsToday = data.filter(r => new Date(r.created_date) >= startOfToday).length;
+      if (reviewsToday >= DAILY_LIMIT) setDailyLimitReached(true);
     } finally {
       setLoading(false);
     }
@@ -116,19 +100,14 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     if (!partnerId) { toast.error('Partner not found'); return; }
 
     // Double-check daily limit before submitting
-    if (isDailyLimited) {
-      const key = `review_submitted_${partnerId}`;
-      const stored = localStorage.getItem(key);
-      if (stored) {
-        const d = new Date(stored);
-        const now = new Date();
-        if (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate()) {
-          toast.error('You can only submit one review per day for this partner.');
-          setDailyLimitReached(true);
-          setShowForm(false);
-          return;
-        }
-      }
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+    const reviewsToday = reviews.filter(r => new Date(r.created_date) >= startOfToday).length;
+    if (reviewsToday >= DAILY_LIMIT) {
+      toast.error(`This partner has reached the ${DAILY_LIMIT} reviews per day limit.`);
+      setDailyLimitReached(true);
+      setShowForm(false);
+      return;
     }
 
     setSubmitting(true);
@@ -140,11 +119,11 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
         await base44.functions.invoke('updatePartnerRating', { partner_id: partnerId });
       } catch (_) {}
 
-      // Record daily limit in localStorage if limited
-      if (isDailyLimited) {
-        localStorage.setItem(`review_submitted_${partnerId}`, new Date().toISOString());
-        setDailyLimitReached(true);
-      }
+      // Re-check limit after submission
+      const nowStart = new Date();
+      nowStart.setHours(0, 0, 0, 0);
+      const updatedTodayCount = reviewsToday + 1;
+      if (updatedTodayCount >= DAILY_LIMIT) setDailyLimitReached(true);
 
       toast.success('Review submitted!');
       setSubmitted(true);
@@ -186,7 +165,7 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
             ? <div className="text-right">
                 <span className="text-xs text-muted-foreground">✅ Review submitted</span>
                 {dailyLimitReached && !submitted && (
-                  <p className="text-xs text-amber-600 mt-0.5">1 review per day allowed</p>
+                  <p className="text-xs text-amber-600 mt-0.5">Daily limit of {DAILY_LIMIT} reviews reached</p>
                 )}
               </div>
             : <Button size="sm" className="rounded-full" onClick={() => setShowForm(true)}>Write a Review</Button>
