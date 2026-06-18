@@ -47,6 +47,7 @@ export default function AdminDashboard() {
   const [blastBody, setBlastBody] = useState('');
   const [sendingBlast, setSendingBlast] = useState(false);
   const [blastSenderName, setBlastSenderName] = useState('');
+  const [blastSenderEmail, setBlastSenderEmail] = useState('');
   const [blastMode, setBlastMode] = useState('all'); // 'all' | 'select' | 'paste'
   const [selectedBlastUsers, setSelectedBlastUsers] = useState([]);
   const [pastedEmails, setPastedEmails] = useState('');
@@ -638,7 +639,7 @@ export default function AdminDashboard() {
       {/* Email Blast Dialog */}
       <Dialog open={emailBlastDialog} onOpenChange={(open) => {
         setEmailBlastDialog(open);
-        if (!open) { setBlastSubject(''); setBlastBody(''); setBlastMode('all'); setSelectedBlastUsers([]); setPastedEmails(''); setUserSearch(''); setUserCategoryFilter('all'); setBlastSenderName(''); }
+        if (!open) { setBlastSubject(''); setBlastBody(''); setBlastMode('all'); setSelectedBlastUsers([]); setPastedEmails(''); setUserSearch(''); setUserCategoryFilter('all'); setBlastSenderName(''); setBlastSenderEmail(''); }
       }}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -759,9 +760,15 @@ export default function AdminDashboard() {
               </p>
             )}
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Sender Name</label>
-              <Input placeholder="e.g. Shopify Partners Directory" value={blastSenderName} onChange={e => setBlastSenderName(e.target.value)} />
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Sender Name</label>
+                <Input placeholder="e.g. Shopify Partners Directory" value={blastSenderName} onChange={e => setBlastSenderName(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Sender Email</label>
+                <Input type="email" placeholder="e.g. fabunmi.net@gmail.com" value={blastSenderEmail} onChange={e => setBlastSenderEmail(e.target.value)} />
+              </div>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Subject *</label>
@@ -784,7 +791,7 @@ export default function AdminDashboard() {
                   } else if (blastMode === 'paste') {
                     recipients = pastedEmails.split(/[\n,\s]+/).map(e => e.trim()).filter(e => e.includes('@'));
                   }
-                  const res = await base44.functions.invoke('sendEmailBlast', { subject: blastSubject, body: blastBody, recipients, senderName: blastSenderName });
+                  const res = await base44.functions.invoke('sendEmailBlast', { subject: blastSubject, body: blastBody, recipients, senderName: blastSenderName, senderEmail: blastSenderEmail });
                   toast.success(res.data.message || 'Email blast sent successfully!');
                   setEmailBlastDialog(false);
                 } catch (err) {

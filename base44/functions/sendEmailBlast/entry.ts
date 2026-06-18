@@ -10,7 +10,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
     }
 
-    const { subject, body, recipients, senderName } = await req.json();
+    const { subject, body, recipients, senderName, senderEmail } = await req.json();
     
     if (!subject || !body) {
       return Response.json({ error: 'Subject and body are required' }, { status: 400 });
@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
 
       try {
         // Build RFC 2822 email message
-        const from = 'fabunmi.net@gmail.com';
+        const from = senderEmail?.trim() || 'fabunmi.net@gmail.com';
         const fromName = senderName?.trim() || 'Shopify Partners Directory';
         const messageLines = [
           `From: ${fromName} <${from}>`,
