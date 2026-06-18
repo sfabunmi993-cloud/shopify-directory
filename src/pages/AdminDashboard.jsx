@@ -50,6 +50,7 @@ export default function AdminDashboard() {
   const [selectedBlastUsers, setSelectedBlastUsers] = useState([]);
   const [pastedEmails, setPastedEmails] = useState('');
   const [userSearch, setUserSearch] = useState('');
+  const [userCategoryFilter, setUserCategoryFilter] = useState('all');
   const [analyticsData, setAnalyticsData] = useState(null);
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
   const [announcements, setAnnouncements] = useState([]);
@@ -636,7 +637,7 @@ export default function AdminDashboard() {
       {/* Email Blast Dialog */}
       <Dialog open={emailBlastDialog} onOpenChange={(open) => {
         setEmailBlastDialog(open);
-        if (!open) { setBlastSubject(''); setBlastBody(''); setBlastMode('all'); setSelectedBlastUsers([]); setPastedEmails(''); setUserSearch(''); }
+        if (!open) { setBlastSubject(''); setBlastBody(''); setBlastMode('all'); setSelectedBlastUsers([]); setPastedEmails(''); setUserSearch(''); setUserCategoryFilter('all'); }
       }}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -662,6 +663,27 @@ export default function AdminDashboard() {
             {/* Select users mode */}
             {blastMode === 'select' && (
               <div className="space-y-2">
+                {/* Category filter chips */}
+                <div className="flex flex-wrap gap-1.5 pb-1">
+                  {[
+                    { key: 'all', label: 'All' },
+                    { key: 'badge', label: '✅ With Badge' },
+                    { key: 'banner', label: '🔔 With Banner' },
+                    { key: 'pending', label: '⏳ Pending' },
+                  ].map(({ key, label }) => {
+                    const active = (userCategoryFilter || 'all') === key;
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setUserCategoryFilter(key)}
+                        className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${active ? 'bg-primary text-primary-foreground border-primary' : 'bg-white text-muted-foreground border-border hover:border-primary/40'}`}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
                 <Input
                   placeholder="Search users..."
                   value={userSearch}
@@ -672,7 +694,14 @@ export default function AdminDashboard() {
                   {partners
                     .filter(p => {
                       const q = userSearch.toLowerCase();
-                      return !q || p.name?.toLowerCase().includes(q) || p.email?.toLowerCase().includes(q);
+                      const matchesSearch = !q || p.name?.toLowerCase().includes(q) || p.email?.toLowerCase().includes(q);
+                      const cat = userCategoryFilter || 'all';
+                      const matchesCat =
+                        cat === 'all' ? true :
+                        cat === 'badge' ? !!p.is_verified :
+                        cat === 'banner' ? !!p.admin_banner :
+                        cat === 'pending' ? p.status === 'pending' : true;
+                      return matchesSearch && matchesCat;
                     })
                     .map(p => (
                       <label key={p.id} className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-muted/40">
@@ -688,7 +717,12 @@ export default function AdminDashboard() {
                           className="rounded"
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium truncate">{p.name}</p>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <p className="text-sm font-medium truncate">{p.name}</p>
+                            {p.is_verified && <span className="text-[10px] bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-1.5 py-0.5">Badge</span>}
+                            {p.admin_banner && <span className="text-[10px] bg-orange-50 text-orange-700 border border-orange-200 rounded-full px-1.5 py-0.5">Banner</span>}
+                            {p.status === 'pending' && <span className="text-[10px] bg-amber-50 text-amber-700 border border-amber-200 rounded-full px-1.5 py-0.5">Pending</span>}
+                          </div>
                           <p className="text-xs text-muted-foreground truncate">{p.email || 'No email'}</p>
                         </div>
                       </label>
