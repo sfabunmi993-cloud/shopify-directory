@@ -1127,21 +1127,21 @@ function PartnerAnalytics({ analyticsData, loading, onRefresh }) {
   if (!analyticsData || analyticsData.length === 0) {
     return (
       <div className="text-center py-12">
-        <BarChart3 className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-        <p className="text-muted-foreground">No analytics data available yet.</p>
+        <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+        <p className="text-muted-foreground">No visitor data available yet.</p>
         <p className="text-sm text-muted-foreground mt-1">Make sure your Google Analytics is tracking partner page views.</p>
       </div>
     );
   }
 
+  const maxVisitors = Math.max(...analyticsData.map(p => p.total_users || 0), 1);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="font-heading text-xl font-bold text-foreground">Partner Profile Analytics</h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            Data from {analyticsData.period?.start} to {analyticsData.period?.end}
-          </p>
+          <h3 className="font-heading text-xl font-bold text-foreground">Visitor Rate by Partner</h3>
+          <p className="text-sm text-muted-foreground mt-1">Unique visitors per partner profile</p>
         </div>
         <Button onClick={onRefresh} variant="outline" size="sm">
           <TrendingUp className="w-4 h-4 mr-1.5" />
@@ -1149,39 +1149,34 @@ function PartnerAnalytics({ analyticsData, loading, onRefresh }) {
         </Button>
       </div>
 
-      <div className="grid gap-4">
-        {analyticsData.map((partner, index) => (
-          <div
-            key={partner.partner_id}
-            className="bg-white border border-border rounded-xl p-4 flex items-center gap-4"
-          >
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary shrink-0">
-              {index + 1}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <p className="font-semibold text-sm">{partner.partner_name}</p>
-                <Badge variant="outline" className="text-xs">
-                  {partner.slug}
-                </Badge>
+      <div className="bg-white border border-border rounded-xl divide-y divide-border">
+        {[...analyticsData]
+          .sort((a, b) => (b.total_users || 0) - (a.total_users || 0))
+          .map((partner, index) => {
+            const visitors = partner.total_users || 0;
+            const pct = Math.round((visitors / maxVisitors) * 100);
+            return (
+              <div key={partner.partner_id} className="px-4 py-3 flex items-center gap-4">
+                <span className="w-5 text-xs text-muted-foreground font-mono shrink-0">{index + 1}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{partner.partner_name}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-primary rounded-full transition-all"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-muted-foreground shrink-0 w-8 text-right">{pct}%</span>
+                  </div>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className="text-sm font-bold text-foreground">{visitors.toLocaleString()}</p>
+                  <p className="text-xs text-muted-foreground">visitors</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-6">
-              <div className="text-center">
-                <p className="text-xs text-muted-foreground">Page Views</p>
-                <p className="text-lg font-bold text-foreground">{partner.total_page_views?.toLocaleString()}</p>
-              </div>
-              <div className="text-center">
-                <p className="text-xs text-muted-foreground">Events</p>
-                <p className="text-lg font-bold text-foreground">{partner.total_events?.toLocaleString()}</p>
-              </div>
-              <div className="text-center">
-                <p className="text-xs text-muted-foreground">Users</p>
-                <p className="text-lg font-bold text-foreground">{partner.total_users?.toLocaleString()}</p>
-              </div>
-            </div>
-          </div>
-        ))}
+            );
+          })}
       </div>
     </div>
   );
