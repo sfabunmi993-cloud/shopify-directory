@@ -147,6 +147,10 @@ export default function MyProfile() {
       updates.slug = conflict ? `${baseSlug}${partner.partner_number?.replace('PB-', '') || Date.now()}` : baseSlug;
     }
     await base44.entities.Partner.update(partner.id, updates);
+    // Update local partner state so links reflect new slug immediately
+    const updatedPartner = { ...partner, ...updates };
+    setPartner(updatedPartner);
+    setForm(updatedPartner);
     toast.success('Profile updated successfully!');
     setSaving(false);
   };
