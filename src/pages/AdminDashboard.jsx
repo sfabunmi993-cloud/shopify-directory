@@ -482,7 +482,7 @@ export default function AdminDashboard() {
               setAnalyticsLoading(true);
               try {
                 const res = await base44.functions.invoke('getPartnerAnalytics', {});
-                setAnalyticsData(res.data);
+                setAnalyticsData(res.data.data);
               } catch (err) {
                 toast.error(err.response?.data?.error || 'Failed to load analytics');
               }
@@ -1134,14 +1134,14 @@ function PartnerAnalytics({ analyticsData, loading, onRefresh }) {
     );
   }
 
-  const maxVisitors = Math.max(...analyticsData.map(p => p.total_users || 0), 1);
+  const maxReviews = Math.max(...analyticsData.map(p => p.total_users || 0), 1);
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="font-heading text-xl font-bold text-foreground">Visitor Rate by Partner</h3>
-          <p className="text-sm text-muted-foreground mt-1">Unique visitors per partner profile</p>
+          <h3 className="font-heading text-xl font-bold text-foreground">Partner Activity Overview</h3>
+          <p className="text-sm text-muted-foreground mt-1">Reviews & ratings per approved partner</p>
         </div>
         <Button onClick={onRefresh} variant="outline" size="sm">
           <TrendingUp className="w-4 h-4 mr-1.5" />
@@ -1153,8 +1153,8 @@ function PartnerAnalytics({ analyticsData, loading, onRefresh }) {
         {[...analyticsData]
           .sort((a, b) => (b.total_users || 0) - (a.total_users || 0))
           .map((partner, index) => {
-            const visitors = partner.total_users || 0;
-            const pct = Math.round((visitors / maxVisitors) * 100);
+            const reviews = partner.total_users || 0;
+            const pct = Math.round((reviews / maxReviews) * 100);
             return (
               <div key={partner.partner_id} className="px-4 py-3 flex items-center gap-4">
                 <span className="w-5 text-xs text-muted-foreground font-mono shrink-0">{index + 1}</span>
@@ -1170,9 +1170,15 @@ function PartnerAnalytics({ analyticsData, loading, onRefresh }) {
                     <span className="text-xs text-muted-foreground shrink-0 w-8 text-right">{pct}%</span>
                   </div>
                 </div>
-                <div className="text-right shrink-0">
-                  <p className="text-sm font-bold text-foreground">{visitors.toLocaleString()}</p>
-                  <p className="text-xs text-muted-foreground">visitors</p>
+                <div className="flex items-center gap-4 shrink-0">
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-foreground">{reviews.toLocaleString()}</p>
+                    <p className="text-xs text-muted-foreground">reviews</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-amber-600">★ {partner.rating?.toFixed(1) || '—'}</p>
+                    <p className="text-xs text-muted-foreground">rating</p>
+                  </div>
                 </div>
               </div>
             );
