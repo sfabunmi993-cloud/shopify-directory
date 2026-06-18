@@ -46,6 +46,10 @@ export default function AdminDashboard() {
   const [blastSubject, setBlastSubject] = useState('');
   const [blastBody, setBlastBody] = useState('');
   const [sendingBlast, setSendingBlast] = useState(false);
+  const [blastMode, setBlastMode] = useState('all'); // 'all' | 'select' | 'paste'
+  const [selectedBlastUsers, setSelectedBlastUsers] = useState([]);
+  const [pastedEmails, setPastedEmails] = useState('');
+  const [userSearch, setUserSearch] = useState('');
   const [analyticsData, setAnalyticsData] = useState(null);
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
   const [announcements, setAnnouncements] = useState([]);
@@ -629,60 +633,132 @@ export default function AdminDashboard() {
       </Dialog>
 
       {/* Email Blast Dialog */}
-      <Dialog open={emailBlastDialog} onOpenChange={setEmailBlastDialog}>
-        <DialogContent className="max-w-2xl">
+      <Dialog open={emailBlastDialog} onOpenChange={(open) => {
+        setEmailBlastDialog(open);
+        if (!open) { setBlastSubject(''); setBlastBody(''); setBlastMode('all'); setSelectedBlastUsers([]); setPastedEmails(''); setUserSearch(''); }
+      }}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Send Email Blast to All Users</DialogTitle>
+            <DialogTitle>Send Email Blast</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
-              <p className="font-semibold flex items-center gap-1.5 mb-1">
-                <Mail className="w-4 h-4" />
-                Email Blast Information
-              </p>
-              <p>This will send an email to all registered users in the app. Use this for important updates, announcements, or platform-wide notifications.</p>
+            {/* Mode selector */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">Recipients</label>
+              <div className="flex rounded-lg border border-border overflow-hidden text-sm font-medium">
+                {[['all', 'All Users'], ['select', 'Select Users'], ['paste', 'Paste Emails']].map(([val, label]) => (
+                  <button
+                    key={val}
+                    className={`flex-1 py-2 transition-colors ${blastMode === val ? 'bg-primary text-primary-foreground' : 'bg-white text-muted-foreground hover:bg-muted'}`}
+                    onClick={() => setBlastMode(val)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {/* Select users mode */}
+            {blastMode === 'select' && (
+              <div className="space-y-2">
+                <Input
+                  placeholder="Search users..."
+                  value={userSearch}
+                  onChange={e => setUserSearch(e.target.value)}
+                  className="mb-1"
+                />
+                <div className="border border-border rounded-xl divide-y divide-border max-h-48 overflow-y-auto">
+                  {partners
+                    .filter(p => {
+                      const q = userSearch.toLowerCase();
+                      return !q || p.name?.toLowerCase().includes(q) || p.email?.toLowerCase().includes(q);
+                    })
+                    .map(p => (
+                      <label key={p.id} className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-muted/40">
+                        <input
+                          type="checkbox"
+                          checked={selectedBlastUsers.includes(p.email)}
+                          onChange={() => {
+                            if (!p.email) return;
+                            setSelectedBlastUsers(prev =>
+                              prev.includes(p.email) ? prev.filter(e => e !== p.email) : [...prev, p.email]
+                            );
+                          }}
+                          className="rounded"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">{p.name}</p>
+                          <p className="text-xs text-muted-foreground truncate">{p.email || 'No email'}</p>
+                        </div>
+                      </label>
+                    ))}
+                </div>
+                {selectedBlastUsers.length > 0 && (
+                  <p className="text-xs text-muted-foreground">{selectedBlastUsers.length} recipient{selectedBlastUsers.length !== 1 ? 's' : ''} selected</p>
+                )}
+              </div>
+            )}
+
+            {/* Paste emails mode */}
+            {blastMode === 'paste' && (
+              <div className="space-y-2">
+                <Textarea
+                  placeholder="Paste emails here — one per line, or comma/space separated&#10;e.g.&#10;john@example.com&#10;jane@example.com, bob@example.com"
+                  value={pastedEmails}
+                  onChange={e => setPastedEmails(e.target.value)}
+                  className="h-32 resize-none font-mono text-sm"
+                />
+                {(() => {
+                  const parsed = pastedEmails.split(/[\n,\s]+/).map(e => e.trim()).filter(e => e.includes('@'));
+                  return parsed.length > 0 ? (
+                    <p className="text-xs text-muted-foreground">{parsed.length} valid email{parsed.length !== 1 ? 's' : ''} detected</p>
+                  ) : null;
+                })()}
+              </div>
+            )}
+
+            {blastMode === 'all' && (
+              <p className="text-xs text-muted-foreground bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
+                This will send to all registered users in the app.
+              </p>
+            )}
+
             <div className="space-y-2">
               <label className="text-sm font-medium">Subject *</label>
-              <Input
-                placeholder="e.g. Important Platform Update"
-                value={blastSubject}
-                onChange={e => setBlastSubject(e.target.value)}
-                className="w-full"
-              />
+              <Input placeholder="e.g. Important Platform Update" value={blastSubject} onChange={e => setBlastSubject(e.target.value)} />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Message *</label>
-              <Textarea
-                placeholder="Write your message here..."
-                value={blastBody}
-                onChange={e => setBlastBody(e.target.value)}
-                className="h-48 resize-none"
-              />
+              <Textarea placeholder="Write your message here..." value={blastBody} onChange={e => setBlastBody(e.target.value)} className="h-40 resize-none" />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => { setEmailBlastDialog(false); setBlastSubject(''); setBlastBody(''); }}>Cancel</Button>
-            <Button 
+            <Button variant="outline" onClick={() => { setEmailBlastDialog(false); }}>Cancel</Button>
+            <Button
               onClick={async () => {
                 setSendingBlast(true);
                 try {
-                  const res = await base44.functions.invoke('sendEmailBlast', {
-                    subject: blastSubject,
-                    body: blastBody,
-                  });
+                  let recipients = undefined;
+                  if (blastMode === 'select') {
+                    recipients = selectedBlastUsers;
+                  } else if (blastMode === 'paste') {
+                    recipients = pastedEmails.split(/[\n,\s]+/).map(e => e.trim()).filter(e => e.includes('@'));
+                  }
+                  const res = await base44.functions.invoke('sendEmailBlast', { subject: blastSubject, body: blastBody, recipients });
                   toast.success(res.data.message || 'Email blast sent successfully!');
                   setEmailBlastDialog(false);
-                  setBlastSubject('');
-                  setBlastBody('');
                 } catch (err) {
                   toast.error(err.response?.data?.error || 'Failed to send email blast');
                 }
                 setSendingBlast(false);
               }}
-              disabled={!blastSubject.trim() || !blastBody.trim() || sendingBlast}
+              disabled={
+                !blastSubject.trim() || !blastBody.trim() || sendingBlast ||
+                (blastMode === 'select' && selectedBlastUsers.length === 0) ||
+                (blastMode === 'paste' && pastedEmails.split(/[\n,\s]+/).filter(e => e.includes('@')).length === 0)
+              }
             >
-              {sendingBlast ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <><Send className="w-4 h-4 mr-1.5" /> Send to All Users</>}
+              {sendingBlast ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <><Send className="w-4 h-4 mr-1.5" /> Send Email Blast</>}
             </Button>
           </DialogFooter>
         </DialogContent>

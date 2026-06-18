@@ -10,7 +10,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
     }
 
-    const { subject, body } = await req.json();
+    const { subject, body, recipients } = await req.json();
     
     if (!subject || !body) {
       return Response.json({ error: 'Subject and body are required' }, { status: 400 });
@@ -19,19 +19,26 @@ Deno.serve(async (req) => {
     // Get Gmail access token
     const { accessToken } = await base44.asServiceRole.connectors.getConnection('gmail');
     
-    // Get all users from the app
-    const allUsers = await base44.asServiceRole.entities.User.list();
+    // Determine recipient list
+    let emailList = [];
+    if (recipients && Array.isArray(recipients) && recipients.length > 0) {
+      // Use provided list of email strings
+      emailList = recipients.filter(e => typeof e === 'string' && e.includes('@'));
+    } else {
+      // Fall back to all users
+      const allUsers = await base44.asServiceRole.entities.User.list();
+      emailList = allUsers.map(u => u.email).filter(Boolean);
+    }
     
-    if (allUsers.length === 0) {
-      return Response.json({ error: 'No users found in the app' }, { status: 404 });
+    if (emailList.length === 0) {
+      return Response.json({ error: 'No recipients found' }, { status: 404 });
     }
 
     let sentCount = 0;
     let failedCount = 0;
 
-    // Send individual email to each user
-    for (const user of allUsers) {
-      if (!user.email) continue;
+    for (const email of emailList) {
+      const user = { email };
 
       try {
         // Build RFC 2822 email message
