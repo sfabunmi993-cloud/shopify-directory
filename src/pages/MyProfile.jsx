@@ -63,6 +63,7 @@ export default function MyProfile() {
   const [uploadingScreenshot, setUploadingScreenshot] = useState(false);
   const [newService, setNewService] = useState('');
   const [newTag, setNewTag] = useState('');
+  const [newLanguage, setNewLanguage] = useState('');
   const [form, setForm] = useState({});
   const [passwordForm, setPasswordForm] = useState({ newPassword: '', confirmPassword: '' });
   const [savingPassword, setSavingPassword] = useState(false);
@@ -501,17 +502,49 @@ export default function MyProfile() {
         {/* Languages */}
         <div>
           <h2 className="font-semibold text-base mb-3">Languages spoken</h2>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mb-3">
             {LANGUAGES_LIST.map((lang) =>
             <button
               key={lang}
               onClick={() => toggleLanguage(lang)}
               className={`px-3 py-1 rounded-full text-sm border transition-all ${(form.languages || []).includes(lang) ? 'bg-primary text-white border-primary' : 'bg-white text-foreground border-border hover:border-primary/50'}`}>
-              
                 {lang}
               </button>
             )}
           </div>
+          <div className="flex gap-2 mb-3">
+            <Input
+              placeholder="Add a custom language..."
+              value={newLanguage}
+              onChange={(e) => setNewLanguage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  const trimmed = newLanguage.trim();
+                  if (trimmed && !(form.languages || []).includes(trimmed)) {
+                    set('languages', [...(form.languages || []), trimmed]);
+                  }
+                  setNewLanguage('');
+                }
+              }}
+            />
+            <Button variant="outline" size="icon" onClick={() => {
+              const trimmed = newLanguage.trim();
+              if (trimmed && !(form.languages || []).includes(trimmed)) {
+                set('languages', [...(form.languages || []), trimmed]);
+              }
+              setNewLanguage('');
+            }}><Plus className="w-4 h-4" /></Button>
+          </div>
+          {(form.languages || []).filter(l => !LANGUAGES_LIST.includes(l)).length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {(form.languages || []).filter(l => !LANGUAGES_LIST.includes(l)).map((l) =>
+                <Badge key={l} variant="secondary" className="gap-1 pr-1">
+                  {l}
+                  <button onClick={() => toggleLanguage(l)} className="ml-0.5 rounded-full hover:bg-muted-foreground/20 p-0.5"><X className="w-3 h-3" /></button>
+                </Badge>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="pt-2">
