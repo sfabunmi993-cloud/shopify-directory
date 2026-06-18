@@ -138,10 +138,15 @@ export default function MyProfile() {
 
   const handleSave = async () => {
     setSaving(true);
-    await base44.entities.Partner.update(partner.id, {
-      ...form,
-      starting_price: form.starting_price ? Number(form.starting_price) : undefined
-    });
+    let updates = { ...form, starting_price: form.starting_price ? Number(form.starting_price) : undefined };
+    // Regenerate slug if name changed
+    if (form.name && form.name !== partner.name) {
+      const baseSlug = form.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const existing = await base44.entities.Partner.filter({ slug: baseSlug });
+      const conflict = existing.find(p => p.id !== partner.id);
+      updates.slug = conflict ? `${baseSlug}${partner.partner_number?.replace('PB-', '') || Date.now()}` : baseSlug;
+    }
+    await base44.entities.Partner.update(partner.id, updates);
     toast.success('Profile updated successfully!');
     setSaving(false);
   };
