@@ -14,6 +14,10 @@
       "type": "string",
       "description": "Optional image URL for the ad"
     },
+    "video_url": {
+      "type": "string",
+      "description": "Optional video URL for the ad"
+    },
     "button_text": {
       "type": "string",
       "description": "CTA button label"

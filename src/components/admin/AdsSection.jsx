@@ -12,6 +12,7 @@ const EMPTY_AD = {
   title: '',
   content: '',
   image_url: '',
+  video_url: '',
   button_text: 'Learn More',
   button_url: '',
   bg_color: '#ffffff',
@@ -48,6 +49,7 @@ export default function AdsSection() {
       title: ad.title || '',
       content: ad.content || '',
       image_url: ad.image_url || '',
+      video_url: ad.video_url || '',
       button_text: ad.button_text || 'Learn More',
       button_url: ad.button_url || '',
       bg_color: ad.bg_color || '#ffffff',
@@ -183,9 +185,7 @@ export default function AdsSection() {
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Image (optional)</label>
-              <div className="flex gap-2">
-                <Input placeholder="https://... or upload below" value={form.image_url} onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))} className="flex-1" />
-              </div>
+              <Input placeholder="https://... or upload below" value={form.image_url} onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))} />
               <label className="flex items-center gap-2 cursor-pointer border border-dashed border-border rounded-lg px-4 py-3 hover:bg-muted/40 transition-colors text-sm text-muted-foreground">
                 <Upload className="w-4 h-4" />
                 <span>Upload image</span>
@@ -204,7 +204,32 @@ export default function AdsSection() {
                 />
               </label>
               {form.image_url && (
-                <img src={form.image_url} alt="Preview" className="w-full h-28 object-cover rounded-lg border border-border" onError={e => e.target.style.display='none'} />
+                <img src={form.image_url} alt="Preview" className="w-full rounded-lg border border-border" style={{ maxHeight: 200, objectFit: 'contain' }} onError={e => e.target.style.display='none'} />
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Video (optional)</label>
+              <Input placeholder="https://... or upload below" value={form.video_url} onChange={e => setForm(f => ({ ...f, video_url: e.target.value }))} />
+              <label className="flex items-center gap-2 cursor-pointer border border-dashed border-border rounded-lg px-4 py-3 hover:bg-muted/40 transition-colors text-sm text-muted-foreground">
+                <Upload className="w-4 h-4" />
+                <span>Upload video</span>
+                <input
+                  type="file"
+                  accept="video/*"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    try {
+                      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                      setForm(f => ({ ...f, video_url: file_url }));
+                    } catch (_) {}
+                  }}
+                />
+              </label>
+              {form.video_url && (
+                <video src={form.video_url} controls className="w-full rounded-lg border border-border" style={{ maxHeight: 200 }} />
               )}
             </div>
 
@@ -247,7 +272,8 @@ export default function AdsSection() {
             <div className="space-y-2">
               <label className="text-sm font-medium text-muted-foreground">Preview</label>
               <div className="rounded-xl border border-border overflow-hidden shadow-sm" style={{ backgroundColor: form.bg_color }}>
-                {form.image_url && <img src={form.image_url} alt="Ad" className="w-full h-32 object-cover" onError={e => e.target.style.display='none'} />}
+                {form.video_url && <video src={form.video_url} controls className="w-full" style={{ maxHeight: 200 }} />}
+                {!form.video_url && form.image_url && <img src={form.image_url} alt="Ad" className="w-full" style={{ maxHeight: 200, objectFit: 'contain' }} onError={e => e.target.style.display='none'} />}
                 <div className="p-4">
                   <p className="font-bold text-base" style={{ color: form.text_color }}>{form.title || 'Your Headline'}</p>
                   {form.content && <p className="text-sm mt-1 opacity-80" style={{ color: form.text_color }}>{form.content}</p>}
