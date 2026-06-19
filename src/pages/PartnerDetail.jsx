@@ -16,6 +16,7 @@ import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
 import BuyReviewModal from '@/components/partner/BuyReviewModal';
 import BuyDomainModal from '@/components/partner/BuyDomainModal';
 import { toast } from 'sonner';
+import AdPopup from '@/components/AdPopup';
 
 const CATEGORY_LABELS = {
   marketing_and_sales: 'Marketing & Sales',
@@ -543,6 +544,8 @@ export default function PartnerDetail() {
           <BuyDomainModal partner={partner} isOpen={buyDomainOpen} onClose={() => setBuyDomainOpen(false)} user={user} />
         </>
       }
+
+      <AdPopup user={user} />
 
       {/* Floating message button */}
       {user &&

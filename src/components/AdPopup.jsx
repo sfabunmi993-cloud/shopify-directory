@@ -4,18 +4,20 @@ import { X } from 'lucide-react';
 
 const SESSION_KEY = 'ad_popup_dismissed';
 
-export default function AdPopup() {
+// user prop is passed from PartnerDetail (already fetched there)
+export default function AdPopup({ user }) {
   const [ad, setAd] = useState(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    // Only show to authenticated non-admin users (i.e. partners / regular users)
+    if (!user || user.role === 'admin') return;
+
     const dismissed = sessionStorage.getItem(SESSION_KEY);
     if (dismissed) return;
 
     const load = async () => {
       try {
-        const user = await base44.auth.me();
-        if (user?.role === 'admin') return; // don't show to admins
         const ads = await base44.entities.AdPromotion.filter({ is_active: true });
         if (ads.length > 0) {
           setAd(ads[0]);
@@ -25,7 +27,7 @@ export default function AdPopup() {
     };
 
     load();
-  }, []);
+  }, [user]);
 
   const dismiss = () => {
     setVisible(false);
