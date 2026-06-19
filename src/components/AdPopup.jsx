@@ -47,24 +47,15 @@ export default function AdPopup() {
           <X className="w-4 h-4" />
         </button>
 
-        {/* Video or Image */}
-        {ad.video_url ? (
-          <video
-            src={ad.video_url}
-            className="w-full object-contain"
-            autoPlay
-            muted
-            loop
-            playsInline
-          />
-        ) : ad.image_url ? (
+        {/* Image */}
+        {ad.image_url && (
           <img
             src={ad.image_url}
             alt="Promotion"
-            className="w-full object-contain"
+            className="w-full h-52 object-cover"
             onError={e => e.target.style.display = 'none'}
           />
-        ) : null}
+        )}
 
         {/* Content */}
         <div className="p-6">
