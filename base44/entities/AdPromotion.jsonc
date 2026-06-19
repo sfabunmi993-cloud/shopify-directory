@@ -1,0 +1,68 @@
+{
+  "name": "AdPromotion",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Ad headline"
+    },
+    "content": {
+      "type": "string",
+      "description": "Ad body text"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Optional image URL for the ad"
+    },
+    "button_text": {
+      "type": "string",
+      "description": "CTA button label"
+    },
+    "button_url": {
+      "type": "string",
+      "description": "URL the button links to"
+    },
+    "bg_color": {
+      "type": "string",
+      "default": "#ffffff",
+      "description": "Background color of the popup (hex)"
+    },
+    "text_color": {
+      "type": "string",
+      "default": "#111827",
+      "description": "Text color (hex)"
+    },
+    "button_color": {
+      "type": "string",
+      "default": "#166534",
+      "description": "Button background color (hex)"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this ad is currently live"
+    }
+  },
+  "required": [
+    "title",
+    "button_url"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

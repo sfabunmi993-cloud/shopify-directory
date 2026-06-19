@@ -23,6 +23,7 @@ import Messages from '@/pages/Messages.jsx';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
 import SupportChat from '@/components/SupportChat';
+import AdPopup from '@/components/AdPopup';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -83,6 +84,7 @@ function App() {
         </Router>
         <Toaster />
         <SupportChat />
+        <AdPopup />
       </QueryClientProvider>
     </AuthProvider>
   )

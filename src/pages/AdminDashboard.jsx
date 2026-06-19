@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, EyeOff, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2, Infinity, Bell } from 'lucide-react';
 import AnnouncementsSection from '@/components/admin/AnnouncementsSection';
+import AdsSection from '@/components/admin/AdsSection';
 import { DEFAULT_PRICING } from '@/hooks/usePricing';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -451,6 +452,10 @@ export default function AdminDashboard() {
             <Megaphone className="w-4 h-4 mr-1.5" />
             Announcements <Badge variant="secondary" className="ml-1.5">{announcements.length}</Badge>
           </TabsTrigger>
+          <TabsTrigger value="ads">
+            <Megaphone className="w-4 h-4 mr-1.5" />
+            Ad Promos
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending">
@@ -491,6 +496,9 @@ export default function AdminDashboard() {
               setAnalyticsLoading(false);
             }}
           />
+        </TabsContent>
+        <TabsContent value="ads">
+          <AdsSection />
         </TabsContent>
         <TabsContent value="announcements">
           <AnnouncementsSection
