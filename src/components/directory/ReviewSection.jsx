@@ -53,18 +53,17 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
 
 
 
-  const DAILY_LIMIT = 6;
+  const DAILY_LIMIT = 2;
 
   const loadReviews = async () => {
     setLoading(true);
     try {
       const data = await base44.entities.Review.filter({ partner_id: partnerId }, '-created_date');
       setReviews(data);
-      // Only count purchased reviews toward the daily limit
       const startOfToday = new Date();
       startOfToday.setHours(0, 0, 0, 0);
-      const purchasedToday = data.filter(r => r.is_purchased && new Date(r.created_date) >= startOfToday).length;
-      if (purchasedToday >= DAILY_LIMIT) setDailyLimitReached(true);
+      const reviewsToday = data.filter(r => new Date(r.created_date) >= startOfToday).length;
+      if (reviewsToday >= DAILY_LIMIT) setDailyLimitReached(true);
     } finally {
       setLoading(false);
     }
@@ -99,7 +98,7 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     if (!form.reviewer_name.trim()) { toast.error('Please enter your name'); return; }
     if (!partnerId) { toast.error('Partner not found'); return; }
 
-    // Daily limit only applies to purchased reviews, not organic ones
+    if (dailyLimitReached) { toast.error('Daily review limit reached for this partner'); return; }
 
     setSubmitting(true);
     try {
