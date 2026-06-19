@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
 
 const SESSION_KEY = 'ad_popup_dismissed';
@@ -7,6 +8,7 @@ const SESSION_KEY = 'ad_popup_dismissed';
 export default function AdPopup() {
   const [ad, setAd] = useState(null);
   const [visible, setVisible] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const dismissed = sessionStorage.getItem(SESSION_KEY);
@@ -79,16 +81,13 @@ export default function AdPopup() {
           )}
 
           <div className="flex gap-3 mt-5">
-            <a
-              href={ad.button_url}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
               className="flex-1 text-center py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
               style={{ backgroundColor: ad.button_color || '#166534' }}
-              onClick={dismiss}
+              onClick={() => { dismiss(); navigate(`/ad?id=${ad.id}`); }}
             >
               {ad.button_text || 'Learn More'}
-            </a>
+            </button>
             <button
               onClick={dismiss}
               className="px-4 py-2.5 rounded-xl text-sm font-medium border transition-colors hover:bg-black/5"

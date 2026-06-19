@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import AdPopup from '@/components/AdPopup';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -18,7 +17,6 @@ export default function Home() {
 
   return (
     <div>
-      <AdPopup />
       <HeroSection />
 
       {/* Stats */}
