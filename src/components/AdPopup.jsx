@@ -51,7 +51,7 @@ export default function AdPopup() {
         {ad.video_url ? (
           <video
             src={ad.video_url}
-            className="w-full h-52 object-cover"
+            className="w-full object-contain"
             autoPlay
             muted
             loop
@@ -61,7 +61,7 @@ export default function AdPopup() {
           <img
             src={ad.image_url}
             alt="Promotion"
-            className="w-full h-52 object-cover"
+            className="w-full object-contain"
             onError={e => e.target.style.display = 'none'}
           />
         ) : null}
