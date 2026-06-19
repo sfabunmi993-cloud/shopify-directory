@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Plus, Trash2, Loader2, ExternalLink, ToggleLeft, ToggleRight, Edit2, Megaphone } from 'lucide-react';
+import { Plus, Trash2, Loader2, ExternalLink, ToggleLeft, ToggleRight, Edit2, Megaphone, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 
 const EMPTY_AD = {
@@ -182,8 +182,30 @@ export default function AdsSection() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Image URL (optional)</label>
-              <Input placeholder="https://..." value={form.image_url} onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))} />
+              <label className="text-sm font-medium">Image (optional)</label>
+              <div className="flex gap-2">
+                <Input placeholder="https://... or upload below" value={form.image_url} onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))} className="flex-1" />
+              </div>
+              <label className="flex items-center gap-2 cursor-pointer border border-dashed border-border rounded-lg px-4 py-3 hover:bg-muted/40 transition-colors text-sm text-muted-foreground">
+                <Upload className="w-4 h-4" />
+                <span>Upload image</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    try {
+                      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                      setForm(f => ({ ...f, image_url: file_url }));
+                    } catch (_) {}
+                  }}
+                />
+              </label>
+              {form.image_url && (
+                <img src={form.image_url} alt="Preview" className="w-full h-28 object-cover rounded-lg border border-border" onError={e => e.target.style.display='none'} />
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-3">

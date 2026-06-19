@@ -4,15 +4,11 @@ import { X } from 'lucide-react';
 
 const SESSION_KEY = 'ad_popup_dismissed';
 
-// user prop is passed from PartnerDetail (already fetched there)
-export default function AdPopup({ user }) {
+export default function AdPopup() {
   const [ad, setAd] = useState(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Only show to authenticated non-admin users (i.e. partners / regular users)
-    if (!user || user.role === 'admin') return;
-
     const dismissed = sessionStorage.getItem(SESSION_KEY);
     if (dismissed) return;
 
@@ -21,13 +17,13 @@ export default function AdPopup({ user }) {
         const ads = await base44.entities.AdPromotion.filter({ is_active: true });
         if (ads.length > 0) {
           setAd(ads[0]);
-          setTimeout(() => setVisible(true), 1500);
+          setTimeout(() => setVisible(true), 2000);
         }
       } catch (_) {}
     };
 
     load();
-  }, [user]);
+  }, []);
 
   const dismiss = () => {
     setVisible(false);
@@ -42,7 +38,7 @@ export default function AdPopup({ user }) {
         className="relative w-full max-w-md rounded-2xl shadow-2xl overflow-hidden"
         style={{ backgroundColor: ad.bg_color || '#ffffff' }}
       >
-        {/* Close button */}
+        {/* Close X */}
         <button
           onClick={dismiss}
           className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/10 hover:bg-black/20 flex items-center justify-center transition-colors"
@@ -56,7 +52,7 @@ export default function AdPopup({ user }) {
           <img
             src={ad.image_url}
             alt="Promotion"
-            className="w-full h-48 object-cover"
+            className="w-full h-52 object-cover"
             onError={e => e.target.style.display = 'none'}
           />
         )}
@@ -86,9 +82,9 @@ export default function AdPopup({ user }) {
             <button
               onClick={dismiss}
               className="px-4 py-2.5 rounded-xl text-sm font-medium border transition-colors hover:bg-black/5"
-              style={{ color: ad.text_color || '#111', borderColor: `${ad.text_color}33` || '#11111133' }}
+              style={{ color: ad.text_color || '#111', borderColor: `${ad.text_color || '#111'}33` }}
             >
-              Dismiss
+              No thanks
             </button>
           </div>
         </div>
