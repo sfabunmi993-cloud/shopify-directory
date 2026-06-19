@@ -17,7 +17,7 @@ const EMPTY_AD = {
   button_url: '',
   bg_color: '#ffffff',
   text_color: '#111827',
-  button_color: '#166534',
+  button_color: '#166534'
 };
 
 export default function AdsSection() {
@@ -35,7 +35,7 @@ export default function AdsSection() {
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {load();}, []);
 
   const openNew = () => {
     setEditing(null);
@@ -54,7 +54,7 @@ export default function AdsSection() {
       button_url: ad.button_url || '',
       bg_color: ad.bg_color || '#ffffff',
       text_color: ad.text_color || '#111827',
-      button_color: ad.button_color || '#166534',
+      button_color: ad.button_color || '#166534'
     });
     setDialog(true);
   };
@@ -78,8 +78,8 @@ export default function AdsSection() {
     // Deactivate all others, then toggle this one
     const newState = !ad.is_active;
     if (newState) {
-      await Promise.all(ads.filter(a => a.id !== ad.id && a.is_active).map(a =>
-        base44.entities.AdPromotion.update(a.id, { is_active: false })
+      await Promise.all(ads.filter((a) => a.id !== ad.id && a.is_active).map((a) =>
+      base44.entities.AdPromotion.update(a.id, { is_active: false })
       ));
     }
     await base44.entities.AdPromotion.update(ad.id, { is_active: newState });
@@ -108,20 +108,20 @@ export default function AdsSection() {
         </Button>
       </div>
 
-      {ads.length === 0 ? (
-        <div className="text-center py-12 bg-white border border-border rounded-xl">
+      {ads.length === 0 ?
+      <div className="text-center py-12 bg-white border border-border rounded-xl">
           <Megaphone className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
           <p className="text-muted-foreground">No ads yet. Create your first promotion!</p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {ads.map(ad => (
-            <div key={ad.id} className="bg-white border border-border rounded-xl p-4 flex items-start gap-4">
+        </div> :
+
+      <div className="space-y-3">
+          {ads.map((ad) =>
+        <div key={ad.id} className="bg-white border border-border rounded-xl p-4 flex items-start gap-4">
               {/* Preview swatch */}
               <div
-                className="w-12 h-12 rounded-lg border border-border shrink-0 flex items-center justify-center text-xs font-bold"
-                style={{ backgroundColor: ad.bg_color || '#fff', color: ad.text_color || '#111' }}
-              >
+            className="w-12 h-12 rounded-lg border border-border shrink-0 flex items-center justify-center text-xs font-bold"
+            style={{ backgroundColor: ad.bg_color || '#fff', color: ad.text_color || '#111' }}>
+            
                 Ad
               </div>
 
@@ -148,11 +148,11 @@ export default function AdsSection() {
                   <Edit2 className="w-4 h-4" />
                 </Button>
                 <Button
-                  size="sm"
-                  variant="outline"
-                  className={`rounded-full gap-1 ${ad.is_active ? 'text-emerald-700 border-emerald-200 bg-emerald-50' : 'text-muted-foreground'}`}
-                  onClick={() => handleToggleActive(ad)}
-                >
+              size="sm"
+              variant="outline"
+              className={`rounded-full gap-1 ${ad.is_active ? 'text-emerald-700 border-emerald-200 bg-emerald-50' : 'text-muted-foreground'}`}
+              onClick={() => handleToggleActive(ad)}>
+              
                   {ad.is_active ? <ToggleRight className="w-4 h-4" /> : <ToggleLeft className="w-4 h-4" />}
                   {ad.is_active ? 'Live' : 'Activate'}
                 </Button>
@@ -161,9 +161,9 @@ export default function AdsSection() {
                 </Button>
               </div>
             </div>
-          ))}
+        )}
         </div>
-      )}
+      }
 
       {/* Create / Edit Dialog */}
       <Dialog open={dialog} onOpenChange={setDialog}>
@@ -175,18 +175,18 @@ export default function AdsSection() {
           <div className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Headline *</label>
-              <Input placeholder="e.g. Boost your store sales with AI!" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
+              <Input placeholder="e.g. Boost your store sales with AI!" value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} />
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Body Text</label>
-              <Textarea placeholder="Describe what you're promoting..." value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))} className="h-24 resize-none" />
+              <Textarea placeholder="Describe what you're promoting..." value={form.content} onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))} className="h-24 resize-none" />
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Image (optional)</label>
               <div className="flex gap-2">
-                <Input placeholder="https://... or upload below" value={form.image_url} onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))} className="flex-1" />
+                <Input placeholder="https://... or upload below" value={form.image_url} onChange={(e) => setForm((f) => ({ ...f, image_url: e.target.value }))} className="flex-1" />
               </div>
               <label className="flex items-center gap-2 cursor-pointer border border-dashed border-border rounded-lg px-4 py-3 hover:bg-muted/40 transition-colors text-sm text-muted-foreground">
                 <Upload className="w-4 h-4" />
@@ -200,19 +200,19 @@ export default function AdsSection() {
                     if (!file) return;
                     try {
                       const { file_url } = await base44.integrations.Core.UploadFile({ file });
-                      setForm(f => ({ ...f, image_url: file_url }));
+                      setForm((f) => ({ ...f, image_url: file_url }));
                     } catch (_) {}
-                  }}
-                />
+                  }} />
+                
               </label>
-              {form.image_url && (
-                <img src={form.image_url} alt="Preview" className="w-full h-28 object-cover rounded-lg border border-border" onError={e => e.target.style.display='none'} />
-              )}
+              {form.image_url &&
+              <img src={form.image_url} alt="Preview" className="w-full h-28 object-cover rounded-lg border border-border px-1" onError={(e) => e.target.style.display = 'none'} />
+              }
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Video (optional)</label>
-              <Input placeholder="https://... or upload below" value={form.video_url} onChange={e => setForm(f => ({ ...f, video_url: e.target.value }))} />
+              <Input placeholder="https://... or upload below" value={form.video_url} onChange={(e) => setForm((f) => ({ ...f, video_url: e.target.value }))} />
               <label className="flex items-center gap-2 cursor-pointer border border-dashed border-border rounded-lg px-4 py-3 hover:bg-muted/40 transition-colors text-sm text-muted-foreground">
                 <Upload className="w-4 h-4" />
                 <span>Upload video</span>
@@ -225,25 +225,25 @@ export default function AdsSection() {
                     if (!file) return;
                     try {
                       const { file_url } = await base44.integrations.Core.UploadFile({ file });
-                      setForm(f => ({ ...f, video_url: file_url }));
+                      setForm((f) => ({ ...f, video_url: file_url }));
                       toast.success('Video uploaded!');
-                    } catch (_) { toast.error('Upload failed'); }
-                  }}
-                />
+                    } catch (_) {toast.error('Upload failed');}
+                  }} />
+                
               </label>
-              {form.video_url && (
-                <video src={form.video_url} className="w-full h-28 object-cover rounded-lg border border-border" controls />
-              )}
+              {form.video_url &&
+              <video src={form.video_url} className="w-full h-28 object-cover rounded-lg border border-border" controls />
+              }
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Button Text</label>
-                <Input placeholder="e.g. Get Started" value={form.button_text} onChange={e => setForm(f => ({ ...f, button_text: e.target.value }))} />
+                <Input placeholder="e.g. Get Started" value={form.button_text} onChange={(e) => setForm((f) => ({ ...f, button_text: e.target.value }))} />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Button URL *</label>
-                <Input placeholder="https://..." value={form.button_url} onChange={e => setForm(f => ({ ...f, button_url: e.target.value }))} />
+                <Input placeholder="https://..." value={form.button_url} onChange={(e) => setForm((f) => ({ ...f, button_url: e.target.value }))} />
               </div>
             </div>
 
@@ -251,22 +251,22 @@ export default function AdsSection() {
               <div className="space-y-2">
                 <label className="text-sm font-medium">Background</label>
                 <div className="flex items-center gap-2">
-                  <input type="color" value={form.bg_color} onChange={e => setForm(f => ({ ...f, bg_color: e.target.value }))} className="w-9 h-9 rounded cursor-pointer border border-border" />
-                  <Input value={form.bg_color} onChange={e => setForm(f => ({ ...f, bg_color: e.target.value }))} className="flex-1 text-xs" />
+                  <input type="color" value={form.bg_color} onChange={(e) => setForm((f) => ({ ...f, bg_color: e.target.value }))} className="w-9 h-9 rounded cursor-pointer border border-border" />
+                  <Input value={form.bg_color} onChange={(e) => setForm((f) => ({ ...f, bg_color: e.target.value }))} className="flex-1 text-xs" />
                 </div>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Text Color</label>
                 <div className="flex items-center gap-2">
-                  <input type="color" value={form.text_color} onChange={e => setForm(f => ({ ...f, text_color: e.target.value }))} className="w-9 h-9 rounded cursor-pointer border border-border" />
-                  <Input value={form.text_color} onChange={e => setForm(f => ({ ...f, text_color: e.target.value }))} className="flex-1 text-xs" />
+                  <input type="color" value={form.text_color} onChange={(e) => setForm((f) => ({ ...f, text_color: e.target.value }))} className="w-9 h-9 rounded cursor-pointer border border-border" />
+                  <Input value={form.text_color} onChange={(e) => setForm((f) => ({ ...f, text_color: e.target.value }))} className="flex-1 text-xs" />
                 </div>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Button Color</label>
                 <div className="flex items-center gap-2">
-                  <input type="color" value={form.button_color} onChange={e => setForm(f => ({ ...f, button_color: e.target.value }))} className="w-9 h-9 rounded cursor-pointer border border-border" />
-                  <Input value={form.button_color} onChange={e => setForm(f => ({ ...f, button_color: e.target.value }))} className="flex-1 text-xs" />
+                  <input type="color" value={form.button_color} onChange={(e) => setForm((f) => ({ ...f, button_color: e.target.value }))} className="w-9 h-9 rounded cursor-pointer border border-border" />
+                  <Input value={form.button_color} onChange={(e) => setForm((f) => ({ ...f, button_color: e.target.value }))} className="flex-1 text-xs" />
                 </div>
               </div>
             </div>
@@ -275,19 +275,19 @@ export default function AdsSection() {
             <div className="space-y-2">
               <label className="text-sm font-medium text-muted-foreground">Preview</label>
               <div className="rounded-xl border border-border overflow-hidden shadow-sm" style={{ backgroundColor: form.bg_color }}>
-                {form.video_url ? (
-                  <video src={form.video_url} className="w-full h-32 object-cover" autoPlay muted loop />
-                ) : form.image_url ? (
-                  <img src={form.image_url} alt="Ad" className="w-full h-32 object-cover" onError={e => e.target.style.display='none'} />
-                ) : null}
+                {form.video_url ?
+                <video src={form.video_url} className="w-full h-32 object-cover" autoPlay muted loop /> :
+                form.image_url ?
+                <img src={form.image_url} alt="Ad" className="w-full h-32 object-cover" onError={(e) => e.target.style.display = 'none'} /> :
+                null}
                 <div className="p-4">
                   <p className="font-bold text-base" style={{ color: form.text_color }}>{form.title || 'Your Headline'}</p>
                   {form.content && <p className="text-sm mt-1 opacity-80" style={{ color: form.text_color }}>{form.content}</p>}
-                  {form.button_text && (
-                    <button className="mt-3 px-4 py-2 rounded-lg text-sm font-semibold text-white" style={{ backgroundColor: form.button_color }}>
+                  {form.button_text &&
+                  <button className="mt-3 px-4 py-2 rounded-lg text-sm font-semibold text-white" style={{ backgroundColor: form.button_color }}>
                       {form.button_text}
                     </button>
-                  )}
+                  }
                 </div>
               </div>
             </div>
@@ -301,6 +301,6 @@ export default function AdsSection() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    </div>);
+
 }
