@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, Copy, Check, Globe } from 'lucide-react';
+import { Loader2, Copy, Check, Globe, Upload, ImageIcon } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
@@ -16,11 +16,32 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [copied, setCopied] = useState('');
+  const [screenshot, setScreenshot] = useState(null); // { file, previewUrl, uploadedUrl }
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
   const handleClose = () => {
     setTransactionRef('');
     setSubmitted(false);
+    setScreenshot(null);
     onClose();
+  };
+
+  const handleScreenshotChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const previewUrl = URL.createObjectURL(file);
+    setScreenshot({ file, previewUrl, uploadedUrl: null });
+    setUploading(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setScreenshot({ file, previewUrl, uploadedUrl: file_url });
+    } catch (_) {
+      toast.error('Failed to upload screenshot');
+      setScreenshot(null);
+    } finally {
+      setUploading(false);
+    }
   };
 
   const copy = (text, key) => {
@@ -31,6 +52,10 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
 
   const handleSubmit = async () => {
     setSubmitting(true);
+    let adminNote = '';
+    if (transactionRef) adminNote += `Ref: ${transactionRef}`;
+    if (screenshot?.uploadedUrl) adminNote += `${adminNote ? ' | ' : ''}Screenshot: ${screenshot.uploadedUrl}`;
+
     await base44.entities.Payment.create({
       user_id: user?.id,
       user_name: user?.full_name,
@@ -40,7 +65,7 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
       amount: DOMAIN_PRICE,
       description: `Domain Purchase - ${partner?.name}`,
       status: 'pending',
-      admin_note: transactionRef ? `Ref: ${transactionRef}` : undefined,
+      admin_note: adminNote || undefined,
     });
     setSubmitting(false);
     setSubmitted(true);
@@ -114,10 +139,40 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
               />
             </div>
 
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium">Payment Screenshot <span className="text-destructive">*</span></label>
+              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleScreenshotChange} />
+              {screenshot?.previewUrl ? (
+                <div className="relative rounded-xl overflow-hidden border border-border">
+                  <img src={screenshot.previewUrl} alt="Payment screenshot" className="w-full max-h-48 object-cover" />
+                  {uploading && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <Loader2 className="w-6 h-6 text-white animate-spin" />
+                    </div>
+                  )}
+                  {!uploading && (
+                    <button
+                      onClick={() => { setScreenshot(null); fileInputRef.current.value = ''; }}
+                      className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-md hover:bg-black/70"
+                    >Remove</button>
+                  )}
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full border-2 border-dashed border-border rounded-xl p-5 flex flex-col items-center gap-2 text-muted-foreground hover:border-primary/40 hover:bg-primary/5 transition-colors"
+                >
+                  <ImageIcon className="w-6 h-6" />
+                  <span className="text-sm">Click to upload screenshot</span>
+                </button>
+              )}
+            </div>
+
             <Button
               className="w-full rounded-full"
               onClick={handleSubmit}
-              disabled={submitting}
+              disabled={submitting || uploading || !screenshot?.uploadedUrl}
             >
               {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : null}
               {submitting ? 'Submitting...' : 'I\'ve Made the Payment →'}
