@@ -89,13 +89,13 @@ export default function Navbar() {
           {/* Search — hidden on mobile */}
           <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl">
             <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground hidden" />
-              <Input
-                type="text"
-                placeholder="Search partners, services, or location..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-10 rounded-full border-border bg-muted/50 focus:bg-background hidden" />
+              
+              
+
+
+
+
+              
             </div>
           </form>
 
