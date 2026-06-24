@@ -93,7 +93,7 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 py-16">
+      <section className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 py-16 hidden">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">Become a partner</h2>
           <p className="text-muted-foreground mt-3 max-w-lg mx-auto">
