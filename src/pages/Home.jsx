@@ -93,17 +93,17 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 py-16 hidden">
-        <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">Become a partner</h2>
-          <p className="text-muted-foreground mt-3 max-w-lg mx-auto">
-            Join our directory and connect with thousands of businesses looking for expert help.
-          </p>
-          <Button asChild className="mt-6 rounded-full px-8" size="lg">
-            <Link to="/become-a-partner">Get started</Link>
-          </Button>
-        </div>
-      </section>
+      
+
+
+
+
+
+
+
+
+
+      
 
       {/* Footer */}
       <footer className="text-primary-foreground/70 py-12 bg-primary">
