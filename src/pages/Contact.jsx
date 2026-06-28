@@ -58,7 +58,7 @@ export default function Contact() {
               </div>
               <div>
                 <p className="text-sm font-medium">Email</p>
-                <a href="mailto:support@shopifypartnersdirectory.com" className="text-sm text-primary hover:underline">sfabunmi9
+                <a href="mailto:support@shopifypartnersdirectory.com" className="text-sm text-primary hover:underline">sfabunmi993@gmail.com
 
                 </a>
               </div>
