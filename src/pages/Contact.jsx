@@ -46,8 +46,8 @@ export default function Contact() {
         <div className="space-y-8">
           <div>
             <h2 className="font-heading text-xl font-semibold mb-4">Get in Touch</h2>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              Whether you're a store owner looking for a partner, an expert wanting to list your services, or you have a general enquiry — our team is here to help.
+            <p className="text-muted-foreground text-sm leading-relaxed">Thank you for visiting Shopify Partners Directory. Our mission is to connect Shopify merchants with trusted professionals around the world. Whether you're looking for expert services or want to showcase your skills, we're committed to making those connections simple and reliable. If you have feedback, suggestions, or questions, I'd be happy to hear from you.
+
             </p>
           </div>
 
