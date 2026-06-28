@@ -175,9 +175,9 @@ export default function PartnerDetail() {
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
         <ShieldAlert className="w-12 h-12 text-red-400 mx-auto mb-4" />
         <p className="text-lg font-medium text-foreground">THIS ACCOUNT DOES NOT EXIST</p>
-        {partner.restriction_reason &&
-        <p className="text-sm text-muted-foreground mt-2 hidden">Reason: {partner.restriction_reason}</p>
-        }
+        
+
+        
         <Button asChild variant="outline" className="mt-6">
           <Link to="/directory"><ArrowLeft className="w-4 h-4 mr-1" /> Back to directory</Link>
         </Button>
