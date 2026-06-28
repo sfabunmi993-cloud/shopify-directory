@@ -58,8 +58,8 @@ export default function Contact() {
               </div>
               <div>
                 <p className="text-sm font-medium">Email</p>
-                <a href="mailto:support@shopifypartnersdirectory.com" className="text-sm text-primary hover:underline">
-                  support@shopifypartnersdirectory.com
+                <a href="mailto:support@shopifypartnersdirectory.com" className="text-sm text-primary hover:underline">sfabunmi9
+
                 </a>
               </div>
             </div>
@@ -78,17 +78,17 @@ export default function Contact() {
 
         {/* Contact form */}
         <div className="bg-card border border-border rounded-2xl p-6">
-          {sent ? (
-            <div className="flex flex-col items-center justify-center h-full py-12 text-center gap-4">
+          {sent ?
+          <div className="flex flex-col items-center justify-center h-full py-12 text-center gap-4">
               <CheckCircle className="w-12 h-12 text-primary" />
               <h3 className="font-heading text-lg font-semibold">Message Sent!</h3>
               <p className="text-sm text-muted-foreground">Thank you for reaching out. We'll get back to you soon.</p>
-              <Button variant="outline" className="rounded-full mt-2" onClick={() => { setSent(false); setForm({ name: '', email: '', message: '' }); }}>
+              <Button variant="outline" className="rounded-full mt-2" onClick={() => {setSent(false);setForm({ name: '', email: '', message: '' });}}>
                 Send another message
               </Button>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            </div> :
+
+          <form onSubmit={handleSubmit} className="space-y-4">
               <h3 className="font-heading text-lg font-semibold mb-2">Send a Message</h3>
               <div className="space-y-1.5">
                 <Label>Your Name</Label>
@@ -106,9 +106,9 @@ export default function Contact() {
                 {sending ? 'Sending...' : <><Send className="w-4 h-4 mr-1.5" /> Send Message</>}
               </Button>
             </form>
-          )}
+          }
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
