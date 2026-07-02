@@ -222,7 +222,7 @@ export default function PartnerDetail() {
       <div className="grid md:grid-cols-[280px_1fr] gap-8 items-start">
 
         {/* LEFT SIDEBAR */}
-        <div className="border rounded-xl border-border p-6 space-y-5 my-3">
+        <div className="border rounded-xl border-border space-y-5">
           {/* Buy Reviews button — only for partner owner */}
           {user && partner.created_by_id === user.id &&
           <button
