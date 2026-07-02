@@ -197,7 +197,7 @@ export default function PartnerDetail() {
   null;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-foreground">
+    <div className="px-4 sm:px-6 <div class=\"flex min-h-screen flex-col bg-white\"> <header class=\"sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-xl\"> class=\"mx-auto flex h-16 max-w-7xl items-center justify-between lg:px-8\"> <h1 class=\"font-heading text-3xl font-extrabold text-slate-900\"> <button class=\"inline-flex gap-2 rounded-xl bg-primary py-2.5 text-sm font-semibold text-white hover:opacity-90\"> class=\"grid gap-8 lg:grid-cols-3\"> <span class=\"rounded-full bg-emerald-50 px-3 py-1.5 font-medium text-emerald-700\">">
       <Link to="/directory" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-6">Back to directory        
 
       </Link>
