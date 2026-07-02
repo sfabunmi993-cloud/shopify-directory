@@ -445,7 +445,7 @@ export default function PartnerDetail() {
         <div className="space-y-6">
 
           {/* About */}
-          <div>
+          <div className="my-64 px-48">
             <h2 className="font-heading text-xl font-bold text-foreground mb-4">About</h2>
 
             {partner.description &&
