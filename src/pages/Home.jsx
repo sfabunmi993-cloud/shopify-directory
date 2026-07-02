@@ -49,7 +49,7 @@ export default function Home() {
       </section>
 
       {/* Featured Partners */}
-      <section className="<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"UTF-8\"> name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> <title>Shopify Expert Hub</title> <script src=\"https://cdn.tailwindcss.com\"></script> <link rel=\"icon\" href=\"https://media.base44.com/images/public/6a452a4ab030f47fe0c3ec4f/29eaaefeb_logo.png\"> rel=\"preconnect\" href=\"https://fonts.googleapis.com\"> href=\"https://fonts.gstatic.com\" crossorigin> href=\"https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap\" rel=\"stylesheet\"> </head> <body class=\"bg-gray-50 font-['Inter']\"> <div id=\"root\"></div> </body> </html>">
+      <section className="py-16 bg-secondary">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-8">
             <div>
