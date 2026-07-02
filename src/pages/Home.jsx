@@ -49,7 +49,7 @@ export default function Home() {
       </section>
 
       {/* Featured Partners */}
-      <section className="bg-background py-16 md:py-20">
+      <section>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-8">
             <div>
