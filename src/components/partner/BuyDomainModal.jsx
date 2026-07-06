@@ -97,8 +97,8 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
               <p className="font-semibold text-primary mb-1">Domain Package</p>
               <p className="text-muted-foreground">Get a custom domain for your partner profile. Your profile will be accessible via your own branded URL
 
- O pay: 9038153254 Name: Solomon Glory Andrew Amount: #10,000
-
+ O pay: 9038153254
+ Name: Solomon Glory Andrew Amount: #10,000
             </p>
             </div>
 
