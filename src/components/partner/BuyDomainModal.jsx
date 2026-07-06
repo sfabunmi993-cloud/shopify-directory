@@ -98,7 +98,8 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
               <p className="text-muted-foreground">Get a custom domain for your partner profile. Your profile will be accessible via your own branded URL.
 
 Opay: 9038153254
-name: solomon gl</p>
+name: solomon glory andrew
+amount:</p>
             </div>
 
             <div className="bg-white border border-border rounded-xl p-4 space-y-3 hidden">
@@ -142,8 +143,7 @@ name: solomon gl</p>
             <div className="space-y-1.5">
               <label className="text-sm font-medium">Payment Screenshot <span className="text-destructive">*</span></label>
               <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleScreenshotChange} />
-              {screenshot?.previewUrl ?
-            <div className="relative rounded-xl overflow-hidden border border-border">
+              {screenshot?.previewUrl ? <div className="relative rounded-xl overflow-hidden border border-border">
                   <img src={screenshot.previewUrl} alt="Payment screenshot" className="w-full max-h-48 object-cover" />
                   {uploading &&
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
