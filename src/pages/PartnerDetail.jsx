@@ -442,7 +442,7 @@ export default function PartnerDetail() {
         </div>
 
         {/* RIGHT MAIN CONTENT */}
-        <div className="space-y-6 mx-1">
+        <div className="space-y-6 mx-6">
 
           {/* About */}
           <div className="my-64 px-48">
