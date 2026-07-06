@@ -98,7 +98,7 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
               <p className="text-muted-foreground">Get a custom domain for your partner profile. Your profile will be accessible via your own branded URL.
 
 Opay: 9038153254
-n</p>
+nameL</p>
             </div>
 
             <div className="bg-white border border-border rounded-xl p-4 space-y-3 hidden">
