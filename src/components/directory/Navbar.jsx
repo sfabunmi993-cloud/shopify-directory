@@ -269,13 +269,13 @@ export default function Navbar() {
 }
 
 function MobileLink({ to, onClick, children, highlight }) {
-  return (
-    <Link
-      to={to}
-      onClick={onClick}
-      className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors hover:bg-muted hidden ${highlight ? 'text-primary' : 'text-foreground'}`}>
-      
-      {children}
-    </Link>);
+  return null;
+
+
+
+
+
+
+
 
 }
