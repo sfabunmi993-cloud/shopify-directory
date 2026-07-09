@@ -83,7 +83,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <img src="https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg" alt="Shopify" className="h-6" />
-            <span className="font-heading font-bold text-base text-foreground hidden lg:block">Shopify Partners Directory</span>
+            <span className="font-heading font-bold text-base text-foreground hidden lg:block px-64">Shopify Partners Directory</span>
           </Link>
 
           {/* Search — hidden on mobile */}
