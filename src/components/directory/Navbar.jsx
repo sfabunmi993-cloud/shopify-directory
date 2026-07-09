@@ -108,7 +108,7 @@ export default function Navbar() {
             {/* Dark mode toggle */}
             <button
               onClick={() => setDark(!dark)}
-              className="p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+              className="p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground hidden"
               title={dark ? 'Switch to light mode' : 'Switch to dark mode'}>
               
               {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -173,10 +173,10 @@ export default function Navbar() {
 
             <div className="flex items-center gap-2">
                 <Button asChild variant="ghost" size="sm">
-                  <Link to="/login">Log in</Link>
+                  <Link to="/login" className="hidden">Log in</Link>
                 </Button>
                 <Button asChild size="sm" className="rounded-full">
-                  <Link to="/register">Become a Partner</Link>
+                  <Link to="/register" className="hidden">Become a Partner</Link>
                 </Button>
               </div>
             }
