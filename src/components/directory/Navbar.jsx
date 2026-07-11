@@ -161,7 +161,7 @@ export default function Navbar() {
                       <Link to="/favorites"><Heart className="w-4 h-4 mr-2" /> Saved Partners</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/messages" className="hidden"><MessageSquare className="w-4 h-4 mr-2" /> Messages</Link>
+                      
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
