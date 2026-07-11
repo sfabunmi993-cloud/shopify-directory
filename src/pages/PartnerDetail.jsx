@@ -120,6 +120,15 @@ export default function PartnerDetail() {
     init();
   }, [partnerId]);
 
+  const handleContactClick = () => {
+    if (!user) {
+      toast.info('Please log in to contact this partner.');
+      base44.auth.redirectToLogin(window.location.pathname);
+      return;
+    }
+    setContactOpen(true);
+  };
+
   const handleToggleFavorite = async () => {
     if (!user) {toast.error('Please log in to save favorites.');return;}
     if (isFavorited && favoriteId) {
@@ -286,7 +295,7 @@ export default function PartnerDetail() {
 
           {/* CTA Buttons */}
           <div className="space-y-2">
-            {contactHref ?
+            {contactHref && user ?
             <a
               href={contactHref}
               target="_blank"
@@ -295,7 +304,7 @@ export default function PartnerDetail() {
                 <Mail className="w-4 h-4" /> Contact
               </a> :
 
-            <Button className="w-full" onClick={() => setContactOpen(true)}>
+            <Button className="w-full" onClick={handleContactClick}>
                 <MessageSquare className="w-4 h-4 mr-1.5" /> Contact
               </Button>
             }
