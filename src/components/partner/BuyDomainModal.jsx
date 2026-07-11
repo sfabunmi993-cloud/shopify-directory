@@ -105,7 +105,6 @@ Make your partner profile look more professional with your own branded custom do
 * Build trust and credibility with clients.
 * Share a professional, easy-to-remember link.
 * Strengthen your brand identity
-
 * **Amount:** ₦10,000
 * **Bank:** Opay
 * **Account Number:** 9038153254
@@ -113,7 +112,8 @@ Make your partner profile look more professional with your own branded custom do
 After making payment, please send your payment receipt along with your preferred domain name so we can begin the setup process.
 
 Thank you for choosing our platform!
-</p>
+
+            </p>
             </div>
 
             <div className="bg-white border border-border rounded-xl p-4 space-y-3 hidden">
@@ -172,7 +172,7 @@ Thank you for choosing our platform!
             </div>
 
             <Button className="w-full rounded-full" onClick={handleSubmit}
-            disabled={submitting || uploading || !screenshot?.uploadedUrl}>
+          disabled={submitting || uploading || !screenshot?.uploadedUrl}>
             
               {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : null}
               {submitting ? 'Submitting...' : 'I\'ve Made the Payment →'}
