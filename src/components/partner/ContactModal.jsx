@@ -125,7 +125,7 @@ export default function ContactModal({ partner, isOpen, onClose, mode = 'inquiry
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Contact {partner.name}</DialogTitle>
           <DialogDescription>
