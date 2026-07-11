@@ -5,6 +5,7 @@ import { Loader2, Send, MessageSquare, ChevronLeft, PackageCheck, CheckCheck, Ch
 import DeliveryModal from '@/components/partner/DeliveryModal';
 import NewConversationModal from '@/components/messages/NewConversationModal';
 import ReviewForm from '@/components/messages/ReviewForm';
+import ContactDetailsCard from '@/components/messages/ContactDetailsCard';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { format, isToday, isYesterday } from 'date-fns';
@@ -378,6 +379,10 @@ export default function Messages() {
 
               {/* Messages */}
               <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
+                {(() => {
+                  const inquiryMsg = convMessages.find(m => m.message_type === 'inquiry' || m.message_type === 'hire_request');
+                  return inquiryMsg ? <ContactDetailsCard message={inquiryMsg} /> : null;
+                })()}
                 {convMessages.length === 0 &&
               <div className="flex justify-center mt-8">
                     <span className="text-xs text-muted-foreground bg-white border border-border px-3 py-1 rounded-full">No messages yet — say hello!</span>

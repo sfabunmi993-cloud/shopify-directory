@@ -286,19 +286,9 @@ export default function PartnerDetail() {
 
           {/* CTA Buttons */}
           <div className="space-y-2">
-            {contactHref ?
-            <a
-              href={contactHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 text-sm font-medium transition-colors bg-primary rounded-2xl">
-                <Mail className="w-4 h-4" /> Contact
-              </a> :
-
             <Button className="w-full" onClick={() => setContactOpen(true)}>
                 <MessageSquare className="w-4 h-4 mr-1.5" /> Contact
               </Button>
-            }
             {partner.whatsapp_url &&
             <a
               href={partner.whatsapp_url}
@@ -535,7 +525,7 @@ export default function PartnerDetail() {
       {/* Modals */}
       {partner &&
       <>
-          <ContactModal partner={partner} isOpen={contactOpen} onClose={() => setContactOpen(false)} mode="inquiry" />
+          <ContactModal partner={partner} isOpen={contactOpen} onClose={() => setContactOpen(false)} />
           <ContactModal partner={partner} isOpen={hireOpen} onClose={() => setHireOpen(false)} mode="hire" />
           <FlagModal partner={partner} isOpen={flagOpen} onClose={() => setFlagOpen(false)} />
           <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
