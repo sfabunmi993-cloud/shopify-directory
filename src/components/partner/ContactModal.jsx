@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import {
   Dialog,
@@ -10,24 +10,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Loader2, Send, CheckCircle, Lock } from 'lucide-react';
+import { Loader2, Send, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ContactModal({ partner, isOpen, onClose, mode = 'inquiry' }) {
   const [form, setForm] = useState({ subject: '', body: '', hire_details: '', client_budget: '', client_store_url: '', collaborator_code: '' });
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
-  const [needsLogin, setNeedsLogin] = useState(false);
 
   const set = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
-
-  useEffect(() => {
-    if (!isOpen) return;
-    base44.auth.isAuthenticated().then(authed => {
-      if (!authed) setNeedsLogin(true);
-      else setNeedsLogin(false);
-    });
-  }, [isOpen]);
 
   const requiredFieldsFilled = form.body.trim() && form.client_budget.trim() && form.client_store_url.trim() && form.collaborator_code.trim();
 
@@ -86,15 +77,6 @@ export default function ContactModal({ partner, isOpen, onClose, mode = 'inquiry
             <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
             <p className="font-semibold">Message sent successfully!</p>
             <p className="text-sm text-muted-foreground mt-1">The partner will respond shortly.</p>
-          </div>
-        ) : needsLogin ? (
-          <div className="py-8 text-center">
-            <Lock className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-            <p className="font-semibold">Please log in to continue</p>
-            <p className="text-sm text-muted-foreground mt-1 mb-4">You need an account to contact this partner.</p>
-            <Button className="rounded-full" onClick={() => base44.auth.redirectToLogin(window.location.pathname)}>
-              Log in
-            </Button>
           </div>
         ) : (
           <div className="space-y-4">
