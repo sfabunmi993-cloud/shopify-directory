@@ -95,23 +95,23 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
         <div className="space-y-4">
             <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 text-sm">
               <p className="font-semibold text-primary mb-1">Domain Package</p>
-              <p className="text-muted-foreground">## Get a Custom Domain for Your Partner Profile
+              <p className="text-muted-foreground">Payment Details
 
-Make your partner profile look more professional with your own branded custom domain.
+Amount: ₦10,000
+Bank: Opay
+Account Number: 9038153254
+Account Name: Solomon Glory Andrew
 
-**Benefits**
 
-* Your profile will have a unique branded URL.
-* Build trust and credibility with clients.
-* Share a professional, easy-to-remember link.
-* Strengthen your brand identity
-* **Amount:** ₦10,000
-* **Bank:** Opay
-* **Account Number:** 9038153254
-* **Account Name:** Solomon Glory Andrew
-After making payment, please send your payment receipt along with your preferred domain name so we can begin the setup process.
 
-Thank you for choosing our platform!
+
+
+
+
+
+
+
+
 
             </p>
             </div>
