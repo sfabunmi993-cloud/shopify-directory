@@ -138,7 +138,7 @@ export default function MyProfile() {
 
   const handleSave = async () => {
     setSaving(true);
-    let updates = { ...form, starting_price: form.starting_price ? Number(form.starting_price) : undefined, years_as_partner: form.years_as_partner ? Number(form.years_as_partner) : 0 };
+    let updates = { ...form, starting_price: form.starting_price ? Number(form.starting_price) : undefined, years_as_partner: form.years_as_partner ? Number(form.years_as_partner) : 0, completed_projects: form.completed_projects ? Number(form.completed_projects) : 0 };
     // Regenerate slug if name changed
     if (form.name && form.name !== partner.name) {
       const baseSlug = form.name.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -433,6 +433,10 @@ export default function MyProfile() {
             <div className="space-y-1.5">
               <Label>Years as a Shopify partner</Label>
               <Input type="number" min="0" value={form.years_as_partner || ''} onChange={(e) => set('years_as_partner', e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Completed projects</Label>
+              <Input type="number" min="0" value={form.completed_projects || ''} onChange={(e) => set('completed_projects', e.target.value)} />
             </div>
             <div className="space-y-1.5">
               <Label>Contact email</Label>
