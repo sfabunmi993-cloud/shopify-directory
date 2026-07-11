@@ -10,19 +10,20 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Send, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ContactModal({ partner, isOpen, onClose, mode = 'inquiry' }) {
-  const [form, setForm] = useState({ subject: '', body: '', hire_details: '' });
+  const [form, setForm] = useState({ subject: '', body: '', hire_details: '', client_budget: '', client_store_url: '', collaborator_code: '' });
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
 
   const set = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
 
+  const requiredFieldsFilled = form.body.trim() && form.client_budget.trim() && form.client_store_url.trim() && form.collaborator_code.trim();
+
   const handleSend = async () => {
-    if (!form.body.trim()) return;
+    if (!requiredFieldsFilled) return;
     setSending(true);
     const authed = await base44.auth.isAuthenticated();
     if (!authed) {
@@ -47,6 +48,9 @@ export default function ContactModal({ partner, isOpen, onClose, mode = 'inquiry
       body: form.body.trim(),
       message_type: mode === 'hire' ? 'hire_request' : 'inquiry',
       hire_details: mode === 'hire' ? form.hire_details : undefined,
+      client_budget: form.client_budget.trim(),
+      client_store_url: form.client_store_url.trim(),
+      collaborator_code: form.collaborator_code.trim(),
       is_read: false,
     });
     setSending(false);
@@ -54,7 +58,7 @@ export default function ContactModal({ partner, isOpen, onClose, mode = 'inquiry
     toast.success(mode === 'hire' ? 'Hire request sent!' : 'Message sent!');
     setTimeout(() => {
       setSent(false);
-      setForm({ subject: '', body: '', hire_details: '' });
+      setForm({ subject: '', body: '', hire_details: '', client_budget: '', client_store_url: '', collaborator_code: '' });
       onClose();
     }, 1500);
   };
@@ -98,6 +102,35 @@ export default function ContactModal({ partner, isOpen, onClose, mode = 'inquiry
             )}
 
             <div className="space-y-1.5">
+              <Label>Your budget (USD) <span className="text-destructive">*</span></Label>
+              <Input
+                type="text"
+                placeholder="e.g. 500"
+                value={form.client_budget}
+                onChange={e => set('client_budget', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label>Store URL <span className="text-destructive">*</span></Label>
+              <Input
+                type="url"
+                placeholder="https://your-store.myshopify.com"
+                value={form.client_store_url}
+                onChange={e => set('client_store_url', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label>Collaborator code <span className="text-destructive">*</span></Label>
+              <Input
+                placeholder="Your Shopify collaborator code"
+                value={form.collaborator_code}
+                onChange={e => set('collaborator_code', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-1.5">
               <Label>Message <span className="text-destructive">*</span></Label>
               <Textarea
                 placeholder={mode === 'hire' ? "Any additional information or questions..." : "Your message to this partner..."}
@@ -112,7 +145,7 @@ export default function ContactModal({ partner, isOpen, onClose, mode = 'inquiry
               <Button
                 className="flex-1 rounded-full"
                 onClick={handleSend}
-                disabled={!form.body.trim() || sending}
+                disabled={!requiredFieldsFilled || sending}
               >
                 {sending
                   ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> Sending...</>

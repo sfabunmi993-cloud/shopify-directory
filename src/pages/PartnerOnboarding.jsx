@@ -70,6 +70,7 @@ export default function PartnerOnboarding() {
     website_url: '',
     email: '',
     languages: [],
+    years_as_partner: '',
   });
 
   useEffect(() => {
@@ -140,6 +141,7 @@ export default function PartnerOnboarding() {
       partner_number: partnerNumber,
       slug,
       starting_price: form.starting_price ? Number(form.starting_price) : undefined,
+      years_as_partner: form.years_as_partner ? Number(form.years_as_partner) : 0,
       partner_tier: 'standard',
       is_featured: false,
       rating: 0,
@@ -152,7 +154,7 @@ export default function PartnerOnboarding() {
   };
 
   const canProceedStep0 = form.name.trim() && form.description.trim() && form.service_category;
-  const canProceedStep1 = form.services.length > 0;
+  const canProceedStep1 = form.services.length > 0 && form.years_as_partner !== '';
 
   if (checking) {
     return (
@@ -329,6 +331,11 @@ export default function PartnerOnboarding() {
                   <Label>Contact email</Label>
                   <Input type="email" placeholder="you@agency.com" value={form.email} onChange={e => set('email', e.target.value)} />
                 </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label>Years as a Shopify partner <span className="text-destructive">*</span></Label>
+                <Input type="number" min="0" placeholder="e.g. 3" value={form.years_as_partner} onChange={e => set('years_as_partner', e.target.value)} />
               </div>
 
               <div className="space-y-1.5">

@@ -20,6 +20,9 @@ export default function NewConversationModal({ isOpen, onClose, user, onCreated 
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
   const [hireDetails, setHireDetails] = useState('');
+  const [clientBudget, setClientBudget] = useState('');
+  const [clientStoreUrl, setClientStoreUrl] = useState('');
+  const [collaboratorCode, setCollaboratorCode] = useState('');
   const [sending, setSending] = useState(false);
 
   useEffect(() => {
@@ -31,6 +34,9 @@ export default function NewConversationModal({ isOpen, onClose, user, onCreated 
       setSubject('');
       setBody('');
       setHireDetails('');
+      setClientBudget('');
+      setClientStoreUrl('');
+      setCollaboratorCode('');
     }
   }, [isOpen]);
 
@@ -51,6 +57,9 @@ export default function NewConversationModal({ isOpen, onClose, user, onCreated 
 
   const handleSend = async () => {
     if (!body.trim()) { toast.error('Please write a message.'); return; }
+    if (!clientBudget.trim()) { toast.error('Please enter your budget.'); return; }
+    if (!clientStoreUrl.trim()) { toast.error('Please enter your store URL.'); return; }
+    if (!collaboratorCode.trim()) { toast.error('Please enter your collaborator code.'); return; }
     if (messageType === 'hire' && !hireDetails.trim()) { toast.error('Please provide project details.'); return; }
     setSending(true);
     const conversationId = `conv_${user.id}_${selectedPartner.id}_${Date.now()}`;
@@ -66,6 +75,9 @@ export default function NewConversationModal({ isOpen, onClose, user, onCreated 
       body: body.trim(),
       message_type: messageType,
       hire_details: messageType === 'hire' ? hireDetails.trim() : undefined,
+      client_budget: clientBudget.trim(),
+      client_store_url: clientStoreUrl.trim(),
+      collaborator_code: collaboratorCode.trim(),
       is_read: false,
     });
     toast.success(messageType === 'hire' ? 'Hire request sent!' : 'Message sent!');
@@ -173,9 +185,24 @@ export default function NewConversationModal({ isOpen, onClose, user, onCreated 
               </TabsContent>
             </Tabs>
 
+            <div className="space-y-3 pt-1 border-t border-border">
+              <div className="space-y-1.5">
+                <Label>Your budget (USD) <span className="text-destructive">*</span></Label>
+                <Input type="text" placeholder="e.g. 500" value={clientBudget} onChange={e => setClientBudget(e.target.value)} />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Store URL <span className="text-destructive">*</span></Label>
+                <Input type="url" placeholder="https://your-store.myshopify.com" value={clientStoreUrl} onChange={e => setClientStoreUrl(e.target.value)} />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Collaborator code <span className="text-destructive">*</span></Label>
+                <Input placeholder="Your Shopify collaborator code" value={collaboratorCode} onChange={e => setCollaboratorCode(e.target.value)} />
+              </div>
+            </div>
+
             <div className="flex gap-2 pt-1">
               <Button variant="outline" className="flex-1" onClick={() => setStep('pick')}>Back</Button>
-              <Button className="flex-1" onClick={handleSend} disabled={sending || !body.trim() || (messageType === 'hire' && !hireDetails.trim())}>
+              <Button className="flex-1" onClick={handleSend} disabled={sending || !body.trim() || !clientBudget.trim() || !clientStoreUrl.trim() || !collaboratorCode.trim() || (messageType === 'hire' && !hireDetails.trim())}>
                 {sending ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <Send className="w-4 h-4 mr-1.5" />}
                 {sending ? 'Sending...' : (messageType === 'hire' ? 'Send Hire Request' : 'Send Message')}
               </Button>

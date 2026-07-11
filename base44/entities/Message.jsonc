@@ -59,6 +59,18 @@
     "hire_details": {
       "type": "string",
       "description": "Details about the hire request (project scope, budget, timeline)"
+    },
+    "client_budget": {
+      "type": "string",
+      "description": "Client's budget for the project"
+    },
+    "client_store_url": {
+      "type": "string",
+      "description": "Client's Shopify store URL"
+    },
+    "collaborator_code": {
+      "type": "string",
+      "description": "Shopify collaborator code provided by the client"
     }
   },
   "required": [
