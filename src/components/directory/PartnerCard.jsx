@@ -86,7 +86,7 @@ export default function PartnerCard({ partner, compareSelected, onToggleCompare 
               </span>
               }
             {partner.completed_projects > 0 &&
-              <span className="flex items-center gap-1 text-muted-foreground">
+              <span className="flex items-center gap-1 text-muted-foreground hidden">
                 <Briefcase className="w-3.5 h-3.5" />
                 <span className="font-medium text-foreground">{partner.completed_projects}</span> projects
               </span>
