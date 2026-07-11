@@ -95,11 +95,11 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
         <div className="space-y-4">
             <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 text-sm">
               <p className="font-semibold text-primary mb-1">Domain Package</p>
-              <p className="text-muted-foreground">Get a custom domain for your partner profile. Your profile will be accessible via your own branded URL.
+              <p className="text-muted-foreground">Get a custom domain for your partner profile. Your profile will be accessible via your own branded URL. Opay: 9038153254 name: solomon glory andrew amount:#10,000
 
-Opay: 9038153254
-name:  solomon glory andrew
-amount:#10,000</p>
+
+
+            </p>
             </div>
 
             <div className="bg-white border border-border rounded-xl p-4 space-y-3 hidden">
