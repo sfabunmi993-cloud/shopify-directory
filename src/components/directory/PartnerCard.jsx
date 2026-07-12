@@ -85,6 +85,12 @@ export default function PartnerCard({ partner, compareSelected, onToggleCompare 
                 <span className="font-medium text-foreground">From ${partner.starting_price}</span>
               </span>
               }
+            {partner.completed_projects > 0 &&
+              <span className="flex items-center gap-1 text-muted-foreground">
+                <Briefcase className="w-3.5 h-3.5 text-primary" />
+                <span className="font-medium text-foreground">{partner.completed_projects}+ Projects</span>
+              </span>
+              }
             
 
 
