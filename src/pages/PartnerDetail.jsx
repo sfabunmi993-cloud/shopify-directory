@@ -425,7 +425,7 @@ export default function PartnerDetail() {
             {partner.completed_projects > 0 &&
             <div>
                 <p className="text-primary font-semibold text-xs uppercase tracking-wide">Partner Since 2014</p>
-                <p className="text-muted-foreground mt-0.5">{partner.completed_projects}</p>
+                <p className="text-muted-foreground mt-0.5 hidden">{partner.completed_projects}</p>
               </div>
             }
           </div>
