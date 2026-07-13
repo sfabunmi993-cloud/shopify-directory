@@ -423,9 +423,14 @@ export default function PartnerDetail() {
               </div>
             }
             {partner.completed_projects > 0 &&
-            <div>
-                <p className="text-primary font-semibold text-xs uppercase tracking-wide">Partner Since 2014</p>
-                
+            <div className="rounded-lg bg-primary/5 border border-primary/20 p-3 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <CheckCircle className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-foreground leading-none">{partner.completed_projects}+</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Projects Completed</p>
+                </div>
               </div>
             }
           </div>
