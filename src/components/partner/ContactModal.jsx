@@ -109,11 +109,17 @@ export default function ContactModal({ partner, isOpen, onClose, mode = 'inquiry
     });
 
     if (partner.email) {
-      const emailBody = `Hi ${partner.name},\n\nYou have received a new client inquiry. Here are the details:\n\nName: ${form.full_name.trim()}\nEmail: ${form.email.trim()}\nCountry: ${form.country}\nStore URL: ${form.store_url.trim() || 'N/A'}\nService Requested: ${form.service}\nBudget: $${form.budget.trim()}\nCollaborator Code: ${form.collaborator_code.trim() || 'N/A'}\n\nMessage:\n${form.message.trim()}\n\nPlease log in to your dashboard to respond to this inquiry.`;
-      await base44.integrations.Core.SendEmail({
-        to: partner.email,
-        subject: `New Client Inquiry — ${form.service}`,
-        body: emailBody
+      await base44.functions.invoke('sendPartnerInquiryEmail', {
+        partner_email: partner.email,
+        partner_name: partner.name,
+        client_name: form.full_name.trim(),
+        client_email: form.email.trim(),
+        client_country: form.country,
+        client_store_url: form.store_url.trim() || '',
+        client_service: form.service,
+        client_budget: form.budget.trim(),
+        collaborator_code: form.collaborator_code.trim() || '',
+        message: form.message.trim()
       }).catch(() => {});
     }
 
