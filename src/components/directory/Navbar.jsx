@@ -161,7 +161,10 @@ export default function Navbar() {
                       <Link to="/favorites"><Heart className="w-4 h-4 mr-2" /> Saved Partners</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/messages"><MessageSquare className="w-4 h-4 mr-2" /> Messages</Link>
+                      <Link to="/messages"><MessageSquare className="w-4 h-4 mr-2" /> Partner Messages</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/private-messages"><MessageSquare className="w-4 h-4 mr-2" /> Private Messages</Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
@@ -241,7 +244,8 @@ export default function Navbar() {
             <MobileLink to="/become-a-partner" onClick={() => setMobileMenuOpen(false)}>Become a Partner</MobileLink>
             }
                 <MobileLink to="/favorites" onClick={() => setMobileMenuOpen(false)}>Saved Partners</MobileLink>
-                <MobileLink to="/messages" onClick={() => setMobileMenuOpen(false)}>Messages</MobileLink>
+                <MobileLink to="/messages" onClick={() => setMobileMenuOpen(false)}>Partner Messages</MobileLink>
+                <MobileLink to="/private-messages" onClick={() => setMobileMenuOpen(false)}>Private Messages</MobileLink>
                 <div className="pt-2 mt-2 border-t border-border">
                   <button
                 onClick={handleLogout}
