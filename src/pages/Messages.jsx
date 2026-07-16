@@ -294,7 +294,7 @@ export default function Messages() {
                     <PartnerAvatar partner={conv.partner} size="md" shape="rounded-full" />
                     }
                       {unread > 0 &&
-                    <span className="absolute -top-0.5 -right-0.5 bg-primary text-white text-[9px] font-bold rounded-full w-4.5 h-4.5 min-w-[18px] min-h-[18px] flex items-center justify-center px-1">{unread}</span>
+                    <span className="absolute -top-0.5 -right-0.5 bg-primary text-white text-[9px] font-bold rounded-full w-[18px] h-[18px] min-w-[18px] min-h-[18px] flex items-center justify-center px-1">{unread}</span>
                     }
                     </div>
                     <div className="flex-1 min-w-0">
@@ -332,9 +332,9 @@ export default function Messages() {
 
           <>
               {/* Chat header */}
-              <div className="px-4 py-3 border-b border-border bg-white flex items-center justify-between gap-3 shrink-0 shadow-sm">
-                <div className="flex items-center gap-3">
-                  <button onClick={() => setMobileView('list')} className="md:hidden text-muted-foreground hover:text-foreground mr-1">
+              <div className="px-3 py-2.5 border-b border-border bg-white flex items-center justify-between gap-2 shrink-0 shadow-sm">
+                <div className="flex items-center gap-2 min-w-0">
+                  <button onClick={() => setMobileView('list')} className="md:hidden text-muted-foreground hover:text-foreground mr-0.5 shrink-0">
                     <ChevronLeft className="w-5 h-5" />
                   </button>
                   {(() => {
@@ -343,14 +343,14 @@ export default function Messages() {
                   return (
                     <>
                         {isPartnerSide ?
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-sm font-bold text-primary border border-border/50">
-                            {name.charAt(0).toUpperCase()}
-                          </div> :
+                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-sm font-bold text-primary border border-border/50 shrink-0">
+                                {name.charAt(0).toUpperCase()}
+                              </div> :
 
-                      <PartnerAvatar partner={selectedConv.partner} size="sm" shape="rounded-full" />
-                      }
-                        <div>
-                          <p className="font-bold text-sm text-foreground">{name}</p>
+                          <PartnerAvatar partner={selectedConv.partner} size="sm" shape="rounded-full" />
+                          }
+                            <div className="min-w-0">
+                              <p className="font-bold text-sm text-foreground truncate">{name}</p>
                           {!isPartnerSide && selectedConv.partner &&
                         <Link to={`/partner/${selectedConv.partner?.slug || selectedConv.partner?.id}`} className="text-xs text-primary hover:underline">
                               View profile →
@@ -503,7 +503,7 @@ export default function Messages() {
                               {(msg.sender_name || '?').charAt(0).toUpperCase()}
                             </div>
                       }
-                          <div className="max-w-[70%] sm:max-w-[60%]">
+                          <div className="max-w-[80%] sm:max-w-[60%]">
                             {isDelivery ?
                         <div className="bg-green-50 border border-green-200 rounded-2xl px-4 py-3 text-sm text-green-800 whitespace-pre-line shadow-sm">
                                 {msg.body}
@@ -546,7 +546,7 @@ export default function Messages() {
               </div>
 
               {/* Input bar */}
-              <div className="px-3 py-3 bg-white border-t border-border shrink-0">
+              <div className="px-2.5 py-2.5 sm:px-3 sm:py-3 bg-white border-t border-border shrink-0">
                 <div className="flex items-end gap-2">
                   <textarea
                   ref={textareaRef}

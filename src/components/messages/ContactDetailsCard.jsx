@@ -21,7 +21,7 @@ export default function ContactDetailsCard({ message }) {
   ].filter(Boolean);
 
   return (
-    <div className="mx-4 mb-3 rounded-xl border border-primary/20 bg-primary/5 overflow-hidden">
+    <div className="mx-2 sm:mx-4 mb-3 rounded-xl border border-primary/20 bg-primary/5 overflow-hidden">
       <button
         onClick={() => setExpanded(!expanded)}
         className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-primary/10 transition-colors"
