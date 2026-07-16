@@ -127,8 +127,10 @@ export default function PrivateMessages() {
     const convId = getConversationId(user.id, otherUser.id);
     const newConv = {
       id: convId,
+      messages: [],
       otherUserId: otherUser.id,
       otherUserName: otherUser.full_name || otherUser.email,
+      lastMessage: null,
     };
     setNewConvOpen(false);
     setSelectedConv(newConv);
@@ -164,7 +166,7 @@ export default function PrivateMessages() {
   };
 
   const totalUnread = conversations.reduce((sum, c) => {
-    return sum + c.messages.filter((m) => !m.is_read && m.recipient_id === user?.id).length;
+    return sum + (c.messages || []).filter((m) => !m.is_read && m.recipient_id === user?.id).length;
   }, 0);
 
   const filteredConvs = conversations.filter((c) => {
@@ -229,7 +231,7 @@ export default function PrivateMessages() {
                 </button>
               </div> :
               filteredConvs.map((conv) => {
-                const unread = conv.messages.filter((m) => !m.is_read && m.recipient_id === user?.id).length;
+                const unread = (conv.messages || []).filter((m) => !m.is_read && m.recipient_id === user?.id).length;
                 const isActive = selectedConv?.id === conv.id;
                 const name = conv.otherUserName || 'User';
                 const lastBody = conv.lastMessage?.body || '';
