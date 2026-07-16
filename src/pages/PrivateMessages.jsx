@@ -236,6 +236,7 @@ export default function PrivateMessages() {
                 const name = conv.otherUserName || 'User';
                 const lastBody = conv.lastMessage?.body || '';
                 const isMine = conv.lastMessage?.sender_id === user?.id;
+                const lastDate = conv.lastMessage?.created_date;
 
                 return (
                   <button
@@ -256,9 +257,11 @@ export default function PrivateMessages() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
                         <p className={`text-xs sm:text-sm truncate ${unread > 0 ? 'font-bold text-foreground' : 'font-semibold text-foreground/80'}`}>{name}</p>
+                        {lastDate && (
                         <span className={`text-[10px] shrink-0 ${unread > 0 ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>
-                          {formatConvDate(conv.lastMessage.created_date)}
+                          {formatConvDate(lastDate)}
                         </span>
+                        )}
                       </div>
                       <p className={`text-xs truncate mt-0.5 ${unread > 0 ? 'text-foreground/80 font-medium' : 'text-muted-foreground'}`}>
                         {isMine && <span className="text-muted-foreground">You: </span>}
