@@ -99,7 +99,7 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
 Amount: ₦10,000
  Bank: Opay
  Account Number: 7031665045
-Account Name:fabunmi 
+Account Name: fabunmi ronke
 
 
 
