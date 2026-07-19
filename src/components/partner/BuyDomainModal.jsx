@@ -98,8 +98,8 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
               <p className="text-muted-foreground">Payment Details ..
 Amount: ₦10,000
  Bank: Opay
- Account Number: Account Name: Solomon Glory Andrew
-
+ Account Number: 7031665045
+Account Name: Solomon Glory Andrew
 
 
 
