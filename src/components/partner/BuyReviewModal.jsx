@@ -140,7 +140,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
                   <p className="font-semibold">7031665045</p>
                   </div>
                   <button onClick={() => copyText('9068191624', 'phone')} className="text-muted-foreground hover:text-foreground">
-                  {copied === 'phone' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                  {copied === 'phone' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4 hidden" />}
                 </button>
               </div>
               <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-border">
@@ -149,7 +149,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
                   <p className="font-semibold">FABUNMI RONKE</p>
                 </div>
                 <button onClick={() => copyText('FABUNMI RONKE', 'name')} className="text-muted-foreground hover:text-foreground">
-                  {copied === 'name' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                  {copied === 'name' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4 hidden" />}
                 </button>
               </div>
               <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-primary/30 bg-primary/5">
@@ -158,7 +158,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
                   <p className="font-bold text-primary text-base">₦{pkg?.price.toLocaleString()}</p>
                 </div>
                 <button onClick={() => copyText(`${pkg?.price}`, 'amount')} className="text-muted-foreground hover:text-foreground">
-                  {copied === 'amount' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                  {copied === 'amount' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4 hidden" />}
                 </button>
               </div>
             </div>
