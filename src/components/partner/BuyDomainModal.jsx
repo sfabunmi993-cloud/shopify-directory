@@ -95,11 +95,11 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
         <div className="space-y-4">
             <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 text-sm">
               <p className="font-semibold text-primary mb-1">Domain Package</p>
-              <p className="text-muted-foreground">Payment Details ..
+              <p className="text-muted-foreground text-lg">Payment Details ..
 Amount: ₦10,000
  Bank: Opay
  Account Number: 7031665045
-Account Name: fabunmi ronke
+Account Name: Fabunmi Ronke
 
 
 
