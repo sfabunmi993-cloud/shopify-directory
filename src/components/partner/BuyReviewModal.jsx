@@ -130,9 +130,9 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
 
           {/* Payment details */}
           <div className="bg-muted/40 rounded-xl p-4 space-y-3">
-            <p className="text-sm font-semibold flex items-center gap-1.5">
-              <CreditCard className="w-4 h-4 text-primary" /> PalmPay Payment Details
-            </p>
+            <p className="text-sm font-semibold flex items-center gap-1.5">OPay Payment Details
+
+              </p>
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-border">
                 <div>
