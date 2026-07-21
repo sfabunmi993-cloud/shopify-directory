@@ -73,7 +73,7 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md px-20 mx-10">
+      <DialogContent className="max-w-md py-6 mx-6">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Globe className="w-5 h-5 text-primary" /> Buy Domain
