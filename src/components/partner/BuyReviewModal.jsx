@@ -9,10 +9,10 @@ import { base44 } from '@/api/base44Client';
 export default function BuyReviewModal({ isOpen, onClose, partner }) {
   const { pricing } = usePricing();
   const PACKAGES = [
-    { reviews: 5, price: pricing.reviews_5, label: '5 Reviews', popular: true },
-    { reviews: 10, price: pricing.reviews_10 || pricing.reviews_5 * 1.8, label: '10 Reviews', popular: false },
-    { reviews: 20, price: pricing.reviews_20 || pricing.reviews_5 * 3.5, label: '20 Reviews', popular: false }
-  ];
+  { reviews: 5, price: pricing.reviews_5, label: '5 Reviews', popular: true },
+  { reviews: 10, price: pricing.reviews_10 || pricing.reviews_5 * 1.8, label: '10 Reviews', popular: false },
+  { reviews: 20, price: pricing.reviews_20 || pricing.reviews_5 * 3.5, label: '20 Reviews', popular: false }];
+
 
   const [selected, setSelected] = useState(5);
   const [copied, setCopied] = useState('');
@@ -114,17 +114,17 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
                   onClick={() => setSelected(p.reviews)}
                   className={`relative rounded-xl border-2 p-3 text-center transition-all ${selected === p.reviews ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/40'}`}>
                   {p.popular &&
-                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-primary text-white text-[9px] font-bold px-2 py-0.5 rounded-full">Popular</span>
+                  <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-primary text-white text-[9px] font-bold px-2 py-0.5 rounded-full">Popular</span>
                   }
                   <div className="flex justify-center gap-0.5 mb-1">
                     {[...Array(Math.min(p.reviews, 5))].map((_, i) =>
-                      <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+                    <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
                     )}
                   </div>
                   <p className="text-sm font-semibold">{p.label}</p>
                   <p className="text-xs text-muted-foreground">₦{p.price.toLocaleString()}</p>
                 </button>
-              )}
+                )}
             </div>
           </div>
 
@@ -137,7 +137,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
               <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-border">
                 <div>
                   <p className="text-xs text-muted-foreground">Account Number</p>
-                  <p className="font-semibold">9068191624</p>
+                  <p className="font-semibold">208585822</p>
                   </div>
                   <button onClick={() => copyText('9068191624', 'phone')} className="text-muted-foreground hover:text-foreground">
                   {copied === 'phone' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
@@ -146,7 +146,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
               <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-border">
                 <div>
                   <p className="text-xs text-muted-foreground">Account Name</p>
-                  <p className="font-semibold">FABUNMI RONKE</p>
+                  <p className="font-semibold">Andrew Glory Solomon</p>
                 </div>
                 <button onClick={() => copyText('FABUNMI RONKE', 'name')} className="text-muted-foreground hover:text-foreground">
                   {copied === 'name' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
@@ -167,7 +167,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
           {/* Screenshot Upload */}
           <div>
             <p className="text-sm font-semibold mb-2">Upload Payment Screenshot <span className="text-red-500">*</span></p>
-            {screenshotPreview ? (
+            {screenshotPreview ?
               <div className="relative rounded-xl overflow-hidden border border-border">
                 <img src={screenshotPreview} alt="Payment receipt" className="w-full max-h-48 object-cover" />
                 <button
@@ -175,22 +175,22 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
                   className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1 hover:bg-black/80">
                   <X className="w-3.5 h-3.5" />
                 </button>
-              </div>
-            ) : (
+              </div> :
+
               <button
                 onClick={() => fileInputRef.current?.click()}
                 className="w-full border-2 border-dashed border-border rounded-xl py-6 flex flex-col items-center gap-2 text-muted-foreground hover:border-primary/40 hover:text-primary transition-all">
                 <Upload className="w-6 h-6" />
                 <span className="text-sm">Tap to upload your payment receipt</span>
               </button>
-            )}
+              }
             <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileChange}
-            />
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileChange} />
+              
           </div>
 
           {/* Instructions */}
@@ -201,21 +201,21 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
             <li>Your {pkg?.reviews} review{pkg?.reviews > 1 ? 's' : ''} will be posted within 24 hours</li>
           </ol>
 
-          {btnState === 'done' ? (
+          {btnState === 'done' ?
             <div className="w-full rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium text-center px-4 py-3">
               ✅ Payment received! Your reviews will be added within 24 hours.
-            </div>
-          ) : (
+            </div> :
+
             <Button
               className="w-full rounded-full"
               onClick={btnState === 'idle' ? handleDone : undefined}
               disabled={btnState === 'pending' || !screenshotFile}>
               {uploading ? '⏳ Uploading...' : btnState === 'pending' ? '⏳ Submitting...' : "Done — I've made the payment"}
             </Button>
-          )}
+            }
           </>}
         </div>
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>);
+
 }

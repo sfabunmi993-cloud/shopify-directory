@@ -197,10 +197,10 @@ export default function PartnerDetail() {
   null;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-foreground">
-      <Link to="/directory" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-6">Back to directory        
+    <div className="px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
+      
 
-      </Link>
+      
 
       {partner.status === 'pending' &&
       <div className="mb-4 bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-3 flex items-center gap-2 text-amber-600 dark:text-amber-400 text-sm">
@@ -222,7 +222,7 @@ export default function PartnerDetail() {
       <div className="grid md:grid-cols-[280px_1fr] gap-8 items-start">
 
         {/* LEFT SIDEBAR */}
-        <div className="border border-border rounded-xl p-6 space-y-5">
+        <div className="border rounded-xl border-border space-y-5">
           {/* Buy Reviews button — only for partner owner */}
           {user && partner.created_by_id === user.id &&
           <button
@@ -445,7 +445,7 @@ export default function PartnerDetail() {
         <div className="space-y-6">
 
           {/* About */}
-          <div>
+          <div className="px-5">
             <h2 className="font-heading text-xl font-bold text-foreground mb-4">About</h2>
 
             {partner.description &&
