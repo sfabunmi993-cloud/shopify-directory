@@ -20,7 +20,6 @@ import MyProfile from '@/pages/MyProfile';
 import AdminDashboard from '@/pages/AdminDashboard';
 import Favorites from '@/pages/Favorites';
 import Messages from '@/pages/Messages.jsx';
-import PrivateMessages from '@/pages/PrivateMessages.jsx';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
 import AdDetail from '@/pages/AdDetail';
@@ -66,7 +65,6 @@ const AuthenticatedApp = () => {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/messages" element={<Messages />} />
-        <Route path="/private-messages" element={<PrivateMessages />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/ad" element={<AdDetail />} />

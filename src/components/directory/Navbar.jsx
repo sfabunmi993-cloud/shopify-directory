@@ -101,7 +101,7 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-3">
-            
+            <Link to="/directory" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Browse</Link>
             <Link to="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">About</Link>
             <Link to="/contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
 
@@ -120,7 +120,7 @@ export default function Navbar() {
                   <DropdownMenuTrigger asChild>
                     <button className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
                       <Avatar className="w-8 h-8">
-                        <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold opacity-100">{initials}</AvatarFallback>
+                        <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">{initials}</AvatarFallback>
                       </Avatar>
                       <ChevronDown className="w-3 h-3 text-muted-foreground" />
                     </button>
@@ -161,10 +161,7 @@ export default function Navbar() {
                       <Link to="/favorites"><Heart className="w-4 h-4 mr-2" /> Saved Partners</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/messages"><MessageSquare className="w-4 h-4 mr-2" /> Partner Messages</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/private-messages"><MessageSquare className="w-4 h-4 mr-2" /> Private Messages</Link>
+                      <Link to="/messages"><MessageSquare className="w-4 h-4 mr-2" /> Messages</Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
@@ -244,8 +241,7 @@ export default function Navbar() {
             <MobileLink to="/become-a-partner" onClick={() => setMobileMenuOpen(false)}>Become a Partner</MobileLink>
             }
                 <MobileLink to="/favorites" onClick={() => setMobileMenuOpen(false)}>Saved Partners</MobileLink>
-                <MobileLink to="/messages" onClick={() => setMobileMenuOpen(false)}>Partner Messages</MobileLink>
-                <MobileLink to="/private-messages" onClick={() => setMobileMenuOpen(false)}>Private Messages</MobileLink>
+                <MobileLink to="/messages" onClick={() => setMobileMenuOpen(false)}>Messages</MobileLink>
                 <div className="pt-2 mt-2 border-t border-border">
                   <button
                 onClick={handleLogout}

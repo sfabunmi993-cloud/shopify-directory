@@ -12,7 +12,7 @@ import { usePricing } from '@/hooks/usePricing';
 const PAYMENT_DETAILS = {
   bankName: 'PalmPay',
   accountName: 'FABUNMI RONKE',
-  accountNumber: '9068191624'
+  accountNumber: '9068191624',
 };
 
 export default function PurchasePremiumModal({ partner, isOpen, onClose, user }) {
@@ -31,12 +31,12 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
+    
     if (!file.type.startsWith('image/')) {
       toast.error('Please upload an image file');
       return;
     }
-
+    
     setUploading(true);
     try {
       const reader = new FileReader();
@@ -62,7 +62,7 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
   };
 
   const handleClose = () => {
-    setStep(1);setTxRef('');setNotes('');setDone(false);
+    setStep(1); setTxRef(''); setNotes(''); setDone(false);
     onClose();
   };
 
@@ -73,8 +73,8 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
   };
 
   const handleSubmit = async () => {
-    if (!txRef.trim()) {toast.error('Please enter your transaction reference.');return;}
-    if (!screenshotUrl) {toast.error('Please upload your payment screenshot first.');return;}
+    if (!txRef.trim()) { toast.error('Please enter your transaction reference.'); return; }
+    if (!screenshotUrl) { toast.error('Please upload your payment screenshot first.'); return; }
     setLoading(true);
     await base44.entities.Payment.create({
       user_id: user?.id || '',
@@ -85,7 +85,7 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
       amount: pricing.premium_badge,
       description: `Premium Badge purchase — Tx Ref: ${txRef.trim()}${notes ? ` | Notes: ${notes}` : ''}`,
       status: 'pending',
-      screenshot_url: screenshotUrl
+      screenshot_url: screenshotUrl,
     });
     setDone(true);
     setLoading(false);
@@ -100,17 +100,17 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
           </DialogTitle>
         </DialogHeader>
 
-        {done ?
-        <div className="text-center py-6 space-y-3">
+        {done ? (
+          <div className="text-center py-6 space-y-3">
             <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto" />
             <h3 className="font-semibold text-lg">Payment submitted!</h3>
             <p className="text-sm text-muted-foreground">
               Our team will verify your payment and activate your Premium badge within <strong>24 hours</strong>.
             </p>
             <Button className="w-full mt-2" onClick={handleClose}>Done</Button>
-          </div> :
-        step === 1 ?
-        <div className="space-y-4">
+          </div>
+        ) : step === 1 ? (
+          <div className="space-y-4">
             {/* What you get */}
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
               <p className="font-semibold text-amber-800 flex items-center gap-1.5"><Crown className="w-4 h-4" /> Premium Badge — ₦{pricing.premium_badge.toLocaleString()}</p>
@@ -128,12 +128,12 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
               <p className="text-xs text-muted-foreground">Transfer ₦{pricing.premium_badge.toLocaleString()} to the account below, then click Continue to submit your proof.</p>
 
               {[
-            { label: 'Bank', value: PAYMENT_DETAILS.bankName },
-            { label: 'Account Name', value: PAYMENT_DETAILS.accountName },
-            { label: 'Account Number', value: PAYMENT_DETAILS.accountNumber },
-            { label: 'Amount', value: `₦${pricing.premium_badge.toLocaleString()}` }].
-            map(({ label, value }) =>
-            <div key={label} className="flex items-center justify-between gap-2 bg-muted rounded-lg px-3 py-2 hidden">
+                { label: 'Bank', value: PAYMENT_DETAILS.bankName },
+                { label: 'Account Name', value: PAYMENT_DETAILS.accountName },
+                { label: 'Account Number', value: PAYMENT_DETAILS.accountNumber },
+                { label: 'Amount', value: `₦${pricing.premium_badge.toLocaleString()}` },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex items-center justify-between gap-2 bg-muted rounded-lg px-3 py-2">
                   <div>
                     <p className="text-xs text-muted-foreground">{label}</p>
                     <p className="text-sm font-medium text-foreground">{value}</p>
@@ -142,48 +142,48 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
                     {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
                   </button>
                 </div>
-            )}
+              ))}
             </div>
 
-            {payBtnState === 'ready' ?
-          <div className="space-y-2">
+            {payBtnState === 'ready' ? (
+              <div className="space-y-2">
                 <div className="w-full rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium text-center px-4 py-3">
                   ✅ Your badge will be added within 24 hours!
                 </div>
                 <Button className="w-full" variant="outline" onClick={() => setStep(2)}>
                   Submit Transaction Reference
                 </Button>
-              </div> :
-
-          <Button
-            className="w-full"
-            onClick={payBtnState === 'idle' ? handlePaymentClick : undefined}
-            disabled={payBtnState === 'pending'}>
-            
+              </div>
+            ) : (
+              <Button
+                className="w-full"
+                onClick={payBtnState === 'idle' ? handlePaymentClick : undefined}
+                disabled={payBtnState === 'pending'}
+              >
                 {payBtnState === 'pending' ? '⏳ Pending...' : "I've made the payment — Continue"}
               </Button>
-          }
-          </div> :
-
-        <div className="space-y-4">
+            )}
+          </div>
+        ) : (
+          <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
               Please enter your transaction reference and upload your payment screenshot so we can verify your payment quickly.
             </p>
             <div className="space-y-2">
               <label className="text-sm font-medium">Transaction Reference *</label>
               <Input
-              placeholder="e.g. TRX-20240611-001234"
-              value={txRef}
-              onChange={(e) => setTxRef(e.target.value)} />
-            
+                placeholder="e.g. TRX-20240611-001234"
+                value={txRef}
+                onChange={e => setTxRef(e.target.value)}
+              />
             </div>
             
             {/* Screenshot Upload */}
             <div className="space-y-2">
               <Label className="text-sm font-semibold">Payment Screenshot *</Label>
               <div className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:border-primary/40 transition-colors">
-                {screenshotUrl ?
-              <div className="space-y-3">
+                {screenshotUrl ? (
+                  <div className="space-y-3">
                     <div className="flex items-center justify-center gap-2 text-green-600">
                       <Check className="w-5 h-5" />
                       <span className="text-sm font-medium">Screenshot uploaded!</span>
@@ -195,19 +195,19 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
                       </span>
                     </div>
                     <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setScreenshotFile(null);
-                    setScreenshotUrl(null);
-                  }}
-                  className="text-xs">
-                  
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setScreenshotFile(null);
+                        setScreenshotUrl(null);
+                      }}
+                      className="text-xs"
+                    >
                       Upload Different Image
                     </Button>
-                  </div> :
-
-              <div className="space-y-2">
+                  </div>
+                ) : (
+                  <div className="space-y-2">
                     <Upload className="w-8 h-8 text-muted-foreground mx-auto" />
                     <p className="text-sm text-muted-foreground">
                       Upload your payment receipt screenshot
@@ -216,36 +216,36 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
                       Supported formats: JPG, PNG, WEBP
                     </p>
                     <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileUpload}
-                  disabled={uploading}
-                  className="hidden"
-                  id="premium-screenshot-upload" />
-                
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      disabled={uploading}
+                      className="hidden"
+                      id="premium-screenshot-upload"
+                    />
                     <Button
-                  variant="outline"
-                  size="sm"
-                  asChild
-                  disabled={uploading}>
-                  
+                      variant="outline"
+                      size="sm"
+                      asChild
+                      disabled={uploading}
+                    >
                       <label htmlFor="premium-screenshot-upload" className="cursor-pointer">
                         {uploading ? '⏳ Uploading...' : '📷 Choose Image'}
                       </label>
                     </Button>
                   </div>
-              }
+                )}
               </div>
             </div>
             
             <div className="space-y-2">
               <label className="text-sm font-medium">Additional Notes (optional)</label>
               <Textarea
-              placeholder="Any extra info about your payment..."
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="h-20 resize-none" />
-            
+                placeholder="Any extra info about your payment..."
+                value={notes}
+                onChange={e => setNotes(e.target.value)}
+                className="h-20 resize-none"
+              />
             </div>
             <div className="flex gap-2">
               <Button variant="outline" className="flex-1" onClick={() => setStep(1)}>Back</Button>
@@ -254,8 +254,8 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
               </Button>
             </div>
           </div>
-        }
+        )}
       </DialogContent>
-    </Dialog>);
-
+    </Dialog>
+  );
 }

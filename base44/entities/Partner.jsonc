@@ -132,11 +132,6 @@
         "type": "string"
       }
     },
-    "years_as_partner": {
-      "type": "number",
-      "description": "Number of years the partner has been working as a Shopify partner",
-      "default": 0
-    },
     "is_featured": {
       "type": "boolean",
       "default": false,
