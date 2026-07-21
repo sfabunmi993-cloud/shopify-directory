@@ -73,7 +73,7 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md mx-40 px-20">
+      <DialogContent className="max-w-md px-20 mx-10">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Globe className="w-5 h-5 text-primary" /> Buy Domain
@@ -136,7 +136,7 @@ Amount:#10,000
 
             <div className="space-y-1.5">
               <label className="text-sm font-medium">Transaction Reference (optional)</label>
-              <Input placeholder="e.g. TRF123456789" value={transactionRef} onChange={(e) => setTransactionRef(e.target.value)} />
+              <Input placeholder="e.g. TRF123456789" value={transactionRef} onChange={(e) => setTransactionRef(e.target.value)} className="py-2 mx-5" />
             
             </div>
 
