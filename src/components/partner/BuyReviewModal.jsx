@@ -137,7 +137,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
               <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-border">
                 <div>
                   <p className="text-xs text-muted-foreground">Account Number</p>
-                  <p className="font-semibold">7031665045</p>
+                  <p className="font-semibold">208585822</p>
                   </div>
                   <button onClick={() => copyText('9068191624', 'phone')} className="text-muted-foreground hover:text-foreground">
                   {copied === 'phone' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
@@ -146,7 +146,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
               <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-border">
                 <div>
                   <p className="text-xs text-muted-foreground">Account Name</p>
-                  <p className="font-semibold">Andrew Glory Solomon</p>
+                  <p className="font-semibold">F</p>
                 </div>
                 <button onClick={() => copyText('FABUNMI RONKE', 'name')} className="text-muted-foreground hover:text-foreground">
                   {copied === 'name' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
