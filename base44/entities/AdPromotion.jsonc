@@ -8,11 +8,19 @@
     },
     "content": {
       "type": "string",
-      "description": "Ad body text"
+      "description": "Ad short body text shown in popup"
+    },
+    "full_description": {
+      "type": "string",
+      "description": "Full detailed description shown on the ad detail page"
     },
     "image_url": {
       "type": "string",
-      "description": "Optional image URL for the ad"
+      "description": "Optional image URL"
+    },
+    "video_url": {
+      "type": "string",
+      "description": "Optional video URL"
     },
     "button_text": {
       "type": "string",
@@ -20,12 +28,24 @@
     },
     "button_url": {
       "type": "string",
-      "description": "URL the button links to"
+      "description": "URL the button links to (external)"
+    },
+    "website_url": {
+      "type": "string",
+      "description": "Advertiser website URL shown on detail page"
+    },
+    "contact_email": {
+      "type": "string",
+      "description": "Contact email shown on detail page"
+    },
+    "contact_phone": {
+      "type": "string",
+      "description": "Contact phone shown on detail page"
     },
     "bg_color": {
       "type": "string",
       "default": "#ffffff",
-      "description": "Background color of the popup (hex)"
+      "description": "Background color (hex)"
     },
     "text_color": {
       "type": "string",
@@ -35,7 +55,7 @@
     "button_color": {
       "type": "string",
       "default": "#166534",
-      "description": "Button background color (hex)"
+      "description": "Button color (hex)"
     },
     "is_active": {
       "type": "boolean",
