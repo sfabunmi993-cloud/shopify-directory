@@ -11,14 +11,9 @@ import { toast } from 'sonner';
 const EMPTY_AD = {
   title: '',
   content: '',
-  full_description: '',
   image_url: '',
-  video_url: '',
   button_text: 'Learn More',
   button_url: '',
-  website_url: '',
-  contact_email: '',
-  contact_phone: '',
   bg_color: '#ffffff',
   text_color: '#111827',
   button_color: '#166534',
@@ -52,14 +47,9 @@ export default function AdsSection() {
     setForm({
       title: ad.title || '',
       content: ad.content || '',
-      full_description: ad.full_description || '',
       image_url: ad.image_url || '',
-      video_url: ad.video_url || '',
       button_text: ad.button_text || 'Learn More',
       button_url: ad.button_url || '',
-      website_url: ad.website_url || '',
-      contact_email: ad.contact_email || '',
-      contact_phone: ad.contact_phone || '',
       bg_color: ad.bg_color || '#ffffff',
       text_color: ad.text_color || '#111827',
       button_color: ad.button_color || '#166534',
@@ -187,18 +177,15 @@ export default function AdsSection() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Short Description (shown in popup)</label>
-              <Textarea placeholder="Brief summary shown in the popup..." value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))} className="h-20 resize-none" />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Full Description (shown on detail page)</label>
-              <Textarea placeholder="Full details about this promotion..." value={form.full_description} onChange={e => setForm(f => ({ ...f, full_description: e.target.value }))} className="h-28 resize-none" />
+              <label className="text-sm font-medium">Body Text</label>
+              <Textarea placeholder="Describe what you're promoting..." value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))} className="h-24 resize-none" />
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Image (optional)</label>
-              <Input placeholder="https://... or upload below" value={form.image_url} onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))} />
+              <div className="flex gap-2">
+                <Input placeholder="https://... or upload below" value={form.image_url} onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))} className="flex-1" />
+              </div>
               <label className="flex items-center gap-2 cursor-pointer border border-dashed border-border rounded-lg px-4 py-3 hover:bg-muted/40 transition-colors text-sm text-muted-foreground">
                 <Upload className="w-4 h-4" />
                 <span>Upload image</span>
@@ -217,32 +204,7 @@ export default function AdsSection() {
                 />
               </label>
               {form.image_url && (
-                <img src={form.image_url} alt="Preview" className="w-full rounded-lg border border-border" style={{ maxHeight: 200, objectFit: 'contain' }} onError={e => e.target.style.display='none'} />
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Video (optional)</label>
-              <Input placeholder="https://... or upload below" value={form.video_url} onChange={e => setForm(f => ({ ...f, video_url: e.target.value }))} />
-              <label className="flex items-center gap-2 cursor-pointer border border-dashed border-border rounded-lg px-4 py-3 hover:bg-muted/40 transition-colors text-sm text-muted-foreground">
-                <Upload className="w-4 h-4" />
-                <span>Upload video</span>
-                <input
-                  type="file"
-                  accept="video/*"
-                  className="hidden"
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    try {
-                      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-                      setForm(f => ({ ...f, video_url: file_url }));
-                    } catch (_) {}
-                  }}
-                />
-              </label>
-              {form.video_url && (
-                <video src={form.video_url} controls className="w-full rounded-lg border border-border" style={{ maxHeight: 200 }} />
+                <img src={form.image_url} alt="Preview" className="w-full h-28 object-cover rounded-lg border border-border" onError={e => e.target.style.display='none'} />
               )}
             </div>
 
@@ -252,24 +214,8 @@ export default function AdsSection() {
                 <Input placeholder="e.g. Get Started" value={form.button_text} onChange={e => setForm(f => ({ ...f, button_text: e.target.value }))} />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">External URL *</label>
+                <label className="text-sm font-medium">Button URL *</label>
                 <Input placeholder="https://..." value={form.button_url} onChange={e => setForm(f => ({ ...f, button_url: e.target.value }))} />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Website (shown on detail page)</label>
-              <Input placeholder="https://yourwebsite.com" value={form.website_url} onChange={e => setForm(f => ({ ...f, website_url: e.target.value }))} />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Contact Email</label>
-                <Input type="email" placeholder="contact@example.com" value={form.contact_email} onChange={e => setForm(f => ({ ...f, contact_email: e.target.value }))} />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Contact Phone</label>
-                <Input placeholder="+1 234 567 8900" value={form.contact_phone} onChange={e => setForm(f => ({ ...f, contact_phone: e.target.value }))} />
               </div>
             </div>
 
@@ -301,8 +247,7 @@ export default function AdsSection() {
             <div className="space-y-2">
               <label className="text-sm font-medium text-muted-foreground">Preview</label>
               <div className="rounded-xl border border-border overflow-hidden shadow-sm" style={{ backgroundColor: form.bg_color }}>
-                {form.video_url && <video src={form.video_url} controls className="w-full" style={{ maxHeight: 200 }} />}
-                {!form.video_url && form.image_url && <img src={form.image_url} alt="Ad" className="w-full" style={{ maxHeight: 200, objectFit: 'contain' }} onError={e => e.target.style.display='none'} />}
+                {form.image_url && <img src={form.image_url} alt="Ad" className="w-full h-32 object-cover" onError={e => e.target.style.display='none'} />}
                 <div className="p-4">
                   <p className="font-bold text-base" style={{ color: form.text_color }}>{form.title || 'Your Headline'}</p>
                   {form.content && <p className="text-sm mt-1 opacity-80" style={{ color: form.text_color }}>{form.content}</p>}

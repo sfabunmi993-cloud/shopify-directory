@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import AdPopup from '@/components/AdPopup';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -17,6 +18,7 @@ export default function Home() {
 
   return (
     <div>
+      <AdPopup />
       <HeroSection />
 
       {/* Stats */}
@@ -49,7 +51,7 @@ export default function Home() {
       </section>
 
       {/* Featured Partners */}
-      <section className="py-16 bg-secondary">
+      <section className="bg-background py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-8">
             <div>
@@ -93,17 +95,17 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      
-
-
-
-
-
-
-
-
-
-      
+      <section className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 py-16">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">Become a partner</h2>
+          <p className="text-muted-foreground mt-3 max-w-lg mx-auto">
+            Join our directory and connect with thousands of businesses looking for expert help.
+          </p>
+          <Button asChild className="mt-6 rounded-full px-8" size="lg">
+            <Link to="/become-a-partner">Get started</Link>
+          </Button>
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="text-primary-foreground/70 py-12 bg-primary">

@@ -22,7 +22,6 @@ import Favorites from '@/pages/Favorites';
 import Messages from '@/pages/Messages.jsx';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
-import AdDetail from '@/pages/AdDetail';
 import SupportChat from '@/components/SupportChat';
 
 
@@ -67,7 +66,6 @@ const AuthenticatedApp = () => {
         <Route path="/messages" element={<Messages />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/ad" element={<AdDetail />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

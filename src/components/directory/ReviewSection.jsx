@@ -53,27 +53,18 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
 
 
 
-  const DAILY_LIMIT = 1;
+  const DAILY_LIMIT = 6;
 
   const loadReviews = async () => {
     setLoading(true);
     try {
       const data = await base44.entities.Review.filter({ partner_id: partnerId }, '-created_date');
       setReviews(data);
-
-      // Check if current user already submitted a review today (across all partners)
-      try {
-        const authed = await base44.auth.isAuthenticated();
-        if (authed) {
-          const user = await base44.auth.me();
-          const startOfToday = new Date();
-          startOfToday.setHours(0, 0, 0, 0);
-          // Fetch all reviews created by this user today
-          const allMyReviews = await base44.entities.Review.filter({ created_by_id: user.id });
-          const myReviewsToday = allMyReviews.filter(r => new Date(r.created_date) >= startOfToday);
-          if (myReviewsToday.length >= DAILY_LIMIT) setDailyLimitReached(true);
-        }
-      } catch (_) {}
+      // Only count purchased reviews toward the daily limit
+      const startOfToday = new Date();
+      startOfToday.setHours(0, 0, 0, 0);
+      const purchasedToday = data.filter(r => r.is_purchased && new Date(r.created_date) >= startOfToday).length;
+      if (purchasedToday >= DAILY_LIMIT) setDailyLimitReached(true);
     } finally {
       setLoading(false);
     }
@@ -108,7 +99,7 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     if (!form.reviewer_name.trim()) { toast.error('Please enter your name'); return; }
     if (!partnerId) { toast.error('Partner not found'); return; }
 
-    if (dailyLimitReached) { toast.error('Daily review limit reached for this partner'); return; }
+    // Daily limit only applies to purchased reviews, not organic ones
 
     setSubmitting(true);
     try {
@@ -161,7 +152,7 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
             ? <div className="text-right">
                 <span className="text-xs text-muted-foreground">✅ Review submitted</span>
                 {dailyLimitReached && !submitted && (
-                  <p className="text-xs text-amber-600 mt-0.5">You can only submit 1 review per day</p>
+                  <p className="text-xs text-amber-600 mt-0.5">Daily limit of {DAILY_LIMIT} reviews reached</p>
                 )}
               </div>
             : <Button size="sm" className="rounded-full" onClick={() => setShowForm(true)}>Write a Review</Button>

@@ -96,8 +96,8 @@ export default function AdminDashboard() {
   const handleApprove = async (partner) => {
     setActionLoading(true);
     await base44.entities.Partner.update(partner.id, { status: 'approved' });
-    setPartners(prev => prev.map(p => p.id === partner.id ? { ...p, status: 'approved' } : p));
     toast.success(`${partner.name} approved!`);
+    loadData();
     setActionLoading(false);
   };
 
@@ -108,10 +108,10 @@ export default function AdminDashboard() {
       status: 'restricted',
       restriction_reason: restrictReason,
     });
-    setPartners(prev => prev.map(p => p.id === restrictDialog.id ? { ...p, status: 'restricted', restriction_reason: restrictReason } : p));
     toast.success(`${restrictDialog.name} has been restricted.`);
     setRestrictDialog(null);
     setRestrictReason('');
+    loadData();
     setActionLoading(false);
   };
 
@@ -234,15 +234,15 @@ export default function AdminDashboard() {
   const handleToggleHide = async (partner) => {
     const newVal = !partner.is_hidden;
     await base44.entities.Partner.update(partner.id, { is_hidden: newVal });
-    setPartners(prev => prev.map(p => p.id === partner.id ? { ...p, is_hidden: newVal } : p));
     toast.success(newVal ? `${partner.name} hidden from directory` : `${partner.name} is now visible in directory`);
+    loadData();
   };
 
   const handleDeletePartner = async (partner) => {
     if (!confirm(`Are you sure you want to permanently delete "${partner.name}"? This action cannot be undone.`)) return;
     await base44.entities.Partner.delete(partner.id);
-    setPartners(prev => prev.filter(p => p.id !== partner.id));
     toast.success(`${partner.name} has been permanently deleted`);
+    loadData();
   };
 
   const handleToggleUnlimitedReviews = async (partner) => {

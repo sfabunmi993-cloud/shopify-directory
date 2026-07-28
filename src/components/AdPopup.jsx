@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
 
 const SESSION_KEY = 'ad_popup_dismissed';
@@ -8,7 +7,6 @@ const SESSION_KEY = 'ad_popup_dismissed';
 export default function AdPopup() {
   const [ad, setAd] = useState(null);
   const [visible, setVisible] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const dismissed = sessionStorage.getItem(SESSION_KEY);
@@ -49,25 +47,15 @@ export default function AdPopup() {
           <X className="w-4 h-4" />
         </button>
 
-        {/* Video or Image */}
-        {ad.video_url ? (
-          <video
-            src={ad.video_url}
-            controls
-            autoPlay
-            muted
-            className="w-full"
-            style={{ maxHeight: 300 }}
-          />
-        ) : ad.image_url ? (
+        {/* Image */}
+        {ad.image_url && (
           <img
             src={ad.image_url}
             alt="Promotion"
-            className="w-full"
-            style={{ maxHeight: 300, objectFit: 'contain' }}
+            className="w-full h-52 object-cover"
             onError={e => e.target.style.display = 'none'}
           />
-        ) : null}
+        )}
 
         {/* Content */}
         <div className="p-6">
@@ -81,13 +69,16 @@ export default function AdPopup() {
           )}
 
           <div className="flex gap-3 mt-5">
-            <button
+            <a
+              href={ad.button_url}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex-1 text-center py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
               style={{ backgroundColor: ad.button_color || '#166534' }}
-              onClick={() => { dismiss(); navigate(`/ad?id=${ad.id}`); }}
+              onClick={dismiss}
             >
               {ad.button_text || 'Learn More'}
-            </button>
+            </a>
             <button
               onClick={dismiss}
               className="px-4 py-2.5 rounded-xl text-sm font-medium border transition-colors hover:bg-black/5"

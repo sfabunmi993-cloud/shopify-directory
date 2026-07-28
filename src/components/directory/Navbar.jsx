@@ -83,36 +83,36 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <img src="https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg" alt="Shopify" className="h-6" />
-            <span className="font-heading font-bold text-base text-foreground hidden lg:block px-64">Shopify Partners Directory</span>
+            <span className="font-heading font-bold text-base text-foreground hidden lg:block">Shopify Partners Directory</span>
           </Link>
 
           {/* Search — hidden on mobile */}
           <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl">
             <div className="relative w-full">
-              
-              
-
-
-
-
-              
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search partners, services, or location..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-10 rounded-full border-border bg-muted/50 focus:bg-background" />
             </div>
           </form>
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-3">
-            
+            <Link to="/directory" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Browse</Link>
             <Link to="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">About</Link>
             <Link to="/contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
 
             {/* Dark mode toggle */}
-            
-
-
-
-
-
-            
+            <button
+              onClick={() => setDark(!dark)}
+              className="p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+              title={dark ? 'Switch to light mode' : 'Switch to dark mode'}>
+              
+              {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
 
             {user ?
             <>
@@ -120,7 +120,7 @@ export default function Navbar() {
                   <DropdownMenuTrigger asChild>
                     <button className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
                       <Avatar className="w-8 h-8">
-                        <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold opacity-100">{initials}</AvatarFallback>
+                        <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">{initials}</AvatarFallback>
                       </Avatar>
                       <ChevronDown className="w-3 h-3 text-muted-foreground" />
                     </button>
@@ -173,10 +173,10 @@ export default function Navbar() {
 
             <div className="flex items-center gap-2">
                 <Button asChild variant="ghost" size="sm">
-                  
+                  <Link to="/login">Log in</Link>
                 </Button>
                 <Button asChild size="sm" className="rounded-full">
-                  
+                  <Link to="/register">Become a Partner</Link>
                 </Button>
               </div>
             }
@@ -269,13 +269,13 @@ export default function Navbar() {
 }
 
 function MobileLink({ to, onClick, children, highlight }) {
-  return null;
-
-
-
-
-
-
-
+  return (
+    <Link
+      to={to}
+      onClick={onClick}
+      className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors hover:bg-muted ${highlight ? 'text-primary' : 'text-foreground'}`}>
+      
+      {children}
+    </Link>);
 
 }
