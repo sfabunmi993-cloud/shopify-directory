@@ -156,16 +156,16 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
                 className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-md hover:bg-black/70">
                 Remove</button>
               }
-                </div> :
+                </div> : null
 
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="w-full border-2 border-dashed border-border rounded-xl p-5 flex flex-col items-center gap-2 text-muted-foreground hover:border-primary/40 hover:bg-primary/5 transition-colors hidden">
-              
-                  <ImageIcon className="w-6 h-6" />
-                  <span className="text-sm">Click to upload screenshot</span>
-                </button>
+
+
+
+
+
+
+
+
             }
             </div>
 
