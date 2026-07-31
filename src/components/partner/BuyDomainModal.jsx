@@ -73,7 +73,7 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md py-6 px-24">
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Globe className="w-5 h-5 text-primary" /> Buy Domain
@@ -94,12 +94,11 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
 
         <div className="space-y-4">
             <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 text-sm">
-              <p className="font-semibold text-primary mb-1">Domain Package contact +2349077410691
- for any complain</p>
-              <p className="text-muted-foreground mx-2">Get a custom domain for your partner profile. Your profile will be accessible via your own branded URL opay:7031665045 Name: Fabunmi ronke amount:#10,000
-
-
-
+              <p className="font-semibold text-primary mb-1">Domain Package</p>
+              <p className="text-muted-foreground">Get a custom domain for your partner profile. Your profile will be accessible via your own branded URL
+KUDA
+2085858222
+Name: solomon glory andrew amount:#10,000
             </p>
             </div>
 
@@ -146,7 +145,8 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
               <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleScreenshotChange} />
               {screenshot?.previewUrl ? <div className="relative rounded-xl overflow-hidden border border-border">
                   <img src={screenshot.previewUrl} alt="Payment screenshot" className="w-full max-h-48 object-cover" />
-                  {uploading && <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                  {uploading &&
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                       <Loader2 className="w-6 h-6 text-white animate-spin" />
                     </div>
               }
