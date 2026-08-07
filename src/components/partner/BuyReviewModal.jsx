@@ -195,10 +195,10 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
 
           {/* Instructions */}
           <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
-            <li>Send <strong>₦{pkg?.price.toLocaleString()}</strong> to PalmPay: <strong>9068191624 (FABUNMI RONKE)</strong></li>
-            <li>Take a screenshot of your payment receipt</li>
-            <li>Upload the screenshot using the upload box above</li>
-            <li>Your {pkg?.reviews} review{pkg?.reviews > 1 ? 's' : ''} will be posted within 24 hours</li>
+            <li className="hidden">Send <strong>₦{pkg?.price.toLocaleString()}</strong> to PalmPay: <strong className="hidden">9068191624 (FABUNMI RONKE)</strong></li>
+            <li className="hidden">Take a screenshot of your payment receipt</li>
+            <li className="hidden">Upload the screenshot using the upload box above</li>
+            <li className="hidden">Your {pkg?.reviews} review{pkg?.reviews > 1 ? 's' : ''} will be posted within 24 hours</li>
           </ol>
 
           {btnState === 'done' ?
