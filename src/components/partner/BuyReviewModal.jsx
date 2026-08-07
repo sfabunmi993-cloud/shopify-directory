@@ -101,25 +101,25 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
           {/* Info */}
           <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800 flex gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-            <p>Purchase verified reviews to boost your profile ranking. Pay via OPay and upload your receipt below.</p>
+            <p>Purchase verified reviews to boost your profile ranking. Pay via OPay and upload your receipt below.
+if you are facing any pa</p>
           </div>
 
           {/* Package selection */}
           <div>
             <p className="text-sm font-semibold mb-2">Choose a package</p>
             <div className="grid grid-cols-3 gap-2">
-              {PACKAGES.map((p) =>
-                <button
-                  key={p.reviews}
-                  onClick={() => setSelected(p.reviews)}
-                  className={`relative rounded-xl border-2 p-3 text-center transition-all ${selected === p.reviews ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/40'}`}>
+              {PACKAGES.map((p) => <button
+                    key={p.reviews}
+                    onClick={() => setSelected(p.reviews)}
+                    className={`relative rounded-xl border-2 p-3 text-center transition-all ${selected === p.reviews ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/40'}`}>
                   {p.popular &&
-                  <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-primary text-white text-[9px] font-bold px-2 py-0.5 rounded-full">Popular</span>
-                  }
+                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-primary text-white text-[9px] font-bold px-2 py-0.5 rounded-full">Popular</span>
+                    }
                   <div className="flex justify-center gap-0.5 mb-1">
                     {[...Array(Math.min(p.reviews, 5))].map((_, i) =>
-                    <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
-                    )}
+                      <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+                      )}
                   </div>
                   <p className="text-sm font-semibold">{p.label}</p>
                   <p className="text-xs text-muted-foreground">₦{p.price.toLocaleString()}</p>
