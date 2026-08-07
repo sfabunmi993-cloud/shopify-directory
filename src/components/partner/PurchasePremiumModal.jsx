@@ -123,7 +123,7 @@ name; ronke fabunmi
           
 
             {/* Payment instructions */}
-            <div className="border border-border rounded-xl p-4 space-y-3">
+            <div className="border border-border rounded-xl p-4 space-y-3 hidden">
               <p className="font-semibold text-sm flex items-center gap-1.5"><CreditCard className="w-4 h-4 text-primary" /> Payment Instructions</p>
               <p className="text-xs text-muted-foreground">Transfer ₦{pricing.premium_badge.toLocaleString()} to the account below, then click Continue to submit your proof.</p>
 
