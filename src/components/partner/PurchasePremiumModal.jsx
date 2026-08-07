@@ -95,10 +95,10 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">Purchase Premium Badge
-opay; 7031665045
-name; ronke fabunmi
-</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">Purchase Premium Badge 
+ACC; 
+
+          </DialogTitle>
         </DialogHeader>
 
         {done ? <div className="text-center py-6 space-y-3">
