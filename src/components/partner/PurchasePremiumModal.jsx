@@ -112,15 +112,15 @@ name; ronke fabunmi
         step === 1 ?
         <div className="space-y-4">
             {/* What you get */}
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2 hidden">
-              <p className="font-semibold text-amber-800 flex items-center gap-1.5"><Crown className="w-4 h-4" /> Premium Badge — ₦{pricing.premium_badge.toLocaleString()}</p>
-              <ul className="text-sm text-amber-700 space-y-1 list-disc list-inside">
-                <li>Gold ✨ Premium badge on your profile & directory listing</li>
-                <li>Priority placement in search results</li>
-                <li>Verified trust signal for clients</li>
-                <li>One-time payment, lifetime badge</li>
-              </ul>
-            </div>
+            
+
+
+
+
+
+
+
+          
 
             {/* Payment instructions */}
             <div className="border border-border rounded-xl p-4 space-y-3">
