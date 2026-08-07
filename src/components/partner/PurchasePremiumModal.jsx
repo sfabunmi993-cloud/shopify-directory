@@ -97,7 +97,7 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">Purchase Premium Badge
 opay; 7031665045
-name;</DialogTitle>
+name; ronke fabunmi</DialogTitle>
         </DialogHeader>
 
         {done ?
