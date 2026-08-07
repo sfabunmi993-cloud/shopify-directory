@@ -98,7 +98,7 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
           <DialogTitle className="flex items-center gap-2">Purchase Premium Badge 
 ACC; 7031665045
 Name; RONKE FABUNMI
-BANK</DialogTitle>
+BANK: OPAY</DialogTitle>
         </DialogHeader>
 
         {done ? <div className="text-center py-6 space-y-3">
