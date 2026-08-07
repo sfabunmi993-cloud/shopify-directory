@@ -95,8 +95,8 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Crown className="w-5 h-5 text-amber-500" /> Purchase Premium Badge
+          <DialogTitle className="flex items-center gap-2">Purchase Premium Badge
+opay;
           </DialogTitle>
         </DialogHeader>
 
