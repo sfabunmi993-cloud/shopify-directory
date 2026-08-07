@@ -97,11 +97,11 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">Purchase Premium Badge
 opay; 7031665045
-name; ronke fabunmi</DialogTitle>
+name; ronke fabunmi
+</DialogTitle>
         </DialogHeader>
 
-        {done ?
-        <div className="text-center py-6 space-y-3">
+        {done ? <div className="text-center py-6 space-y-3">
             <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto" />
             <h3 className="font-semibold text-lg">Payment submitted!</h3>
             <p className="text-sm text-muted-foreground">
@@ -112,7 +112,7 @@ name; ronke fabunmi</DialogTitle>
         step === 1 ?
         <div className="space-y-4">
             {/* What you get */}
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2 hidden">
               <p className="font-semibold text-amber-800 flex items-center gap-1.5"><Crown className="w-4 h-4" /> Premium Badge — ₦{pricing.premium_badge.toLocaleString()}</p>
               <ul className="text-sm text-amber-700 space-y-1 list-disc list-inside">
                 <li>Gold ✨ Premium badge on your profile & directory listing</li>
