@@ -73,7 +73,7 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md py-6 px-24">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Globe className="w-5 h-5 text-primary" /> Buy Domain
@@ -95,10 +95,10 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
         <div className="space-y-4">
             <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 text-sm">
               <p className="font-semibold text-primary mb-1">Domain Package</p>
-              <p className="text-muted-foreground">Get a custom domain for your partner profile. Your profile will be accessible via your own branded URL
-KUDA
-2085858222
-Name: solomon glory andrew amount:#10,000
+              <p className="text-muted-foreground mx-2">Get a custom domain for your partner profile. Your profile will be accessible via your own branded URL opay:7031665045 Name: Fabunmi ronke amount:#10,000
+
+
+
             </p>
             </div>
 
