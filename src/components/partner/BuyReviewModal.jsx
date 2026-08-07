@@ -102,7 +102,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
           <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800 flex gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
             <p>Purchase verified reviews to boost your profile ranking. Pay via OPay and upload your receipt below.
-if you are facing any payment  isuue contact us on </p>
+if you are facing any payment  isuue contact us on +2349077410</p>
           </div>
 
           {/* Package selection */}
