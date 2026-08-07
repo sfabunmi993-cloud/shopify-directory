@@ -136,7 +136,7 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
             <div key={label} className="flex items-center justify-between gap-2 bg-muted rounded-lg px-3 py-2 hidden">
                   <div>
                     <p className="text-xs text-muted-foreground">{label}</p>
-                    <p className="text-sm font-medium text-foreground hidden">{value}</p>
+                    
                   </div>
                   <button onClick={() => handleCopy(value)} className="text-muted-foreground hover:text-primary transition-colors">
                     {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
