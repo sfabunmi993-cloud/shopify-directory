@@ -156,7 +156,7 @@ export default function PartnerOnboarding() {
   };
 
   const canProceedStep0 = form.name.trim() && form.description.trim() && form.service_category;
-  const canProceedStep1 = form.services.length > 0 && form.years_as_partner !== '';
+  const canProceedStep1 = form.services.length > 0;
 
   if (checking) {
     return (
