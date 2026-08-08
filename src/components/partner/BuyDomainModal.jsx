@@ -7,9 +7,9 @@ import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
 const DOMAIN_PRICE = 10000; // NGN
-const ACCOUNT_NAME = 'Fabunmi Ronke';
-const ACCOUNT_NUMBER = '9068191624';
-const BANK_NAME = 'PalmPay';
+const ACCOUNT_NAME = 'RONKE FABUNMI';
+const ACCOUNT_NUMBER = '7031665045';
+const BANK_NAME = 'Opay';
 
 export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
   const [transactionRef, setTransactionRef] = useState('');
@@ -93,57 +93,39 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
           </div> :
 
         <div className="space-y-4">
-            <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 text-sm">
-              <p className="font-semibold text-primary mb-1">Domain Package</p>
-              <p className="text-muted-foreground">Payment Details Amount: ₦10,000 Bank: Opay Account Number: 9038153254 Account Name: Solomon Glory Andrew
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            </p>
+            <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-1">Domain Package</p>
+              <p className="text-sm text-muted-foreground">Custom domain setup and configuration for your partner profile.</p>
             </div>
 
-            <div className="bg-white border border-border rounded-xl p-4 space-y-3 hidden">
+            <div className="bg-white border border-border rounded-xl p-4 space-y-3">
               <p className="text-xs font-semibold uppercase text-muted-foreground tracking-wide">Payment Details</p>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
+              <div className="space-y-2.5">
+                <div className="flex justify-between items-center pb-2.5 border-b border-border">
                   <span className="text-sm text-muted-foreground">Amount</span>
-                  <span className="font-bold text-foreground">₦{DOMAIN_PRICE.toLocaleString()}</span>
+                  <span className="font-bold text-foreground text-lg">₦{DOMAIN_PRICE.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Bank</span>
+                  <span className="font-medium text-sm text-foreground">{BANK_NAME}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-muted-foreground">Account Name</span>
                   <div className="flex items-center gap-1">
-                    <span className="font-medium text-sm">{ACCOUNT_NAME}</span>
-                    <button onClick={() => copy(ACCOUNT_NAME, 'name')} className="p-1 rounded hover:bg-muted">
-                      {copied === 'name' ? <Check className="w-3 h-3 text-green-500" /> : <Copy className="w-3 h-3 text-muted-foreground" />}
+                    <span className="font-semibold text-sm text-foreground">{ACCOUNT_NAME}</span>
+                    <button onClick={() => copy(ACCOUNT_NAME, 'name')} className="p-1 rounded hover:bg-muted transition-colors">
+                      {copied === 'name' ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5 text-muted-foreground" />}
                     </button>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-muted-foreground">Account Number</span>
                   <div className="flex items-center gap-1">
-                    <span className="font-medium text-sm font-mono">{ACCOUNT_NUMBER}</span>
-                    <button onClick={() => copy(ACCOUNT_NUMBER, 'acct')} className="p-1 rounded hover:bg-muted">
-                      {copied === 'acct' ? <Check className="w-3 h-3 text-green-500" /> : <Copy className="w-3 h-3 text-muted-foreground" />}
+                    <span className="font-semibold text-sm font-mono tracking-wide text-foreground">{ACCOUNT_NUMBER}</span>
+                    <button onClick={() => copy(ACCOUNT_NUMBER, 'acct')} className="p-1 rounded hover:bg-muted transition-colors">
+                      {copied === 'acct' ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5 text-muted-foreground" />}
                     </button>
                   </div>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Bank</span>
-                  <span className="font-medium text-sm">{BANK_NAME}</span>
                 </div>
               </div>
             </div>
@@ -151,7 +133,6 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
             <div className="space-y-1.5">
               <label className="text-sm font-medium">Transaction Reference (optional)</label>
               <Input placeholder="e.g. TRF123456789" value={transactionRef} onChange={(e) => setTransactionRef(e.target.value)} />
-            
             </div>
 
             <div className="space-y-1.5">
@@ -165,21 +146,17 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
                   {!uploading && <button onClick={() => {setScreenshot(null);fileInputRef.current.value = '';}} className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-md hover:bg-black/70">
                 Remove</button>}
                 </div> : <button type="button" onClick={() => fileInputRef.current?.click()} className="w-full border-2 border-dashed border-border rounded-xl p-5 flex flex-col items-center gap-2 text-muted-foreground hover:border-primary/40 hover:bg-primary/5 transition-colors">
-              
                   <ImageIcon className="w-6 h-6" />
                   <span className="text-sm">Click to upload screenshot</span>
                 </button>}
             </div>
 
-            <Button className="w-full rounded-full" onClick={handleSubmit}
-          disabled={submitting || uploading || !screenshot?.uploadedUrl}>
-            
+            <Button className="w-full rounded-full" onClick={handleSubmit} disabled={submitting || uploading || !screenshot?.uploadedUrl}>
               {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : null}
-              {submitting ? 'Submitting...' : 'I\'ve Made the Payment →'}
+              {submitting ? 'Submitting...' : "I've Made the Payment →"}
             </Button>
           </div>
         }
       </DialogContent>
     </Dialog>);
-
 }
