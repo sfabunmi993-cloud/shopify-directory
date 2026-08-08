@@ -83,7 +83,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <img src="https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg" alt="Shopify" className="h-6" />
-            <span className="font-heading font-bold text-base text-foreground hidden lg:block px-64">Shopify Partners Directory</span>
+            <span className="font-heading font-bold text-base text-foreground hidden lg:block">Shopify Partners Directory</span>
           </Link>
 
           {/* Search — hidden on mobile */}
@@ -106,13 +106,13 @@ export default function Navbar() {
             <Link to="/contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
 
             {/* Dark mode toggle */}
-            
-
-
-
-
-
-            
+            <button
+              onClick={() => setDark(!dark)}
+              className="p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+              title={dark ? 'Switch to light mode' : 'Switch to dark mode'}>
+              
+              {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
 
             {user ?
             <>
@@ -161,7 +161,10 @@ export default function Navbar() {
                       <Link to="/favorites"><Heart className="w-4 h-4 mr-2" /> Saved Partners</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/messages"><MessageSquare className="w-4 h-4 mr-2" /> Messages</Link>
+                      <Link to="/messages"><MessageSquare className="w-4 h-4 mr-2" /> Partner Messages</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/private-messages"><MessageSquare className="w-4 h-4 mr-2" /> Private Messages</Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
@@ -173,10 +176,10 @@ export default function Navbar() {
 
             <div className="flex items-center gap-2">
                 <Button asChild variant="ghost" size="sm">
-                  
+                  <Link to="/login">Log in</Link>
                 </Button>
                 <Button asChild size="sm" className="rounded-full">
-                  
+                  <Link to="/register">Become a Partner</Link>
                 </Button>
               </div>
             }
@@ -241,7 +244,8 @@ export default function Navbar() {
             <MobileLink to="/become-a-partner" onClick={() => setMobileMenuOpen(false)}>Become a Partner</MobileLink>
             }
                 <MobileLink to="/favorites" onClick={() => setMobileMenuOpen(false)}>Saved Partners</MobileLink>
-                <MobileLink to="/messages" onClick={() => setMobileMenuOpen(false)}>Messages</MobileLink>
+                <MobileLink to="/messages" onClick={() => setMobileMenuOpen(false)}>Partner Messages</MobileLink>
+                <MobileLink to="/private-messages" onClick={() => setMobileMenuOpen(false)}>Private Messages</MobileLink>
                 <div className="pt-2 mt-2 border-t border-border">
                   <button
                 onClick={handleLogout}
@@ -269,13 +273,13 @@ export default function Navbar() {
 }
 
 function MobileLink({ to, onClick, children, highlight }) {
-  return null;
-
-
-
-
-
-
-
+  return (
+    <Link
+      to={to}
+      onClick={onClick}
+      className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors hover:bg-muted ${highlight ? 'text-primary' : 'text-foreground'}`}>
+      
+      {children}
+    </Link>);
 
 }

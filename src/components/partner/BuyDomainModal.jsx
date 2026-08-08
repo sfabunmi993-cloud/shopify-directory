@@ -73,7 +73,7 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md py-6 px-24">
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Globe className="w-5 h-5 text-primary" /> Buy Domain
@@ -95,7 +95,21 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
         <div className="space-y-4">
             <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 text-sm">
               <p className="font-semibold text-primary mb-1">Domain Package</p>
-              <p className="text-muted-foreground mx-2">Get a custom domain for your partner profile. Your profile will be accessible via your own branded URL opay:7031665045 Name: Fabunmi ronke amount:#10,000
+              <p className="text-muted-foreground">Payment Details Amount: ₦10,000 Bank: Opay Account Number: 9038153254 Account Name: Solomon Glory Andrew
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -145,34 +159,20 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
               <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleScreenshotChange} />
               {screenshot?.previewUrl ? <div className="relative rounded-xl overflow-hidden border border-border">
                   <img src={screenshot.previewUrl} alt="Payment screenshot" className="w-full max-h-48 object-cover" />
-                  {uploading &&
-              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                  {uploading && <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                       <Loader2 className="w-6 h-6 text-white animate-spin" />
-                    </div>
-              }
-                  {!uploading &&
-              <button
-                onClick={() => {setScreenshot(null);fileInputRef.current.value = '';}}
-                className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-md hover:bg-black/70">
-                Remove</button>
-              }
-                </div> :
-
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="w-full border-2 border-dashed border-border rounded-xl p-5 flex flex-col items-center gap-2 text-muted-foreground hover:border-primary/40 hover:bg-primary/5 transition-colors">
+                    </div>}
+                  {!uploading && <button onClick={() => {setScreenshot(null);fileInputRef.current.value = '';}} className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-md hover:bg-black/70">
+                Remove</button>}
+                </div> : <button type="button" onClick={() => fileInputRef.current?.click()} className="w-full border-2 border-dashed border-border rounded-xl p-5 flex flex-col items-center gap-2 text-muted-foreground hover:border-primary/40 hover:bg-primary/5 transition-colors">
               
                   <ImageIcon className="w-6 h-6" />
                   <span className="text-sm">Click to upload screenshot</span>
-                </button>
-            }
+                </button>}
             </div>
 
-            <Button
-            className="w-full rounded-full"
-            onClick={handleSubmit}
-            disabled={submitting || uploading || !screenshot?.uploadedUrl}>
+            <Button className="w-full rounded-full" onClick={handleSubmit}
+          disabled={submitting || uploading || !screenshot?.uploadedUrl}>
             
               {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : null}
               {submitting ? 'Submitting...' : 'I\'ve Made the Payment →'}

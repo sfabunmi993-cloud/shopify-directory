@@ -59,6 +59,34 @@
     "hire_details": {
       "type": "string",
       "description": "Details about the hire request (project scope, budget, timeline)"
+    },
+    "client_full_name": {
+      "type": "string",
+      "description": "Full name of the client submitting the contact form"
+    },
+    "client_email": {
+      "type": "string",
+      "description": "Business email of the client submitting the contact form"
+    },
+    "client_budget": {
+      "type": "string",
+      "description": "Client's budget for the project"
+    },
+    "client_store_url": {
+      "type": "string",
+      "description": "Client's Shopify store URL"
+    },
+    "client_country": {
+      "type": "string",
+      "description": "Client's country"
+    },
+    "client_service": {
+      "type": "string",
+      "description": "Service the client is interested in"
+    },
+    "collaborator_code": {
+      "type": "string",
+      "description": "Shopify collaborator code provided by the client"
     }
   },
   "required": [

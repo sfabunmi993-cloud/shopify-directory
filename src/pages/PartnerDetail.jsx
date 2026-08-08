@@ -197,10 +197,10 @@ export default function PartnerDetail() {
   null;
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
-      
+    <div className="px-3 sm:px-6 lg:px-8 py-4 sm:py-8 max-w-7xl mx-auto">
+      <Link to="/directory" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-6 hidden">Back to directory        
 
-      
+      </Link>
 
       {partner.status === 'pending' &&
       <div className="mb-4 bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-3 flex items-center gap-2 text-amber-600 dark:text-amber-400 text-sm">
@@ -219,10 +219,10 @@ export default function PartnerDetail() {
         </div>
       }
 
-      <div className="grid md:grid-cols-[280px_1fr] gap-8 items-start">
+      <div className="grid md:grid-cols-[260px_1fr] gap-4 sm:gap-8 items-start">
 
         {/* LEFT SIDEBAR */}
-        <div className="border rounded-xl border-border space-y-5">
+        <div className="border rounded-xl border-border space-y-4 sm:space-y-5 p-3 sm:p-0">
           {/* Buy Reviews button — only for partner owner */}
           {user && partner.created_by_id === user.id &&
           <button
@@ -286,19 +286,9 @@ export default function PartnerDetail() {
 
           {/* CTA Buttons */}
           <div className="space-y-2">
-            {contactHref ?
-            <a
-              href={contactHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 text-sm font-medium transition-colors bg-primary rounded-2xl">
-                <Mail className="w-4 h-4" /> Contact
-              </a> :
-
             <Button className="w-full" onClick={() => setContactOpen(true)}>
                 <MessageSquare className="w-4 h-4 mr-1.5" /> Contact
               </Button>
-            }
             {partner.whatsapp_url &&
             <a
               href={partner.whatsapp_url}
@@ -433,9 +423,14 @@ export default function PartnerDetail() {
               </div>
             }
             {partner.completed_projects > 0 &&
-            <div>
-                <p className="text-primary font-semibold text-xs uppercase tracking-wide">Completed projects</p>
-                <p className="text-muted-foreground mt-0.5">{partner.completed_projects}</p>
+            <div className="rounded-lg bg-primary/5 border border-primary/20 p-3 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <CheckCircle className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-foreground leading-none">{partner.completed_projects}+</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Projects Completed</p>
+                </div>
               </div>
             }
           </div>
@@ -535,7 +530,7 @@ export default function PartnerDetail() {
       {/* Modals */}
       {partner &&
       <>
-          <ContactModal partner={partner} isOpen={contactOpen} onClose={() => setContactOpen(false)} mode="inquiry" />
+          <ContactModal partner={partner} isOpen={contactOpen} onClose={() => setContactOpen(false)} />
           <ContactModal partner={partner} isOpen={hireOpen} onClose={() => setHireOpen(false)} mode="hire" />
           <FlagModal partner={partner} isOpen={flagOpen} onClose={() => setFlagOpen(false)} />
           <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />

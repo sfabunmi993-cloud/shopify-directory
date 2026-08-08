@@ -138,7 +138,7 @@ export default function MyProfile() {
 
   const handleSave = async () => {
     setSaving(true);
-    let updates = { ...form, starting_price: form.starting_price ? Number(form.starting_price) : undefined };
+    let updates = { ...form, starting_price: form.starting_price ? Number(form.starting_price) : undefined, years_as_partner: form.years_as_partner ? Number(form.years_as_partner) : 0, completed_projects: form.completed_projects ? Number(form.completed_projects) : 0 };
     // Regenerate slug if name changed
     if (form.name && form.name !== partner.name) {
       const baseSlug = form.name.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -164,10 +164,10 @@ export default function MyProfile() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className="flex flex-col gap-1.5">
+    <div className="max-w-3xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+          <div className="flex flex-wrap items-center gap-1.5">
           <Button
               onClick={() => setBuyReviewOpen(true)}
               className="rounded-full hover:bg-amber-600 text-white gap-1.5 shadow-sm bg-gray-600"
@@ -195,19 +195,19 @@ export default function MyProfile() {
             </button>
             }
           </div>
-          <div>
-            <h1 className="font-heading text-2xl font-bold">My Partner Profile</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Edit how you appear in the directory</p>
+          <div class="min-w-0">
+            <h1 className="font-heading text-xl sm:text-2xl font-bold">My Partner Profile</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">Edit how you appear in the directory</p>
             {partner?.partner_number &&
             <p className="text-xs text-muted-foreground font-mono mt-0.5">ID: {partner.partner_number}</p>
             }
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             variant="outline"
             size="sm"
-            className="rounded-full"
+            className="rounded-full text-xs"
             onClick={() => {
               const url = `${window.location.origin}/partner/${partner?.slug || partner?.id}`;
               navigator.clipboard.writeText(url);
@@ -216,8 +216,8 @@ export default function MyProfile() {
             
             <Share2 className="w-4 h-4 mr-1.5" /> Share Profile
           </Button>
-          <Button asChild variant="outline" className="rounded-full" size="sm">
-            <Link to={`/partner/${partner?.slug || partner?.id}`}><Eye className="w-4 h-4 mr-1.5" /> View Public Profile</Link>
+          <Button asChild variant="outline" className="rounded-full text-xs" size="sm">
+            <Link to={`/partner/${partner?.slug || partner?.id}`}><Eye className="w-4 h-4 mr-1" /> <span className="hidden sm:inline">View </span>Profile</Link>
           </Button>
         </div>
       </div>
@@ -285,7 +285,7 @@ export default function MyProfile() {
       }
 
       {/* Inquiries Dashboard */}
-      <div className="bg-white border border-border rounded-2xl p-6 mb-6">
+      <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
         <h2 className="font-semibold text-base mb-4 flex items-center gap-2">
           <span>My Inquiries & Messages</span>
           <span className="text-xs text-muted-foreground font-normal">(recent activity)</span>
@@ -294,13 +294,13 @@ export default function MyProfile() {
       </div>
 
       {/* Delivered Projects */}
-      <div className="bg-white border border-border rounded-2xl p-6 mb-6">
+      <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
         <h2 className="font-semibold text-base mb-1">Delivered Projects</h2>
         <p className="text-xs text-muted-foreground mb-4">Projects you have delivered to clients via messages.</p>
         <ProjectsSection partnerId={partner?.id} />
       </div>
 
-      <div className="bg-white border border-border rounded-2xl p-6 space-y-6">
+      <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 space-y-6">
         {/* Basic */}
         <div>
           <h2 className="font-semibold text-base mb-4">Basic information</h2>
@@ -429,6 +429,14 @@ export default function MyProfile() {
             <div className="space-y-1.5">
               <Label>Starting price (USD)</Label>
               <Input type="number" value={form.starting_price || ''} onChange={(e) => set('starting_price', e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Years as a Shopify partner</Label>
+              <Input type="number" min="0" value={form.years_as_partner || ''} onChange={(e) => set('years_as_partner', e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Completed projects</Label>
+              <Input type="number" min="0" value={form.completed_projects || ''} onChange={(e) => set('completed_projects', e.target.value)} />
             </div>
             <div className="space-y-1.5">
               <Label>Contact email</Label>
@@ -564,7 +572,7 @@ export default function MyProfile() {
       </div>
 
       {/* Settings */}
-      <div className="bg-white border border-border rounded-2xl p-6 mt-6">
+      <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 mt-4 sm:mt-6">
         <h2 className="font-semibold text-base mb-4 flex items-center gap-2">
           <Lock className="w-4 h-4 text-muted-foreground" /> Account Settings
         </h2>
