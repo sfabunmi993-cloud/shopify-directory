@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, Upload, X, Image as ImageIcon, Video, Plus } from 'lucide-react';
+import { Loader2, Upload, X, Image as ImageIcon, Video, Plus, Globe, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 const MAX_ITEMS = 3;
 
 export default function PortfolioEditor({ portfolio = [], partnerId, onChange }) {
   const [uploading, setUploading] = useState(false);
-  const [captions, setCaptions] = useState({});
+  const [drafts, setDrafts] = useState({});
 
   const items = Array.isArray(portfolio) ? portfolio : [];
 
@@ -31,11 +31,11 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
     setUploading(true);
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      const newItem = { type: detectType(file), url: file_url, caption: '' };
+      const newItem = { type: detectType(file), url: file_url, store_url: '', caption: '' };
       const updated = [...items, newItem];
       await base44.entities.Partner.update(partnerId, { portfolio: updated });
       onChange(updated);
-      toast.success('Portfolio item added!');
+      toast.success('Portfolio item added! Please add the store URL.');
     } catch (err) {
       toast.error('Upload failed. Please try again.');
     } finally {
@@ -55,55 +55,99 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
     }
   };
 
-  const handleCaptionChange = (index, value) => {
-    setCaptions((prev) => ({ ...prev, [index]: value }));
+  const updateDraft = (index, field, value) => {
+    setDrafts((prev) => ({
+      ...prev,
+      [index]: { ...prev[index], [field]: value }
+    }));
   };
 
-  const saveCaption = async (index) => {
-    const value = captions[index];
-    if (value === undefined) return;
-    const updated = items.map((item, i) => (i === index ? { ...item, caption: value } : item));
+  const saveDetails = async (index) => {
+    const draft = drafts[index] || {};
+    const storeUrl = (draft.store_url !== undefined ? draft.store_url : items[index]?.store_url || '').trim();
+    const caption = (draft.caption !== undefined ? draft.caption : items[index]?.caption || '').trim();
+
+    if (!storeUrl) {
+      toast.error('Store URL is required.');
+      return;
+    }
+
+    const updated = items.map((item, i) =>
+      i === index ? { ...item, store_url: storeUrl, caption } : item
+    );
     try {
       await base44.entities.Partner.update(partnerId, { portfolio: updated });
       onChange(updated);
-      toast.success('Caption saved.');
+      setDrafts((prev) => {
+        const next = { ...prev };
+        delete next[index];
+        return next;
+      });
+      toast.success('Portfolio details saved!');
     } catch (err) {
-      toast.error('Failed to save caption.');
+      toast.error('Failed to save details.');
     }
+  };
+
+  const getValue = (index, field) => {
+    if (drafts[index]?.[field] !== undefined) return drafts[index][field];
+    return items[index]?.[field] || '';
   };
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {items.map((item, i) => (
-          <div key={i} className="relative border border-border rounded-xl overflow-hidden group bg-muted/30">
-            {item.type === 'video' ? (
-              <video src={item.url} controls className="w-full h-32 object-cover bg-black" />
-            ) : (
-              <img src={item.url} alt={item.caption || 'Portfolio item'} className="w-full h-32 object-cover" />
-            )}
-            <button
-              onClick={() => handleRemove(i)}
-              className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1 hover:bg-black/80 z-10">
-              <X className="w-3.5 h-3.5" />
-            </button>
-            <div className="absolute top-2 left-2 bg-black/60 text-white rounded px-1.5 py-0.5 text-[10px] font-medium flex items-center gap-1">
-              {item.type === 'video' ? <Video className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
-              {item.type}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {items.map((item, i) => {
+          const hasStoreUrl = !!item.store_url;
+          return (
+            <div key={i} className="relative border border-border rounded-xl overflow-hidden bg-muted/30">
+              {item.type === 'video' ? (
+                <video src={item.url} controls className="w-full h-32 object-cover bg-black" />
+              ) : (
+                <img src={item.url} alt={item.caption || 'Portfolio item'} className="w-full h-32 object-cover" />
+              )}
+              <button
+                onClick={() => handleRemove(i)}
+                className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1 hover:bg-black/80 z-10">
+                <X className="w-3.5 h-3.5" />
+              </button>
+              <div className="absolute top-2 left-2 bg-black/60 text-white rounded px-1.5 py-0.5 text-[10px] font-medium flex items-center gap-1">
+                {item.type === 'video' ? <Video className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
+                {item.type}
+              </div>
+              {!hasStoreUrl && (
+                <div className="bg-amber-50 border-t border-amber-200 px-2 py-1 flex items-center gap-1 text-[10px] text-amber-700">
+                  <AlertCircle className="w-3 h-3 shrink-0" /> Store URL required
+                </div>
+              )}
+              <div className="p-2 space-y-1.5">
+                <div>
+                  <label className="text-[10px] font-medium text-muted-foreground flex items-center gap-0.5">
+                    <Globe className="w-3 h-3" /> Store URL <span className="text-red-500">*</span>
+                  </label>
+                  <Input
+                    placeholder="https://mystore.com"
+                    value={getValue(i, 'store_url')}
+                    onChange={(e) => updateDraft(i, 'store_url', e.target.value)}
+                    className="h-8 text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-medium text-muted-foreground">Caption</label>
+                  <Input
+                    placeholder="Describe this work..."
+                    value={getValue(i, 'caption')}
+                    onChange={(e) => updateDraft(i, 'caption', e.target.value)}
+                    className="h-8 text-xs"
+                  />
+                </div>
+                <Button size="sm" className="w-full h-7 text-xs" onClick={() => saveDetails(i)}>
+                  Save details
+                </Button>
+              </div>
             </div>
-            <div className="p-2">
-              <Input
-                placeholder="Add a caption..."
-                defaultValue={item.caption || ''}
-                onChange={(e) => handleCaptionChange(i, e.target.value)}
-                className="h-8 text-xs"
-              />
-              <Button size="sm" variant="ghost" className="w-full h-7 text-xs mt-1" onClick={() => saveCaption(i)}>
-                Save caption
-              </Button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
 
         {items.length < MAX_ITEMS && (
           <label className="border-2 border-dashed border-border rounded-xl h-44 flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-primary/40 hover:text-primary transition-all cursor-pointer">
@@ -127,7 +171,7 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
 
       <p className="text-xs text-muted-foreground flex items-center gap-1">
         <Upload className="w-3 h-3" />
-        You can upload up to {MAX_ITEMS} images or videos. {items.length}/{MAX_ITEMS} used.
+        You can upload up to {MAX_ITEMS} images or videos. {items.length}/{MAX_ITEMS} used. Store URL is required for each item.
       </p>
     </div>
   );

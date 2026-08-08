@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import ReviewSection from '@/components/directory/ReviewSection';
 import PartnerAvatar from '@/components/directory/PartnerAvatar';
+import PortfolioItemReview from '@/components/directory/PortfolioItemReview';
 import ContactModal from '@/components/partner/ContactModal';
 import FlagModal from '@/components/partner/FlagModal';
 import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
@@ -513,17 +514,30 @@ export default function PartnerDetail() {
           {partner.portfolio?.length > 0 &&
           <div>
             <h2 className="font-heading text-xl font-bold text-foreground mb-3">Portfolio</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {partner.portfolio.map((item, i) => (
-                <div key={i} className="rounded-xl overflow-hidden border border-border bg-muted/30">
+                <div key={i} className="rounded-xl overflow-hidden border border-border bg-card">
                   {item.type === 'video' ? (
                     <video src={item.url} controls className="w-full h-40 object-cover bg-black" />
                   ) : (
                     <img src={item.url} alt={item.caption || 'Portfolio item'} className="w-full h-40 object-cover" />
                   )}
-                  {item.caption && (
-                    <p className="text-xs text-muted-foreground px-3 py-2 truncate">{item.caption}</p>
-                  )}
+                  <div className="p-3 space-y-2">
+                    {item.caption && (
+                      <p className="text-sm text-foreground leading-relaxed">{item.caption}</p>
+                    )}
+                    {item.store_url && (
+                      <a
+                        href={item.store_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
+                      >
+                        <Globe className="w-3.5 h-3.5" /> {item.store_url.replace(/^https?:\/\//, '')}
+                      </a>
+                    )}
+                    <PortfolioItemReview partnerId={partnerId} portfolioItemUrl={item.url} />
+                  </div>
                 </div>
               ))}
             </div>
