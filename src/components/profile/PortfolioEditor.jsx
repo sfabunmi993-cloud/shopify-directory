@@ -146,9 +146,9 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
           return (
             <div key={i} className="relative border border-border rounded-xl overflow-hidden bg-muted/30">
               {item.type === 'video' ? (
-                <video src={item.url} controls className="w-full h-32 object-cover bg-black" />
+                <video src={item.url} controls playsInline preload="metadata" className="w-full h-40 object-contain bg-black" />
               ) : (
-                <img src={item.url} alt={item.caption || 'Portfolio item'} className="w-full h-32 object-cover" />
+                <img src={item.url} alt={item.caption || 'Portfolio item'} className="w-full h-40 object-cover" />
               )}
               <button
                 onClick={() => handleRemove(i)}

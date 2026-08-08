@@ -518,7 +518,7 @@ export default function PartnerDetail() {
               {partner.portfolio.map((item, i) => (
                 <div key={i} className="rounded-xl overflow-hidden border border-border bg-card">
                   {item.type === 'video' ? (
-                    <video src={item.url} controls className="w-full h-40 object-cover bg-black" />
+                    <video src={item.url} controls playsInline preload="metadata" className="w-full h-48 object-contain bg-black" />
                   ) : (
                     <img src={item.url} alt={item.caption || 'Portfolio item'} className="w-full h-40 object-cover" />
                   )}
