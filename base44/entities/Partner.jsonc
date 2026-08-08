@@ -88,11 +88,20 @@
           "caption": {
             "type": "string",
             "description": "Optional caption for this portfolio item"
+          },
+          "store_url": {
+            "type": "string",
+            "description": "Required store URL associated with this portfolio item"
+          },
+          "store_name": {
+            "type": "string",
+            "description": "Auto-detected store/brand name from the store homepage"
           }
         },
         "required": [
           "type",
-          "url"
+          "url",
+          "store_url"
         ]
       }
     },

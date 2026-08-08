@@ -2,18 +2,57 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, Upload, X, Image as ImageIcon, Video, Plus, Globe, AlertCircle } from 'lucide-react';
+import { Loader2, Upload, X, Image as ImageIcon, Video, Plus, Globe, AlertCircle, Search } from 'lucide-react';
 import { toast } from 'sonner';
 
 const MAX_ITEMS = 3;
 
+function getDomain(url) {
+  try {
+    const u = new URL(url.startsWith('http') ? url : `https://${url}`);
+    return u.hostname.replace(/^www\./, '');
+  } catch {
+    return null;
+  }
+}
+
+function faviconUrl(url) {
+  const domain = getDomain(url);
+  return domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64` : null;
+}
+
 export default function PortfolioEditor({ portfolio = [], partnerId, onChange }) {
   const [uploading, setUploading] = useState(false);
   const [drafts, setDrafts] = useState({});
+  const [detecting, setDetecting] = useState({});
+  const [detectedNames, setDetectedNames] = useState({});
 
   const items = Array.isArray(portfolio) ? portfolio : [];
 
   const detectType = (file) => (file.type.startsWith('video/') ? 'video' : 'image');
+
+  const detectStore = async (index, url) => {
+    const domain = getDomain(url);
+    if (!domain) return;
+    setDetecting((prev) => ({ ...prev, [index]: true }));
+    try {
+      const res = await base44.integrations.Core.InvokeLLM({
+        prompt: `What is the official store or brand name for the website ${url}? Search for this store's homepage and return just the store/brand name as it appears on their site.`,
+        add_context_from_internet: true,
+        model: 'gemini_3_flash',
+        response_json_schema: { type: 'object', properties: { store_name: { type: 'string' } } },
+      });
+      const name = res?.store_name || domain;
+      setDetectedNames((prev) => ({ ...prev, [index]: name }));
+      toast.success(`Detected: ${name}`);
+    } catch (err) {
+      // Fallback to domain name
+      setDetectedNames((prev) => ({ ...prev, [index]: domain }));
+      toast.info('Could not auto-detect store name. Using domain instead.');
+    } finally {
+      setDetecting((prev) => ({ ...prev, [index]: false }));
+    }
+  };
 
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -31,7 +70,7 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
     setUploading(true);
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      const newItem = { type: detectType(file), url: file_url, store_url: '', caption: '' };
+      const newItem = { type: detectType(file), url: file_url, store_url: '', store_name: '', caption: '' };
       const updated = [...items, newItem];
       await base44.entities.Partner.update(partnerId, { portfolio: updated });
       onChange(updated);
@@ -72,8 +111,10 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
       return;
     }
 
+    const storeName = detectedNames[index] || items[index]?.store_name || getDomain(storeUrl) || '';
+
     const updated = items.map((item, i) =>
-      i === index ? { ...item, store_url: storeUrl, caption } : item
+      i === index ? { ...item, store_url: storeUrl, store_name: storeName, caption } : item
     );
     try {
       await base44.entities.Partner.update(partnerId, { portfolio: updated });
@@ -99,6 +140,9 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {items.map((item, i) => {
           const hasStoreUrl = !!item.store_url;
+          const currentUrl = getValue(i, 'store_url');
+          const detectedName = detectedNames[i] || item.store_name;
+          const fav = faviconUrl(currentUrl || item.store_url);
           return (
             <div key={i} className="relative border border-border rounded-xl overflow-hidden bg-muted/30">
               {item.type === 'video' ? (
@@ -127,11 +171,28 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
                   </label>
                   <Input
                     placeholder="https://mystore.com"
-                    value={getValue(i, 'store_url')}
+                    value={currentUrl}
                     onChange={(e) => updateDraft(i, 'store_url', e.target.value)}
+                    onBlur={(e) => {
+                      const url = e.target.value.trim();
+                      if (url && getDomain(url)) detectStore(i, url);
+                    }}
                     className="h-8 text-xs"
                   />
                 </div>
+                {(detecting[i] || detectedName) && (
+                  <div className="flex items-center gap-1.5 bg-primary/5 rounded-md px-2 py-1">
+                    {detecting[i] ? (
+                      <><Loader2 className="w-3 h-3 animate-spin text-primary" /><span className="text-[10px] text-primary">Detecting store...</span></>
+                    ) : (
+                      <>
+                        {fav && <img src={fav} alt="" className="w-4 h-4 rounded-sm" />}
+                        <span className="text-[10px] font-medium text-foreground truncate flex-1">{detectedName}</span>
+                        <Search className="w-3 h-3 text-primary" />
+                      </>
+                    )}
+                  </div>
+                )}
                 <div>
                   <label className="text-[10px] font-medium text-muted-foreground">Caption</label>
                   <Input
@@ -171,7 +232,7 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
 
       <p className="text-xs text-muted-foreground flex items-center gap-1">
         <Upload className="w-3 h-3" />
-        You can upload up to {MAX_ITEMS} images or videos. {items.length}/{MAX_ITEMS} used. Store URL is required for each item.
+        You can upload up to {MAX_ITEMS} images or videos. {items.length}/{MAX_ITEMS} used. Store URL is required and auto-detects the store homepage.
       </p>
     </div>
   );

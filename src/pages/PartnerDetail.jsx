@@ -531,9 +531,19 @@ export default function PartnerDetail() {
                         href={item.store_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
+                        className="flex items-center gap-1.5 text-xs text-primary hover:underline"
                       >
-                        <Globe className="w-3.5 h-3.5" /> {item.store_url.replace(/^https?:\/\//, '')}
+                        <Globe className="w-3.5 h-3.5 shrink-0" />
+                        {item.store_name && (
+                          <img
+                            src={`https://www.google.com/s2/favicons?domain=${item.store_url.replace(/^https?:\/\//, '').split('/')[0]}&sz=64`}
+                            alt=""
+                            className="w-4 h-4 rounded-sm shrink-0"
+                          />
+                        )}
+                        <span className="truncate">
+                          {item.store_name ? `${item.store_name}` : item.store_url.replace(/^https?:\/\//, '').split('/')[0]}
+                        </span>
                       </a>
                     )}
                     <PortfolioItemReview partnerId={partnerId} portfolioItemUrl={item.url} />
