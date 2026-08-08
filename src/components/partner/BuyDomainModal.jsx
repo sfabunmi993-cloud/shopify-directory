@@ -73,7 +73,7 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md w-[calc(100vw-2rem)] p-4 sm:p-6 max-h-[calc(100vh-2rem)] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Globe className="w-5 h-5 text-primary" /> Buy Domain
@@ -98,18 +98,18 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
               <p className="text-sm text-muted-foreground">Custom domain setup and configuration for your partner profile.</p>
             </div>
 
-            <div className="bg-white border border-border rounded-xl p-4 space-y-3">
+            <div className="bg-white border border-border rounded-xl p-3 sm:p-4 space-y-3">
               <p className="text-xs font-semibold uppercase text-muted-foreground tracking-wide">Payment Details</p>
               <div className="space-y-2.5">
-                <div className="flex justify-between items-center pb-2.5 border-b border-border">
+                <div className="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-1 pb-2.5 border-b border-border">
                   <span className="text-sm text-muted-foreground">Amount</span>
                   <span className="font-bold text-foreground text-lg">₦{DOMAIN_PRICE.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-1">
                   <span className="text-sm text-muted-foreground">Bank</span>
                   <span className="font-medium text-sm text-foreground">{BANK_NAME}</span>
                 </div>
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-1">
                   <span className="text-sm text-muted-foreground">Account Name</span>
                   <div className="flex items-center gap-1">
                     <span className="font-semibold text-sm text-foreground">{ACCOUNT_NAME}</span>
@@ -118,7 +118,7 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
                     </button>
                   </div>
                 </div>
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-1">
                   <span className="text-sm text-muted-foreground">Account Number</span>
                   <div className="flex items-center gap-1">
                     <span className="font-semibold text-sm font-mono tracking-wide text-foreground">{ACCOUNT_NUMBER}</span>
