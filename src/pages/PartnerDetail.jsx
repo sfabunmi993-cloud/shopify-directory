@@ -509,6 +509,27 @@ export default function PartnerDetail() {
             </div>
           }
 
+          {/* Portfolio */}
+          {partner.portfolio?.length > 0 &&
+          <div>
+            <h2 className="font-heading text-xl font-bold text-foreground mb-3">Portfolio</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {partner.portfolio.map((item, i) => (
+                <div key={i} className="rounded-xl overflow-hidden border border-border bg-muted/30">
+                  {item.type === 'video' ? (
+                    <video src={item.url} controls className="w-full h-40 object-cover bg-black" />
+                  ) : (
+                    <img src={item.url} alt={item.caption || 'Portfolio item'} className="w-full h-40 object-cover" />
+                  )}
+                  {item.caption && (
+                    <p className="text-xs text-muted-foreground px-3 py-2 truncate">{item.caption}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+          }
+
           {/* Dashboard Screenshot */}
           {partner.dashboard_screenshot_url &&
           <div>

@@ -67,6 +67,35 @@
         "type": "string"
       }
     },
+    "portfolio": {
+      "type": "array",
+      "description": "Up to 3 portfolio media items (images or videos) showcasing the partner's work",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "image",
+              "video"
+            ],
+            "description": "Whether the item is an image or video"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL of the uploaded media file"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Optional caption for this portfolio item"
+          }
+        },
+        "required": [
+          "type",
+          "url"
+        ]
+      }
+    },
     "service_category": {
       "type": "string",
       "enum": [

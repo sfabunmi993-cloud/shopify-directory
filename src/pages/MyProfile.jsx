@@ -15,6 +15,7 @@ import ProjectsSection from '@/components/profile/ProjectsSection';
 import BuyReviewModal from '@/components/partner/BuyReviewModal';
 import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
 import BuyDomainModal from '@/components/partner/BuyDomainModal';
+import PortfolioEditor from '@/components/profile/PortfolioEditor';
 
 const SERVICE_CATEGORIES = [
 { label: 'Marketing and sales', value: 'marketing_and_sales' },
@@ -452,6 +453,19 @@ export default function MyProfile() {
               <p className="text-xs text-muted-foreground">Format: https://wa.me/[your number with country code]</p>
             </div>
           </div>
+        </div>
+
+        <hr className="border-border" />
+
+        {/* Portfolio */}
+        <div>
+          <h2 className="font-semibold text-base mb-1">Portfolio</h2>
+          <p className="text-xs text-muted-foreground mb-4">Upload up to 3 images or videos showcasing your work. These appear on your public profile.</p>
+          <PortfolioEditor
+            portfolio={form.portfolio || []}
+            partnerId={partner?.id}
+            onChange={(updated) => set('portfolio', updated)}
+          />
         </div>
 
         <hr className="border-border" />
