@@ -155,8 +155,8 @@ export default function PartnerOnboarding() {
     navigate(`/partner/${partner.slug || partner.id}`);
   };
 
-  const canProceedStep0 = form.name.trim() && form.description.trim() && form.service_category;
-  const canProceedStep1 = form.services.length > 0;
+  const canProceedStep0 = true;
+  const canProceedStep1 = true;
 
   if (checking) {
     return (
