@@ -10,9 +10,9 @@ import { toast } from 'sonner';
 import { usePricing } from '@/hooks/usePricing';
 
 const PAYMENT_DETAILS = {
-  bankName: 'PalmPay',
+  bankName: 'OPay',
   accountName: 'FABUNMI RONKE',
-  accountNumber: '9068191624',
+  accountNumber: '7031665045',
 };
 
 export default function PurchasePremiumModal({ partner, isOpen, onClose, user }) {
