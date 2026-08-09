@@ -69,9 +69,9 @@ export default function SiteFooter() {
       <div className="max-w-7xl mx-auto">
         <div className="grid gap-y-12 sm:grid-cols-3 sm:gap-x-8">
           {/* Logo / back to top */}
-          <a href="#main" className="inline-flex items-center gap-2 text-white mb-8 sm:mb-0" aria-label="Back to the top">
-            <img src="https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/b9198dc01_image.png" alt="Shopify" className="w-10 h-10 rounded-lg object-contain" />
-            <ArrowUp className="w-4 h-4" />
+          <a href="#main" className="inline-flex items-center gap-2 text-white sm:mb-0 text-lg mb-3" aria-label="Back to the top">
+
+
           </a>
 
           {/* Link columns */}
