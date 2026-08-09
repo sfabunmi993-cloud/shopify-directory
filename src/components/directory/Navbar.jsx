@@ -305,54 +305,65 @@ export default function Navbar() {
           </form>
         </div>
 
-        {/* Mobile menu drawer */}
+        {/* Mobile menu side drawer */}
         {mobileMenuOpen &&
-        <div className="lg:hidden border-t border-black/10 py-4 space-y-1">
-            {user &&
-          <div className="flex items-center gap-3 px-2 py-3 mb-2 bg-black/5 rounded-xl">
-                <Avatar className="w-9 h-9">
-                  {user?.picture && <AvatarImage src={user.picture} alt={user.full_name || 'Profile'} />}
-                  <AvatarFallback className="bg-black/10 text-black text-sm font-semibold">{initials}</AvatarFallback>
-                </Avatar>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold truncate text-black">{user.full_name || 'Account'}</p>
-                  <p className="text-xs text-gray-500 truncate">{user.email}</p>
-                </div>
-              </div>
-          }
-            <MobileLink to="/directory" onClick={() => setMobileMenuOpen(false)}>Browse All</MobileLink>
-            {serviceCategories.map((c) =>
-          <MobileLink key={c.label} to={c.to} onClick={() => setMobileMenuOpen(false)}>{c.label}</MobileLink>
-          )}
-            {user ?
-          <>
-                {isAdmin && <MobileLink to="/admin" onClick={() => setMobileMenuOpen(false)} highlight>Admin Dashboard</MobileLink>}
-                {hasPartnerProfile ?
-            <>
-                    <MobileLink to="/my-profile" onClick={() => setMobileMenuOpen(false)}>My Profile</MobileLink>
-                    <MobileLink to={`/partner/${partnerId}`} onClick={() => setMobileMenuOpen(false)}>View Public Profile</MobileLink>
-                  </> :
-
-            <MobileLink to="/become-a-partner" onClick={() => setMobileMenuOpen(false)}>Become a Partner</MobileLink>
-            }
-                <div className="pt-2 mt-2 border-t border-black/10">
-                  <button
-                onClick={handleLogout}
-                className="w-full text-left px-3 py-2.5 text-sm font-medium text-destructive hover:bg-destructive/10 rounded-lg transition-colors">
-                    Log out
+        <div className="lg:hidden fixed inset-0 z-[60]" onClick={() => setMobileMenuOpen(false)}>
+            <div className="absolute inset-0 bg-black/40"></div>
+            <div
+          className="absolute right-0 top-0 h-full w-64 max-w-[80vw] bg-white shadow-xl overflow-y-auto py-4 px-3 space-y-1"
+          onClick={(e) => e.stopPropagation()}>
+                <div className="flex items-center justify-between px-2 mb-2">
+                  <span className="text-sm font-semibold text-black">Menu</span>
+                  <button onClick={() => setMobileMenuOpen(false)} className="p-1 rounded hover:bg-black/5">
+                    <X className="w-5 h-5 text-black" />
                   </button>
                 </div>
-              </> :
+                {user &&
+              <div className="flex items-center gap-3 px-2 py-2 mb-1 bg-black/5 rounded-xl">
+                    <Avatar className="w-9 h-9">
+                      {user?.picture && <AvatarImage src={user.picture} alt={user.full_name || 'Profile'} />}
+                      <AvatarFallback className="bg-black/10 text-black text-sm font-semibold">{initials}</AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold truncate text-black">{user.full_name || 'Account'}</p>
+                      <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                    </div>
+                  </div>
+              }
+                <MobileLink to="/directory" onClick={() => setMobileMenuOpen(false)}>Browse All</MobileLink>
+                {serviceCategories.map((c) =>
+              <MobileLink key={c.label} to={c.to} onClick={() => setMobileMenuOpen(false)}>{c.label}</MobileLink>
+              )}
+                {user ?
+              <>
+                    {isAdmin && <MobileLink to="/admin" onClick={() => setMobileMenuOpen(false)} highlight>Admin Dashboard</MobileLink>}
+                    {hasPartnerProfile ?
+                <>
+                        <MobileLink to="/my-profile" onClick={() => setMobileMenuOpen(false)}>My Profile</MobileLink>
+                        <MobileLink to={`/partner/${partnerId}`} onClick={() => setMobileMenuOpen(false)}>View Public Profile</MobileLink>
+                      </> :
 
-          <div className="flex flex-col gap-2 pt-2">
-                <Button asChild variant="outline" className="w-full rounded-full border-black/20 text-black">
-                  <Link to="/login" onClick={() => setMobileMenuOpen(false)}>Log in</Link>
-                </Button>
-                <Button asChild className="w-full rounded-full bg-black text-white hover:bg-black/90">
-                  <Link to="/register" onClick={() => setMobileMenuOpen(false)}>Become a Partner</Link>
-                </Button>
+                <MobileLink to="/become-a-partner" onClick={() => setMobileMenuOpen(false)}>Become a Partner</MobileLink>
+                    }
+                    <div className="pt-2 mt-1 border-t border-black/10">
+                      <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-3 py-1.5 text-xs font-medium text-destructive hover:bg-destructive/10 rounded-md transition-colors">
+                        Log out
+                      </button>
+                    </div>
+                  </> :
+
+              <div className="flex flex-col gap-2 pt-2">
+                    <Button asChild variant="outline" className="w-full rounded-full border-black/20 text-black">
+                      <Link to="/login" onClick={() => setMobileMenuOpen(false)}>Log in</Link>
+                    </Button>
+                    <Button asChild className="w-full rounded-full bg-black text-white hover:bg-black/90">
+                      <Link to="/register" onClick={() => setMobileMenuOpen(false)}>Become a Partner</Link>
+                    </Button>
+                  </div>
+              }
               </div>
-          }
           </div>
         }
       </div>
