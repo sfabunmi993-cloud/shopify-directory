@@ -40,7 +40,7 @@ export default function Home() {
                   <Link to="/directory">Hire an expert <ArrowRight className="w-4 h-4 ml-1.5" /></Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="rounded-full text-base h-12 px-8">
-                  <Link to="/become-a-partner">Lo</Link>
+                  <Link to="/become-a-partner">Login</Link>
                 </Button>
               </div>
               <div className="mt-8 flex items-center gap-6 text-sm text-muted-foreground">
