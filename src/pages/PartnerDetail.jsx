@@ -385,53 +385,66 @@ export default function PartnerDetail() {
           </div>
 
           {/* Info details */}
-          <div className="space-y-3 text-sm pt-1 border-t border-border">
+          <div className="flex flex-col gap-y-4 text-sm pt-4">
+            <hr className="border-border" />
+
             {partner.starting_price > 0 &&
-            <div>
-                <p className="font-semibold text-xs uppercase tracking-wide text-muted-foreground">PRICE RANGE FOR SELECTED SERVICES</p>
-                <p className="text-muted-foreground">Starting from ${partner.starting_price}</p>
+            <div className="flex flex-col gap-y-1">
+                <p className="text-sm font-medium text-muted-foreground">Price range for selected services</p>
+                <p className="text-[#162120]">Starting from ${partner.starting_price}</p>
               </div>
             }
+
             {(partner.website_url || partner.email) &&
-            <div>
-                <p className="font-semibold text-xs uppercase tracking-wide text-muted-foreground">CONTACT INFORMATION</p>
-                {partner.website_url &&
-              <a href={partner.website_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-primary hover:underline mt-1">
-                    <Globe className="w-3.5 h-3.5 shrink-0" />
-                    <span className="truncate">{partner.website_url.replace(/^https?:\/\//, '')}</span>
-                  </a>
-              }
-                {partner.email &&
-              <a href={`mailto:${partner.email}`} className="flex items-center gap-1.5 text-primary hover:underline mt-1">
-                    <Mail className="w-3.5 h-3.5 shrink-0" />
-                    <span className="truncate">{partner.email}</span>
-                  </a>
-              }
+            <div className="flex flex-col gap-y-1">
+                <p className="text-sm font-medium text-muted-foreground">Contact information</p>
+                <div className="flex flex-col gap-y-3">
+                  {partner.website_url &&
+                <div className="flex flex-wrap items-center gap-x-2">
+                      <a href={partner.website_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                        <Globe className="w-5 h-5 shrink-0 text-[#87909B]" />
+                      </a>
+                      <p className="break-word">
+                        <a href={partner.website_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{partner.website_url.replace(/^https?:\/\//, '')}</a>
+                      </p>
+                    </div>
+                }
+                  {partner.email &&
+                <div className="flex flex-wrap items-center gap-x-2">
+                      <a href={`mailto:${partner.email}`} className="text-primary hover:underline">
+                        <Mail className="w-5 h-5 shrink-0 text-[#87909B]" />
+                      </a>
+                      <p className="break-word">
+                        <a href={`mailto:${partner.email}`} className="text-primary hover:underline">{partner.email}</a>
+                      </p>
+                    </div>
+                }
+                </div>
               </div>
             }
+
             {partner.location &&
-            <div>
-                <p className="font-semibold text-xs uppercase tracking-wide text-muted-foreground">PRIMARY LOCATION</p>
-                <p className="text-muted-foreground flex items-center gap-1 mt-0.5">
-                  <MapPin className="w-3.5 h-3.5 shrink-0" />{partner.location}
+            <div className="flex flex-col gap-y-1">
+                <p className="text-sm font-medium text-muted-foreground">Primary location</p>
+                <p className="text-foreground flex items-center gap-1">
+                  <MapPin className="w-4 h-4 shrink-0 text-[#87909B]" />{partner.location}
                 </p>
               </div>
             }
+
             {partner.languages?.length > 0 &&
-            <div>
-                <p className="font-semibold text-xs uppercase tracking-wide text-muted-foreground">LANGUAGES</p>
-                <p className="mt-0.5 text-muted-foreground">{partner.languages.join(', ')}</p>
+            <div className="flex flex-col gap-y-1">
+                <p className="text-sm font-medium text-muted-foreground">Languages</p>
+                <p className="text-foreground">{partner.languages.join(', ')}</p>
               </div>
             }
+
             {partner.completed_projects > 0 &&
-            <div className="rounded-lg bg-primary/5 border border-primary/20 p-3 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <CheckCircle className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-foreground leading-none">{partner.completed_projects}+</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Projects Completed</p>
-                </div>
+            <div className="flex flex-col gap-y-1">
+                <p className="text-sm font-medium text-muted-foreground">Projects completed</p>
+                <p className="text-2xl font-bold text-foreground leading-none flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-primary" />{partner.completed_projects}+
+                </p>
               </div>
             }
           </div>
