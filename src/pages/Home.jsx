@@ -121,8 +121,8 @@ export default function Home() {
                   </div>
                   <h3 className="font-heading text-xl font-semibold text-white mb-2">{step.title}</h3>
                   <p className="text-sm text-white/60 leading-relaxed max-w-xs">{step.text}</p>
-                </div>
-              );
+                </div>);
+
             })}
           </div>
         </div>
@@ -133,10 +133,10 @@ export default function Home() {
         className="py-16 lg:py-24 bg-[#F4F7F6]"
         style={{
           backgroundImage:
-            'linear-gradient(to right, rgba(180,200,255,0.25) 1px, transparent 1px), linear-gradient(to bottom, rgba(180,200,255,0.25) 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
-        }}
-      >
+          'linear-gradient(to right, rgba(180,200,255,0.25) 1px, transparent 1px), linear-gradient(to bottom, rgba(180,200,255,0.25) 1px, transparent 1px)',
+          backgroundSize: '32px 32px'
+        }}>
+        
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#666666]">Partner tiers</p>
@@ -151,8 +151,8 @@ export default function Home() {
               return (
                 <div
                   key={t.label}
-                  className={`flex items-center justify-between gap-4 px-5 sm:px-8 py-5 ${i > 0 ? 'border-t border-[#EEEEEE]' : ''}`}
-                >
+                  className={`flex items-center justify-between gap-4 px-5 sm:px-8 py-5 ${i > 0 ? 'border-t border-[#EEEEEE]' : ''}`}>
+                  
                   <div className="flex items-center gap-4 min-w-0">
                     <div className="w-11 h-11 rounded-lg bg-[#C8F08F] flex items-center justify-center shrink-0">
                       <Icon className="w-5 h-5 text-[#151c1a]" strokeWidth={2} />
@@ -161,19 +161,19 @@ export default function Home() {
                   </div>
                   <Link
                     to="/directory"
-                    className="inline-flex items-center gap-1 text-sm font-medium text-black underline underline-offset-2 shrink-0"
-                  >
+                    className="inline-flex items-center gap-1 text-sm font-medium text-black underline underline-offset-2 shrink-0">
+                    
                     Browse <ArrowRight className="w-4 h-4" />
                   </Link>
-                </div>
-              );
+                </div>);
+
             })}
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-16 lg:py-20 text-primary-foreground bg-gray-950">
+      <section className="py-16 lg:py-20 text-primary-foreground bg-gray-950 hidden">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-heading text-3xl sm:text-4xl font-bold">Ready to grow your business?</h2>
           <p className="text-primary-foreground/80 mt-3 text-lg">Browse our directory of expert Shopify partners and hire with confidence.</p>
