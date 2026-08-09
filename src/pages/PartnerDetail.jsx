@@ -287,7 +287,7 @@ export default function PartnerDetail() {
 
           {/* CTA Buttons */}
           <div className="space-y-2">
-            <Button className="w-full" onClick={() => setContactOpen(true)}>
+            <Button className="w-full bg-[#222020] rounded" onClick={() => setContactOpen(true)}>
                 <MessageSquare className="w-4 h-4 mr-1.5" /> Contact
               </Button>
             {partner.whatsapp_url &&
@@ -515,41 +515,41 @@ export default function PartnerDetail() {
           <div>
             <h2 className="font-heading text-xl font-bold text-foreground mb-3">Portfolio</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {partner.portfolio.map((item, i) => (
-                <div key={i} className="rounded-xl overflow-hidden border border-border bg-card">
-                  {item.type === 'video' ? (
-                    <video src={item.url} controls playsInline preload="metadata" className="w-full h-48 object-contain bg-black" />
-                  ) : (
-                    <img src={item.url} alt={item.caption || 'Portfolio item'} className="w-full h-40 object-cover" />
-                  )}
+              {partner.portfolio.map((item, i) =>
+              <div key={i} className="rounded-xl overflow-hidden border border-border bg-card">
+                  {item.type === 'video' ?
+                <video src={item.url} controls playsInline preload="metadata" className="w-full h-48 object-contain bg-black" /> :
+
+                <img src={item.url} alt={item.caption || 'Portfolio item'} className="w-full h-40 object-cover" />
+                }
                   <div className="p-3 space-y-2">
-                    {item.caption && (
-                      <p className="text-sm text-foreground leading-relaxed">{item.caption}</p>
-                    )}
-                    {item.store_url && (
-                      <a
-                        href={item.store_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-xs text-primary hover:underline"
-                      >
+                    {item.caption &&
+                  <p className="text-sm text-foreground leading-relaxed">{item.caption}</p>
+                  }
+                    {item.store_url &&
+                  <a
+                    href={item.store_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-xs text-primary hover:underline">
+                    
                         <Globe className="w-3.5 h-3.5 shrink-0" />
-                        {item.store_name && (
-                          <img
-                            src={`https://www.google.com/s2/favicons?domain=${item.store_url.replace(/^https?:\/\//, '').split('/')[0]}&sz=64`}
-                            alt=""
-                            className="w-4 h-4 rounded-sm shrink-0"
-                          />
-                        )}
+                        {item.store_name &&
+                    <img
+                      src={`https://www.google.com/s2/favicons?domain=${item.store_url.replace(/^https?:\/\//, '').split('/')[0]}&sz=64`}
+                      alt=""
+                      className="w-4 h-4 rounded-sm shrink-0" />
+
+                    }
                         <span className="truncate">
                           {item.store_name ? `${item.store_name}` : item.store_url.replace(/^https?:\/\//, '').split('/')[0]}
                         </span>
                       </a>
-                    )}
+                  }
                     <PortfolioItemReview partnerId={partnerId} portfolioItemUrl={item.url} />
                   </div>
                 </div>
-              ))}
+              )}
             </div>
           </div>
           }
