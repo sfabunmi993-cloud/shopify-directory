@@ -145,7 +145,7 @@ export default function MyProfile() {
     if (form.name && form.name !== partner.name) {
       const baseSlug = form.name.toLowerCase().replace(/[^a-z0-9]/g, '');
       const existing = await base44.entities.Partner.filter({ slug: baseSlug });
-      const conflict = existing.find(p => p.id !== partner.id);
+      const conflict = existing.find((p) => p.id !== partner.id);
       updates.slug = conflict ? `${baseSlug}${partner.partner_number?.replace('PB-', '') || Date.now()}` : baseSlug;
     }
     await base44.entities.Partner.update(partner.id, updates);
@@ -177,13 +177,13 @@ export default function MyProfile() {
               
             <Star className="w-4 h-4 fill-white" /> Buy Reviews
           </Button>
-          {partner?.status === 'pending' && (
+          {partner?.status === 'pending' &&
             <button
               onClick={() => setBuyDomainOpen(true)}
               className="inline-flex items-center gap-1 text-xs font-semibold border border-blue-200 rounded-full px-2.5 py-0.5 w-fit hover:bg-blue-100 transition-colors bg-blue-600 text-white">
               <Globe className="w-3 h-3" /> Buy Domain
             </button>
-          )}
+            }
           {partner?.is_verified ?
             <span className="inline-flex items-center gap-1 text-xs text-blue-600 font-semibold bg-blue-50 border border-blue-200 rounded-full px-2.5 py-0.5 w-fit">
               <ShieldCheck className="w-3.5 h-3.5" /> Verified
@@ -266,9 +266,9 @@ export default function MyProfile() {
             <span><strong>Pending approval.</strong> Your profile is under review. You'll be visible in the directory once approved by an admin.</span>
           </div>
           <button
-            onClick={() => setBuyDomainOpen(true)}
-            className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-600 text-white hover:bg-amber-700 transition-colors"
-          >
+          onClick={() => setBuyDomainOpen(true)}
+          className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-600 text-white hover:bg-amber-700 transition-colors">
+          
             <Globe className="w-3.5 h-3.5" /> Buy Domain
           </button>
         </div>
@@ -287,17 +287,17 @@ export default function MyProfile() {
           </div>
           <p className="mt-2 text-xs text-red-600">Write an appeal below to restore your account automatically.</p>
           <AppealForm
-            onResolved={() => {
-              const restored = { ...partner, status: 'approved', restriction_reason: '' };
-              setPartner(restored);
-              setForm(restored);
-            }}
-          />
+          onResolved={() => {
+            const restored = { ...partner, status: 'approved', restriction_reason: '' };
+            setPartner(restored);
+            setForm(restored);
+          }} />
+        
         </div>
       }
 
       {/* Inquiries Dashboard */}
-      <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
+      <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 hidden">
         <h2 className="font-semibold text-base mb-4 flex items-center gap-2">
           <span>My Inquiries & Messages</span>
           <span className="text-xs text-muted-foreground font-normal">(recent activity)</span>
@@ -306,7 +306,7 @@ export default function MyProfile() {
       </div>
 
       {/* Delivered Projects */}
-      <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
+      <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 hidden">
         <h2 className="font-semibold text-base mb-1">Delivered Projects</h2>
         <p className="text-xs text-muted-foreground mb-4">Projects you have delivered to clients via messages.</p>
         <ProjectsSection partnerId={partner?.id} />
@@ -475,8 +475,8 @@ export default function MyProfile() {
           <PortfolioEditor
             portfolio={form.portfolio || []}
             partnerId={partner?.id}
-            onChange={(updated) => set('portfolio', updated)}
-          />
+            onChange={(updated) => set('portfolio', updated)} />
+          
         </div>
 
         <hr className="border-border" />
@@ -567,8 +567,8 @@ export default function MyProfile() {
                   }
                   setNewLanguage('');
                 }
-              }}
-            />
+              }} />
+            
             <Button variant="outline" size="icon" onClick={() => {
               const trimmed = newLanguage.trim();
               if (trimmed && !(form.languages || []).includes(trimmed)) {
@@ -577,16 +577,16 @@ export default function MyProfile() {
               setNewLanguage('');
             }}><Plus className="w-4 h-4" /></Button>
           </div>
-          {(form.languages || []).filter(l => !LANGUAGES_LIST.includes(l)).length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {(form.languages || []).filter(l => !LANGUAGES_LIST.includes(l)).map((l) =>
-                <Badge key={l} variant="secondary" className="gap-1 pr-1">
+          {(form.languages || []).filter((l) => !LANGUAGES_LIST.includes(l)).length > 0 &&
+          <div className="flex flex-wrap gap-1.5">
+              {(form.languages || []).filter((l) => !LANGUAGES_LIST.includes(l)).map((l) =>
+            <Badge key={l} variant="secondary" className="gap-1 pr-1">
                   {l}
                   <button onClick={() => toggleLanguage(l)} className="ml-0.5 rounded-full hover:bg-muted-foreground/20 p-0.5"><X className="w-3 h-3" /></button>
                 </Badge>
-              )}
+            )}
             </div>
-          )}
+          }
         </div>
 
         <div className="pt-2">
@@ -609,8 +609,8 @@ export default function MyProfile() {
               type="password"
               placeholder="Enter new password"
               value={passwordForm.newPassword}
-              onChange={(e) => setPasswordForm((prev) => ({ ...prev, newPassword: e.target.value }))}
-            />
+              onChange={(e) => setPasswordForm((prev) => ({ ...prev, newPassword: e.target.value }))} />
+            
           </div>
           <div className="space-y-1.5">
             <Label>Confirm new password</Label>
@@ -618,8 +618,8 @@ export default function MyProfile() {
               type="password"
               placeholder="Confirm new password"
               value={passwordForm.confirmPassword}
-              onChange={(e) => setPasswordForm((prev) => ({ ...prev, confirmPassword: e.target.value }))}
-            />
+              onChange={(e) => setPasswordForm((prev) => ({ ...prev, confirmPassword: e.target.value }))} />
+            
           </div>
           <Button
             className="rounded-full"
@@ -643,8 +643,8 @@ export default function MyProfile() {
               } finally {
                 setSavingPassword(false);
               }
-            }}
-          >
+            }}>
+            
             {savingPassword ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> Updating...</> : 'Update Password'}
           </Button>
         </div>
