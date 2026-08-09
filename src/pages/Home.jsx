@@ -36,10 +36,10 @@ export default function Home() {
                 Hire partners who fit your needs and budget, freeing you to focus on running your business.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
-                <Button asChild size="lg" className="rounded-full text-base h-12 px-8">
-                  <Link to="/directory" className="bg-gray-950">Hire an expert</Link>
+                <Button asChild size="lg" className="rounded-full text-base h-12 px-8 bg-black text-white sm:bg-gray-950">
+                  <Link to="/directory">Hire an expert</Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="rounded-full text-base h-12 px-8">
+                <Button asChild size="lg" variant="outline" className="rounded-full text-base h-12 px-8 bg-black text-white border-black sm:bg-transparent sm:text-foreground sm:border-input">
                   <a href="https://www.shopify.com/" target="_blank" rel="noopener noreferrer">Login</a>
                 </Button>
               </div>
@@ -128,8 +128,8 @@ export default function Home() {
             })}
           </div>
           <div className="text-center mt-12">
-            <Button asChild size="lg" className="rounded-full text-base h-12 px-8">
-              <Link to="/directory" className="bg-gray-950">Hire an expert</Link>
+            <Button asChild size="lg" className="rounded-full text-base h-12 px-8 bg-black text-white sm:bg-gray-950">
+              <Link to="/directory">Hire an expert</Link>
             </Button>
           </div>
         </div>
@@ -169,8 +169,8 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-heading text-3xl sm:text-4xl font-bold">Ready to grow your business?</h2>
           <p className="text-primary-foreground/80 mt-3 text-lg">Browse our directory of expert Shopify partners and hire with confidence.</p>
-          <Button asChild size="lg" variant="secondary" className="rounded-full text-base h-12 px-8 mt-6 bg-white text-primary hover:bg-white/90">
-            <Link to="/directory" className="text-[#040605]">Hire an expert</Link>
+          <Button asChild size="lg" variant="secondary" className="rounded-full text-base h-12 px-8 mt-6 bg-black text-white hover:bg-black/90 sm:bg-white sm:text-primary sm:hover:bg-white/90">
+            <Link to="/directory" className="text-white sm:text-[#040605]">Hire an expert</Link>
           </Button>
         </div>
       </section>
