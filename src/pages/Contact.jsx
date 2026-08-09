@@ -19,13 +19,18 @@ export default function Contact() {
       return;
     }
     setSending(true);
-    await base44.integrations.Core.SendEmail({
-      to: 'support@shopifypartnersdirectory.com',
-      subject: `Contact Form: ${form.name}`,
-      body: `Name: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`
-    });
-    setSent(true);
-    setSending(false);
+    try {
+      await base44.functions.invoke('sendContactMessage', {
+        name: form.name.trim(),
+        email: form.email.trim(),
+        message: form.message.trim(),
+      });
+      setSent(true);
+    } catch (err) {
+      toast.error(err?.response?.data?.error || 'Failed to send message. Please try again.');
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
