@@ -53,7 +53,7 @@ export default function Home() {
               </div>
             </div>
             <div className="relative">
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-primary/10 shadow-xl">
+              <div className="aspect-[4/3] overflow-hidden">
                 <img
                   src="https://cdn.shopify.com/b/shopify-brochure2-assets/440badc0499b9f199ed6577dea18f9a7.png?height=740"
                   alt="Shopify Partners"
