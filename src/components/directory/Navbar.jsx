@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Menu, X, ChevronDown, LogOut, User, LayoutDashboard, Heart, MessageSquare, ShieldCheck, Sun, Moon } from 'lucide-react';
+import { Search, Menu, X, ChevronDown, LogOut, User, LayoutDashboard, Heart, MessageSquare, ShieldCheck } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
@@ -13,28 +13,6 @@ import {
 '@/components/ui/dropdown-menu';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
-function useDarkMode() {
-  const [dark, setDark] = useState(() => {
-    const stored = localStorage.getItem('theme');
-    if (stored) return stored === 'dark';
-    return false; // default to light mode
-  });
-
-  useEffect(() => {
-    const root = document.documentElement;
-    // Always start by removing dark, then add only if needed
-    root.classList.remove('dark');
-    if (dark) {
-      root.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      localStorage.setItem('theme', 'light');
-    }
-  }, [dark]);
-
-  return [dark, setDark];
-}
-
 export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -42,10 +20,13 @@ export default function Navbar() {
   const [hasPartnerProfile, setHasPartnerProfile] = useState(false);
   const [partnerId, setPartnerId] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [dark, setDark] = useDarkMode();
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Always enforce light mode
+    document.documentElement.classList.remove('dark');
+    localStorage.setItem('theme', 'light');
+
     base44.auth.isAuthenticated().then(async (authed) => {
       if (authed) {
         const me = await base44.auth.me();
@@ -195,14 +176,6 @@ export default function Navbar() {
             <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex text-black hover:bg-black/5">
               <Link to="/contact">Contact us</Link>
             </Button>
-
-            {/* Dark mode toggle */}
-            <button
-              onClick={() => setDark(!dark)}
-              className="p-2 rounded-full hover:bg-black/5 transition-colors text-black"
-              title={dark ? 'Switch to light mode' : 'Switch to dark mode'}>
-              {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
 
             {user ?
             <DropdownMenu>
