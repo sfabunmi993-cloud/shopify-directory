@@ -3,65 +3,65 @@ import { Link } from 'react-router-dom';
 import { Globe, ChevronDown, ArrowUp } from 'lucide-react';
 
 const COLUMNS = [
-  {
-    title: 'Shopify',
-    links: [
-      { label: 'What is Shopify?', href: 'https://www.shopify.com/blog/what-is-shopify' },
-      { label: 'Shopify Editions', href: 'https://www.shopify.com/editions' },
-      { label: 'Careers', href: 'https://www.shopify.com/careers' },
-      { label: 'Investors', href: 'https://www.shopify.com/investors' },
-      { label: 'Newsroom', href: 'https://www.shopify.com/news' },
-      { label: 'Sustainability', href: 'https://www.shopify.com/climate' }
-    ]
-  },
-  {
-    title: 'Ecosystem',
-    links: [
-      { label: 'Developer Docs', href: 'https://shopify.dev/docs' },
-      { label: 'Theme Store', href: 'https://themes.shopify.com/' },
-      { label: 'App Store', href: 'https://apps.shopify.com/' },
-      { label: 'Partners', href: 'https://www.shopify.com/partners' },
-      { label: 'Affiliates', href: 'https://www.shopify.com/affiliates' }
-    ]
-  },
-  {
-    title: 'Resources',
-    links: [
-      { label: 'Blog', href: 'https://www.shopify.com/blog' },
-      { label: 'Compare Shopify', href: 'https://www.shopify.com/compare' },
-      { label: 'Guides', href: 'https://www.shopify.com/blog/topics/guides' },
-      { label: 'Courses', href: 'https://www.shopifyacademy.com' },
-      { label: 'Free Tools', href: 'https://www.shopify.com/tools' },
-      { label: 'Changelog', href: 'https://changelog.shopify.com' }
-    ]
-  },
-  {
-    title: 'Support',
-    links: [
-      { label: 'Shopify Help Center', href: 'https://help.shopify.com/en' },
-      { label: 'Community Forum', href: 'https://community.shopify.com/' },
-      { label: 'Hire a Partner', to: '/directory' },
-      { label: 'Service Status', href: 'https://shopifystatus.com' }
-    ]
-  }
-];
+{
+  title: 'Shopify',
+  links: [
+  { label: 'What is Shopify?', href: 'https://www.shopify.com/blog/what-is-shopify' },
+  { label: 'Shopify Editions', href: 'https://www.shopify.com/editions' },
+  { label: 'Careers', href: 'https://www.shopify.com/careers' },
+  { label: 'Investors', href: 'https://www.shopify.com/investors' },
+  { label: 'Newsroom', href: 'https://www.shopify.com/news' },
+  { label: 'Sustainability', href: 'https://www.shopify.com/climate' }]
+
+},
+{
+  title: 'Ecosystem',
+  links: [
+  { label: 'Developer Docs', href: 'https://shopify.dev/docs' },
+  { label: 'Theme Store', href: 'https://themes.shopify.com/' },
+  { label: 'App Store', href: 'https://apps.shopify.com/' },
+  { label: 'Partners', href: 'https://www.shopify.com/partners' },
+  { label: 'Affiliates', href: 'https://www.shopify.com/affiliates' }]
+
+},
+{
+  title: 'Resources',
+  links: [
+  { label: 'Blog', href: 'https://www.shopify.com/blog' },
+  { label: 'Compare Shopify', href: 'https://www.shopify.com/compare' },
+  { label: 'Guides', href: 'https://www.shopify.com/blog/topics/guides' },
+  { label: 'Courses', href: 'https://www.shopifyacademy.com' },
+  { label: 'Free Tools', href: 'https://www.shopify.com/tools' },
+  { label: 'Changelog', href: 'https://changelog.shopify.com' }]
+
+},
+{
+  title: 'Support',
+  links: [
+  { label: 'Shopify Help Center', href: 'https://help.shopify.com/en' },
+  { label: 'Community Forum', href: 'https://community.shopify.com/' },
+  { label: 'Hire a Partner', to: '/directory' },
+  { label: 'Service Status', href: 'https://shopifystatus.com' }]
+
+}];
+
 
 const LEGAL = [
-  { label: 'Terms of Service', href: 'https://www.shopify.com/legal/terms' },
-  { label: 'Legal', href: 'https://www.shopify.com/legal' },
-  { label: 'Privacy Policy', href: 'https://www.shopify.com/legal/privacy' },
-  { label: 'Sitemap', href: 'https://www.shopify.com/sitemap' }
-];
+{ label: 'Terms of Service', href: 'https://www.shopify.com/legal/terms' },
+{ label: 'Legal', href: 'https://www.shopify.com/legal' },
+{ label: 'Privacy Policy', href: 'https://www.shopify.com/legal/privacy' },
+{ label: 'Sitemap', href: 'https://www.shopify.com/sitemap' }];
+
 
 const SOCIAL = [
-  { label: 'Facebook', href: 'https://www.facebook.com/shopify' },
-  { label: 'Twitter', href: 'https://twitter.com/shopify' },
-  { label: 'YouTube', href: 'https://www.youtube.com/user/shopify' },
-  { label: 'Instagram', href: 'https://www.instagram.com/shopify/' },
-  { label: 'TikTok', href: 'https://www.tiktok.com/@shopify' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/shopify' },
-  { label: 'Pinterest', href: 'https://www.pinterest.com/shopify/' }
-];
+{ label: 'Facebook', href: 'https://www.facebook.com/shopify' },
+{ label: 'Twitter', href: 'https://twitter.com/shopify' },
+{ label: 'YouTube', href: 'https://www.youtube.com/user/shopify' },
+{ label: 'Instagram', href: 'https://www.instagram.com/shopify/' },
+{ label: 'TikTok', href: 'https://www.tiktok.com/@shopify' },
+{ label: 'LinkedIn', href: 'https://www.linkedin.com/company/shopify' },
+{ label: 'Pinterest', href: 'https://www.pinterest.com/shopify/' }];
+
 
 export default function SiteFooter() {
   return (
@@ -78,28 +78,28 @@ export default function SiteFooter() {
 
           {/* Link columns */}
           <ul className="sm:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-10">
-            {COLUMNS.map((col) => (
-              <li key={col.title}>
+            {COLUMNS.map((col) =>
+            <li key={col.title}>
                 <h3 className="text-xl font-medium mb-5 text-white leading-5">{col.title}</h3>
                 <ul className="flex flex-col gap-y-3.5">
                   {col.links.map((l) =>
-                    l.to ? (
-                      <li key={l.label}>
+                l.to ?
+                <li key={l.label}>
                         <Link to={l.to} className="transition-colors duration-200 hover:text-white text-sm">
                           {l.label}
                         </Link>
-                      </li>
-                    ) : (
-                      <li key={l.label}>
+                      </li> :
+
+                <li key={l.label}>
                         <a href={l.href} target="_blank" rel="noopener noreferrer" className="transition-colors duration-200 hover:text-white text-sm">
                           {l.label}
                         </a>
                       </li>
-                    )
-                  )}
+
+                )}
                 </ul>
               </li>
-            ))}
+            )}
           </ul>
         </div>
 
@@ -117,13 +117,13 @@ export default function SiteFooter() {
 
           {/* Legal links */}
           <ul className="flex flex-wrap gap-x-8 gap-y-3 max-sm:flex-col max-sm:gap-y-3 md:me-auto">
-            {LEGAL.map((l) => (
-              <li key={l.label}>
+            {LEGAL.map((l) =>
+            <li key={l.label}>
                 <a href={l.href} target="_blank" rel="noopener noreferrer" className="transition-colors duration-200 hover:text-white text-sm">
                   {l.label}
                 </a>
               </li>
-            ))}
+            )}
             <li>
               <a href="https://accounts.shopify.com/lookup?rid=417b6639-6ad1-4d39-9ebf-a116f7db5c72&verify=1786234370-8pe4hOmMSM3dNP5PFl%2BDPOJRDm0eo0BfN51Zq3IpRds%3D" target="_blank" rel="noopener noreferrer" className="transition-colors duration-200 hover:text-white text-sm">
                 Log in
@@ -132,17 +132,17 @@ export default function SiteFooter() {
           </ul>
 
           {/* Social icons */}
-          <ul className="flex flex-wrap gap-4">
-            {SOCIAL.map((s) => (
-              <li key={s.label} className="h-8 w-8 rounded-full border border-white/15 flex items-center justify-center hover:opacity-70 transition-opacity duration-200">
+          <ul className="flex flex-wrap gap-4 hidden">
+            {SOCIAL.map((s) =>
+            <li key={s.label} className="h-8 w-8 rounded-full border border-white/15 flex items-center justify-center hover:opacity-70 transition-opacity duration-200">
                 <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={`External source: ${s.label} (Opens in a new window)`} className="text-white text-xs font-medium">
                   {s.label[0]}
                 </a>
               </li>
-            ))}
+            )}
           </ul>
         </div>
       </div>
-    </footer>
-  );
+    </footer>);
+
 }
