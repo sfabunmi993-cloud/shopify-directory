@@ -52,18 +52,17 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
   };
 
   const handleDone = async () => {
-    if (!screenshotFile) {
-      toast.error('Please upload your payment screenshot first.');
-      return;
-    }
     setBtnState('pending');
-    setUploading(true);
 
     const pkg = PACKAGES.find((p) => p.reviews === selected);
 
-    // Upload screenshot
-    const { file_url } = await base44.integrations.Core.UploadFile({ file: screenshotFile });
-    setUploading(false);
+    let receiptUrl = '';
+    if (screenshotFile) {
+      setUploading(true);
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: screenshotFile });
+      setUploading(false);
+      receiptUrl = file_url;
+    }
 
     await base44.entities.Payment.create({
       user_id: user?.id || '',
@@ -72,7 +71,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
       partner_id: partner?.id || '',
       partner_name: partner?.name || '',
       amount: pkg?.price || 0,
-      description: `Buy Reviews — ${pkg?.label} package (₦${pkg?.price?.toLocaleString()}) | Receipt: ${file_url}`,
+      description: `Buy Reviews — ${pkg?.label} package (₦${pkg?.price?.toLocaleString()})${receiptUrl ? ` | Receipt: ${receiptUrl}` : ''}`,
       status: 'pending'
     });
 
@@ -169,7 +168,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
 
           {/* Screenshot Upload */}
           <div>
-            <p className="text-sm font-semibold mb-2">Upload Payment Screenshot <span className="text-red-500">*</span></p>
+            <p className="text-sm font-semibold mb-2">Upload Payment Screenshot <span className="text-muted-foreground text-xs font-normal">(optional)</span></p>
             {screenshotPreview ? (
               <div className="relative rounded-xl overflow-hidden border border-border">
                 <img src={screenshotPreview} alt="Payment receipt" className="w-full max-h-48 object-cover" />
@@ -212,7 +211,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
             <Button
               className="w-full rounded-full"
               onClick={btnState === 'idle' ? handleDone : undefined}
-              disabled={btnState === 'pending' || !screenshotFile}>
+              disabled={btnState === 'pending'}>
               {uploading ? '⏳ Uploading...' : btnState === 'pending' ? '⏳ Submitting...' : "Done — I've made the payment"}
             </Button>
           )}

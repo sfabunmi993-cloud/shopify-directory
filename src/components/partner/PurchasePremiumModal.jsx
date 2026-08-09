@@ -75,7 +75,6 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
 
   const handleSubmit = async () => {
     if (!txRef.trim()) { toast.error('Please enter your transaction reference.'); return; }
-    if (!screenshotUrl) { toast.error('Please upload your payment screenshot first.'); return; }
     setLoading(true);
     await base44.entities.Payment.create({
       user_id: user?.id || '',
@@ -183,7 +182,7 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
             
             {/* Screenshot Upload */}
             <div className="space-y-2">
-              <Label className="text-sm font-semibold">Payment Screenshot *</Label>
+              <Label className="text-sm font-semibold">Payment Screenshot <span className="text-muted-foreground text-xs font-normal">(optional)</span></Label>
               <div className="border-2 border-dashed border-border rounded-xl p-4 text-center hover:border-primary/40 transition-colors">
                 {screenshotUrl ? (
                   <div className="space-y-3">
@@ -252,7 +251,7 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
             </div>
             <div className="flex gap-2">
               <Button variant="outline" className="flex-1" onClick={() => setStep(1)}>Back</Button>
-              <Button className="flex-1" onClick={handleSubmit} disabled={loading || !txRef.trim() || !screenshotUrl || uploading}>
+              <Button className="flex-1" onClick={handleSubmit} disabled={loading || !txRef.trim() || uploading}>
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : '✅ Submit Payment'}
               </Button>
             </div>

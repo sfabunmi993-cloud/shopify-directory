@@ -139,7 +139,7 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium">Payment Screenshot <span className="text-destructive">*</span></label>
+              <label className="text-sm font-medium">Payment Screenshot <span className="text-muted-foreground text-xs font-normal">(optional)</span></label>
               <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleScreenshotChange} />
               {screenshot?.previewUrl ? <div className="relative rounded-xl overflow-hidden border border-border">
                   <img src={screenshot.previewUrl} alt="Payment screenshot" className="w-full max-h-48 object-cover" />
@@ -154,7 +154,7 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
                 </button>}
             </div>
 
-            <Button className="w-full rounded-full" onClick={handleSubmit} disabled={submitting || uploading || !screenshot?.uploadedUrl}>
+            <Button className="w-full rounded-full" onClick={handleSubmit} disabled={submitting || uploading}>
               {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : null}
               {submitting ? 'Submitting...' : "I've Made the Payment →"}
             </Button>
