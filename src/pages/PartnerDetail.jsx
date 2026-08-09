@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import ReviewSection from '@/components/directory/ReviewSection';
+import RatingSummary from '@/components/directory/RatingSummary';
 import PartnerAvatar from '@/components/directory/PartnerAvatar';
 import PortfolioItemReview from '@/components/directory/PortfolioItemReview';
 import ContactModal from '@/components/partner/ContactModal';
@@ -576,6 +577,9 @@ export default function PartnerDetail() {
               </div>
             </div>
           }
+
+          {/* Rating summary */}
+          <RatingSummary partnerId={partnerId} rating={partner.rating} reviewCount={partner.review_count} />
 
           {/* Reviews */}
           <div>
