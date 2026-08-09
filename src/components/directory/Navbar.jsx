@@ -324,8 +324,6 @@ export default function Navbar() {
             {serviceCategories.map((c) => (
               <MobileLink key={c.label} to={c.to} onClick={() => setMobileMenuOpen(false)}>{c.label}</MobileLink>
             ))}
-            <MobileLink to="/about" onClick={() => setMobileMenuOpen(false)}>About</MobileLink>
-            <MobileLink to="/contact" onClick={() => setMobileMenuOpen(false)}>Contact</MobileLink>
             {user ? (
               <>
                 {isAdmin && <MobileLink to="/admin" onClick={() => setMobileMenuOpen(false)} highlight>Admin Dashboard</MobileLink>}
@@ -337,9 +335,6 @@ export default function Navbar() {
                 ) : (
                   <MobileLink to="/become-a-partner" onClick={() => setMobileMenuOpen(false)}>Become a Partner</MobileLink>
                 )}
-                <MobileLink to="/favorites" onClick={() => setMobileMenuOpen(false)}>Saved Partners</MobileLink>
-                <MobileLink to="/messages" onClick={() => setMobileMenuOpen(false)}>Partner Messages</MobileLink>
-                <MobileLink to="/private-messages" onClick={() => setMobileMenuOpen(false)}>Private Messages</MobileLink>
                 <div className="pt-2 mt-2 border-t border-black/10">
                   <button
                     onClick={handleLogout}
