@@ -16,7 +16,7 @@ import ContactModal from '@/components/partner/ContactModal';
 import FlagModal from '@/components/partner/FlagModal';
 import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
 import BuyReviewModal from '@/components/partner/BuyReviewModal';
-import BuyDomainCard from '@/components/partner/BuyDomainCard';
+import BuyDomainModal from '@/components/partner/BuyDomainModal';
 import { toast } from 'sonner';
 
 const CATEGORY_LABELS = {
@@ -79,7 +79,7 @@ export default function PartnerDetail() {
   const [flagOpen, setFlagOpen] = useState(false);
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [buyReviewOpen, setBuyReviewOpen] = useState(false);
-
+  const [buyDomainOpen, setBuyDomainOpen] = useState(false);
   const [showAllServices, setShowAllServices] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -428,9 +428,11 @@ export default function PartnerDetail() {
               </button>
               }
               {user && partner.created_by_id === user.id && partner.status === 'pending' &&
-              <div className="border border-primary/20 rounded-lg p-2.5 bg-white">
-                <BuyDomainCard partner={partner} user={user} />
-              </div>
+              <button
+                onClick={() => setBuyDomainOpen(true)}
+                className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-primary text-primary-foreground hover:bg-primary/90 rounded-full">
+                <Globe className="w-4 h-4" /> Buy Domain
+              </button>
               }
             </div>
           </div>
@@ -582,7 +584,7 @@ export default function PartnerDetail() {
           <FlagModal partner={partner} isOpen={flagOpen} onClose={() => setFlagOpen(false)} />
           <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
           <BuyReviewModal partner={partner} isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} />
-
+          <BuyDomainModal partner={partner} isOpen={buyDomainOpen} onClose={() => setBuyDomainOpen(false)} user={user} />
         </>
       }
 
