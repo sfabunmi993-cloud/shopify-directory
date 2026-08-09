@@ -173,15 +173,15 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 lg:py-20 text-primary-foreground bg-gray-950 hidden">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold">Ready to grow your business?</h2>
-          <p className="text-primary-foreground/80 mt-3 text-lg">Browse our directory of expert Shopify partners and hire with confidence.</p>
-          <Button asChild size="lg" variant="secondary" className="rounded-full text-base h-12 px-8 mt-6 bg-black text-white hover:bg-black/90 sm:bg-white sm:text-primary sm:hover:bg-white/90">
-            <Link to="/directory" className="text-white sm:text-[#040605]">Hire an expert</Link>
-          </Button>
-        </div>
-      </section>
+      
+
+
+
+
+
+
+
+      
 
       {/* OPTIONS CTA */}
       <section className="bg-[#2C3E45]">
@@ -199,8 +199,8 @@ export default function Home() {
             <Button
               asChild
               variant="outline"
-              className="rounded-full border-white text-white hover:bg-white hover:text-[#2C3E45] bg-transparent px-8 h-12 text-base shrink-0"
-            >
+              className="rounded-full border-white text-white hover:bg-white hover:text-[#2C3E45] bg-transparent px-8 h-12 text-base shrink-0">
+              
               <Link to="/directory">Browse</Link>
             </Button>
           </div>
