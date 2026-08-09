@@ -260,9 +260,12 @@ export default function Navbar() {
 
             {/* Mobile: Become a Partner */}
             {!user && (
-              <Button asChild size="sm" className="md:hidden rounded-full bg-black text-white hover:bg-black/90 h-7 px-3 text-xs">
-                <Link to="/register">Become a Partner</Link>
-              </Button>
+              <div className="md:hidden flex items-center gap-2">
+                <span className="text-xs text-black/70 hidden sm:inline">Are you a partner?</span>
+                <Button asChild size="sm" className="rounded-full bg-black text-white hover:bg-black/90 h-7 px-3 text-xs">
+                  <Link to="/register">Become a Partner</Link>
+                </Button>
+              </div>
             )}
 
             {/* Mobile: hamburger */}
