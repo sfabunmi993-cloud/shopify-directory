@@ -136,7 +136,7 @@ export default function Home() {
       </section>
 
       {/* PARTNER TIERS */}
-      <section className="py-16 lg:py-24">
+      <section className="py-16 lg:py-24 bg-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <p className="text-sm font-semibold uppercase tracking-wide text-primary">Partner tiers</p>
