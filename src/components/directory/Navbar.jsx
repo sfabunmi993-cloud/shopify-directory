@@ -81,11 +81,9 @@ export default function Navbar() {
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-12 gap-4">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 shrink-0">
-            <a href="https://www.shopify.com/ng/partners" target="_blank" rel="noopener noreferrer">
-              <img src="https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg" alt="Shopify" className="h-7" />
-            </a>
-          </Link>
+          <a href="https://www.shopify.com/ng/partners" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 shrink-0">
+            <img src="https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg" alt="Shopify" className="h-7" />
+          </a>
 
           {/* Secondary nav — desktop */}
           <nav aria-label="Secondary" className="hidden lg:flex items-center gap-x-8 h-full">
