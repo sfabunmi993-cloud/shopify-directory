@@ -8,20 +8,12 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'All fields are required' }, { status: 400 });
     }
 
-    const admins = await base44.asServiceRole.entities.User.filter({ role: 'admin' });
-    const adminEmails = (admins || []).map((a) => a.email).filter(Boolean);
-    if (!adminEmails.length) {
-      return Response.json({ error: 'No admin available to receive messages' }, { status: 404 });
-    }
-
-    await Promise.all(adminEmails.map((to) =>
-      base44.asServiceRole.integrations.Core.SendEmail({
-        to,
-        subject: `Contact Form: ${name}`,
-        body: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
-        from_name: 'Contact Form',
-      })
-    ));
+    await base44.asServiceRole.integrations.Core.SendEmail({
+      to: 'sfabunmi993@gmail.com',
+      subject: `Contact Form: ${name}`,
+      body: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+      from_name: 'Contact Form',
+    });
 
     return Response.json({ success: true });
   } catch (error) {
