@@ -67,9 +67,9 @@ export default function SiteFooter() {
   return (
     <footer className="relative bg-black text-[#a1a1aa] font-sans py-16 px-6 sm:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="grid gap-y-12 sm:grid-cols-3 sm:gap-x-8">
+        <div className="grid gap-y-12 sm:grid-cols-3 sm:gap-x-8 mx-1">
           {/* Logo / back to top */}
-          <a href="#main" className="inline-flex items-center gap-2 text-white sm:mb-0 text-lg mb-3" aria-label="Back to the top">
+          <a href="#main" className="inline-flex items-center gap-2 text-white sm:mb-0 text-lg mb-2 ml-16 hidden" aria-label="Back to the top">
 
 
           </a>
