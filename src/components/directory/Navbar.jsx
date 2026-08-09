@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Menu, X, ChevronDown, LogOut, User, LayoutDashboard, Heart, MessageSquare, ShieldCheck } from 'lucide-react';
+import { Search, Menu, X, ChevronDown, LogOut, User, LayoutDashboard, Heart, MessageSquare, ShieldCheck, Inbox } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
@@ -305,6 +305,17 @@ export default function Navbar() {
                     </div>
                   </div>
             }
+                {user &&
+            <div className="px-2 mb-1">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 px-1 mb-1">Quick access</p>
+                    <MobileLink to="/favorites" onClick={() => setMobileMenuOpen(false)} icon={Heart}>Saved Partners</MobileLink>
+                    <MobileLink to="/messages" onClick={() => setMobileMenuOpen(false)} icon={MessageSquare}>Messages</MobileLink>
+                    <MobileLink to="/private-messages" onClick={() => setMobileMenuOpen(false)} icon={Inbox}>Private Messages</MobileLink>
+                  </div>
+            }
+                <div className="pt-2 mt-1 border-t border-black/10 px-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 px-1 mb-1 mt-1">Browse</p>
+                </div>
                 <MobileLink to="/directory" onClick={() => setMobileMenuOpen(false)}>Browse All</MobileLink>
                 {serviceCategories.map((c) =>
             <MobileLink key={c.label} to={c.to} onClick={() => setMobileMenuOpen(false)}>{c.label}</MobileLink>
@@ -348,13 +359,14 @@ export default function Navbar() {
 
 }
 
-function MobileLink({ to, onClick, children, highlight }) {
+function MobileLink({ to, onClick, children, highlight, icon: Icon }) {
   return (
     <Link
       to={to}
       onClick={onClick}
-      className={`block px-3 py-1.5 text-xs font-medium rounded-md transition-colors hover:bg-black/5 text-black ${highlight ? 'text-primary' : ''}`}>
-      {children}
+      className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md transition-colors hover:bg-black/5 text-black ${highlight ? 'text-primary' : ''}`}>
+      {Icon && <Icon className="w-3.5 h-3.5 shrink-0" />}
+      <span className="truncate">{children}</span>
     </Link>);
 
-}
+  }
