@@ -167,13 +167,13 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-2 ml-auto">
-            {/* About us */}
-            <Button asChild variant="ghost" size="sm" className="inline-flex text-black hover:bg-black/5 text-xs sm:text-sm px-2 sm:px-4">
+            {/* About us — desktop */}
+            <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex text-black hover:bg-black/5">
               <Link to="/about">About us</Link>
             </Button>
 
-            {/* Contact us */}
-            <Button asChild variant="ghost" size="sm" className="inline-flex text-black hover:bg-black/5 text-xs sm:text-sm px-2 sm:px-4">
+            {/* Contact us — desktop */}
+            <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex text-black hover:bg-black/5">
               <Link to="/contact">Contact us</Link>
             </Button>
 
@@ -307,6 +307,8 @@ export default function Navbar() {
                 {serviceCategories.map((c) =>
             <MobileLink key={c.label} to={c.to} onClick={() => setMobileMenuOpen(false)}>{c.label}</MobileLink>
             )}
+                <MobileLink to="/about" onClick={() => setMobileMenuOpen(false)}>About us</MobileLink>
+                <MobileLink to="/contact" onClick={() => setMobileMenuOpen(false)}>Contact us</MobileLink>
                 {user ?
             <>
                     {isAdmin && <MobileLink to="/admin" onClick={() => setMobileMenuOpen(false)} highlight>Admin Dashboard</MobileLink>}
