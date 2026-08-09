@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Search, Star, ShieldCheck, MessageSquare, ThumbsUp, Circle, Crosshair, Atom, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SERVICES } from '@/data/services';
@@ -18,6 +18,14 @@ const TIERS = [
 
 
 export default function Home() {
+  const [query, setQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    navigate(query.trim() ? `/directory?search=${encodeURIComponent(query.trim())}` : '/directory');
+  };
+
   return (
     <div className="bg-background">
       {/* HERO */}
@@ -34,7 +42,24 @@ export default function Home() {
               <p className="text-lg text-muted-foreground mt-5 leading-relaxed max-w-xl">
                 Hire partners who fit your needs and budget, freeing you to focus on running your business.
               </p>
-              <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              <div className="mt-8">
+                <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3 max-w-xl">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="text"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder="Search by keyword, service, partner name, or country"
+                      className="w-full h-12 pl-12 pr-4 rounded-full bg-white border border-gray-300 text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary text-base"
+                    />
+                  </div>
+                  <Button type="submit" size="lg" className="rounded-full text-base h-12 px-8 bg-black text-white hover:bg-black/90 shrink-0">
+                    Search
+                  </Button>
+                </form>
+              </div>
+              <div className="mt-5 flex flex-col sm:flex-row gap-3">
                 <Button asChild size="lg" className="rounded-full text-base h-12 px-8 bg-black text-white sm:bg-gray-950">
                   <Link to="/directory" className="bg-[#843e3e]">Hire an expert</Link>
                 </Button>
