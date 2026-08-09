@@ -24,6 +24,7 @@ import PrivateMessages from '@/pages/PrivateMessages.jsx';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
 import AdDetail from '@/pages/AdDetail';
+import ServiceDetail from '@/pages/ServiceDetail';
 import SupportChat from '@/components/SupportChat';
 
 
@@ -70,6 +71,7 @@ const AuthenticatedApp = () => {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/ad" element={<AdDetail />} />
+        <Route path="/services/:serviceId" element={<ServiceDetail />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
