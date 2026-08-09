@@ -54,8 +54,8 @@ export default function Home() {
                       className="w-full h-12 pl-12 pr-4 rounded-full bg-white border border-gray-300 text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary text-base"
                     />
                   </div>
-                  <Button type="submit" size="lg" className="rounded-full text-base h-12 px-8 bg-black text-white hover:bg-black/90 shrink-0">
-                    Search
+                  <Button type="submit" size="icon" className="h-12 w-12 rounded-full bg-black text-white hover:bg-black/90 shrink-0">
+                    <Search className="w-5 h-5" />
                   </Button>
                 </form>
               </div>
