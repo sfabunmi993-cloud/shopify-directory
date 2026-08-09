@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Star, MapPin, Globe, Mail, ArrowLeft, Award, Heart, Flag, MessageSquare, Hash, ShieldAlert, ChevronDown, ChevronUp, CheckCircle, Share2, Copy, Check, Send, Briefcase, BadgeCheck, Bell } from 'lucide-react';
+import { Star, MapPin, Globe, Mail, ArrowLeft, Award, Heart, Flag, MessageSquare, Hash, ShieldAlert, ChevronDown, ChevronUp, CheckCircle, Share2, Copy, Check, Send, Briefcase, BadgeCheck, Bell, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
@@ -223,111 +223,106 @@ export default function PartnerDetail() {
 
       <div className="grid md:grid-cols-[260px_1fr] gap-4 sm:gap-8 items-start">
 
-        {/* LEFT SIDEBAR */}
-        <div className="border rounded-xl border-border space-y-4 sm:space-y-5 p-3 sm:p-0">
-          {/* Buy Reviews button — only for partner owner */}
+        {/* Owner-only actions */}
+        <div className="space-y-2 mb-3">
           {user && partner.created_by_id === user.id &&
           <button
             onClick={() => setBuyReviewOpen(true)}
             className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 rounded-full">
-              <Star className="w-4 h-4 fill-amber-400 text-amber-500" /> Buy Reviews
-            </button>
+            <Star className="w-4 h-4 fill-amber-400 text-amber-500" /> Buy Reviews
+          </button>
           }
-
-          {/* Buy Domain button — only for partner owner with pending status */}
           {user && partner.created_by_id === user.id && partner.status === 'pending' &&
           <button
             onClick={() => setBuyDomainOpen(true)}
             className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-primary text-primary-foreground hover:bg-primary/90 rounded-full">
-              <Globe className="w-4 h-4" /> Buy Domain
-            </button>
+            <Globe className="w-4 h-4" /> Buy Domain
+          </button>
           }
+        </div>
 
-          {/* Logo */}
-          <div className="flex flex-col items-center text-center rounded-[999px]">
-            <PartnerAvatar partner={partner} size="lg" shape="rounded-full" className="border-2" />
-            {/* Rank badge */}
-            <div className={`mt-2 inline-flex items-center gap-1 text-xs px-2 py-0.5 border font-medium rounded-[14px] ${rankConfig.color}`}>
-              <Award className="w-3 h-3" /> {rankConfig.label}
-            </div>
+        {/* LEFT SIDEBAR CARD */}
+        <div className="relative bg-white border border-[#E0E0E0] rounded-xl shadow-sm">
+          {/* Avatar overlapping top edge */}
+          <div className="absolute left-5 -top-10">
+            <PartnerAvatar partner={partner} size="lg" shape="rounded-full" className="border-2 border-white shadow-md" />
           </div>
 
-          {/* Name */}
-          <div className="text-center">
-            <h1 className="font-heading text-base font-semibold text-center text-foreground">{partner.name}</h1>
-            {partner.partner_number &&
-            <span className="text-xs text-muted-foreground font-mono flex items-center justify-center gap-0.5 mt-0.5">
-                <Hash className="w-2.5 h-2.5" />{partner.partner_number}
-              </span>
-            }
-            {partner.is_verified &&
-            <span className="inline-flex items-center gap-1 text-xs text-blue-600 font-medium mt-1">
-                <BadgeCheck className="w-3.5 h-3.5" /> Verified
-              </span>
-            }
-            {partner.partner_tier === 'premium' &&
-            <span className="inline-flex items-center gap-1 text-xs text-amber-600 font-semibold mt-1">
-                ✨ Premium
-              </span>
-            }
-            {partner.partner_tier === 'plus' &&
-            <span className="inline-flex items-center gap-1 text-xs text-primary font-semibold mt-1">
-                ⭐ Plus
-              </span>
-            }
-          </div>
+          {/* Partner tier badge */}
+          {(() => {
+            const tierLabel = partner.partner_tier === 'premium' ? 'PLATINUM' : partner.partner_tier === 'plus' ? 'PLUS' : '';
+            return tierLabel ? (
+              <div className="absolute top-3 right-3 inline-flex items-center gap-1 bg-black text-white text-[10px] font-semibold tracking-wide px-2 py-1 rounded">
+                <span className="w-3.5 h-3.5 bg-white text-black rounded-sm flex items-center justify-center text-[10px] font-bold leading-none">S</span>
+                SHOPIFY {tierLabel} PARTNER
+              </div>
+            ) : null;
+          })()}
 
-          {/* Rating */}
-          {partner.rating > 0 &&
-          <div className="flex items-center justify-center gap-1.5 text-sm">
-              <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-              <span className="font-semibold text-foreground">{partner.rating}</span>
-              <span className="text-muted-foreground">({partner.review_count || 0})</span>
+          <div className="pt-16 px-5 pb-5 space-y-4">
+            {/* Title + badges */}
+            <div>
+              <h1 className="font-heading text-2xl font-bold text-foreground leading-tight">{partner.name}</h1>
+              <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                <span className="inline-flex items-center text-xs px-2 py-0.5 border border-[#E0E0E0] bg-[#F5F5F5] text-[#424242] rounded-full">Service partner</span>
+                {partner.is_verified &&
+                <span className="inline-flex items-center gap-1 text-xs text-blue-600 font-medium">
+                  <BadgeCheck className="w-3.5 h-3.5" /> Verified
+                </span>
+                }
+                {partner.partner_number &&
+                <span className="text-xs text-muted-foreground font-mono flex items-center gap-0.5">
+                  <Hash className="w-2.5 h-2.5" />{partner.partner_number}
+                </span>
+                }
+              </div>
             </div>
-          }
 
-          {/* CTA Buttons */}
-          <div className="space-y-2">
-            <Button className="w-full bg-gray-400 rounded-full" onClick={() => setContactOpen(true)}>
-                <MessageSquare className="w-4 h-4 mr-1.5" /> Contact
-              </Button>
+            {/* Stats line */}
+            <div className="flex items-center gap-2 text-sm text-[#424242]">
+              {partner.rating > 0 &&
+              <>
+                <span className="flex items-center gap-1">
+                  <Star className="w-4 h-4" style={{ fill: '#FFC107', color: '#FFC107' }} />
+                  <span className="font-semibold text-foreground">{partner.rating}</span>
+                  <span className="text-muted-foreground">({partner.review_count || 0})</span>
+                </span>
+                {partner.years_as_partner > 0 && <span className="text-[#E0E0E0]">|</span>}
+              </>
+              }
+              {partner.years_as_partner > 0 &&
+              <span className="flex items-center gap-1">
+                <User className="w-4 h-4" style={{ color: '#637381' }} />
+                Partner since {new Date().getFullYear() - partner.years_as_partner}
+              </span>
+              }
+            </div>
+
+            {/* Contact button */}
+            <Button className="w-full h-11 bg-[#2e4049] hover:bg-[#2e4049]/90 rounded-lg text-white font-medium" onClick={() => setContactOpen(true)}>
+              Contact
+            </Button>
+
+            {/* Secondary actions */}
             {partner.whatsapp_url &&
             <a
               href={partner.whatsapp_url}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full inline-flex items-center justify-center gap-2 border text-sm font-medium h-9 px-4 py-2 transition-colors bg-green-500/10 border-green-500/30 text-green-600 dark:text-green-400 hover:bg-green-500/20 rounded-full">
-              
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" /></svg>
-                WhatsApp
-              </a>
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" /></svg>
+              WhatsApp
+            </a>
             }
 
-            {/* Hire Me button */}
-            
-
-
-
-            
-
-
-
-
-
-            
-
-            {/* Get Premium Badge — only for the partner owner without premium */}
             {user && partner.created_by_id === user.id && partner.partner_tier !== 'premium' &&
             <button
               onClick={() => setPremiumOpen(true)}
-              className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 rounded-full shadow-sm">
-              
-                ✨ Get Premium Badge
-              </button>
+              className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 rounded-full">
+              ✨ Get Premium Badge
+            </button>
             }
-            
 
-            
             <div className="flex gap-2">
               <button
                 onClick={handleToggleFavorite}
@@ -368,86 +363,78 @@ export default function PartnerDetail() {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-
-
-
-
-
-
-
-              
               <button
                 onClick={() => setFlagOpen(true)}
                 className="flex-1 flex items-center justify-center gap-1.5 text-xs py-1.5 rounded border border-border hover:text-destructive hover:border-destructive/30 transition-all text-muted-foreground">
-                
                 <Flag className="w-3.5 h-3.5" /> Report
               </button>
             </div>
-          </div>
 
-          {/* Info details */}
-          <div className="flex flex-col gap-y-4 text-sm pt-4">
-            <hr className="border-border" />
+            <hr className="border-[#DFE3E8]" />
 
-            {partner.starting_price > 0 &&
-            <div className="flex flex-col gap-y-1">
-                <p className="text-sm font-medium text-muted-foreground">Price range for selected services</p>
-                <p className="text-[#162120]">Starting from ${partner.starting_price}</p>
+            {/* Info details */}
+            <div className="space-y-4 text-sm">
+              {partner.starting_price > 0 &&
+              <div>
+                <p className="text-sm font-semibold text-foreground">Price range for selected services</p>
+                <p className="text-[#212121] mt-0.5">Starting from ${partner.starting_price}</p>
               </div>
-            }
+              }
 
-            {(partner.website_url || partner.email) &&
-            <div className="flex flex-col gap-y-1">
-                <p className="text-sm font-medium text-muted-foreground">Contact information</p>
-                <div className="flex flex-col gap-y-3">
+              {(partner.website_url || partner.email) &&
+              <div>
+                <p className="text-sm font-semibold text-foreground">Contact information</p>
+                <div className="mt-1 flex flex-col gap-y-2">
                   {partner.website_url &&
-                <div className="flex flex-wrap items-center gap-x-2">
-                      <a href={partner.website_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                        <Globe className="w-5 h-5 shrink-0 text-[#87909B]" />
-                      </a>
-                      <p className="break-word">
-                        <a href={partner.website_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{partner.website_url.replace(/^https?:\/\//, '')}</a>
-                      </p>
-                    </div>
-                }
+                  <a href={partner.website_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[#212121] hover:underline break-all">
+                    <Globe className="w-4 h-4 shrink-0" style={{ color: '#637381' }} />
+                    {partner.website_url.replace(/^https?:\/\//, '')}
+                  </a>
+                  }
                   {partner.email &&
-                <div className="flex flex-wrap items-center gap-x-2">
-                      <a href={`mailto:${partner.email}`} className="text-primary hover:underline">
-                        <Mail className="w-5 h-5 shrink-0 text-[#87909B]" />
-                      </a>
-                      <p className="break-word">
-                        <a href={`mailto:${partner.email}`} className="text-primary hover:underline">{partner.email}</a>
-                      </p>
-                    </div>
-                }
+                  <a href={`mailto:${partner.email}`} className="flex items-center gap-2 text-[#212121] hover:underline break-all">
+                    <Mail className="w-4 h-4 shrink-0" style={{ color: '#637381' }} />
+                    {partner.email}
+                  </a>
+                  }
                 </div>
               </div>
-            }
+              }
 
-            {partner.location &&
-            <div className="flex flex-col gap-y-1">
-                <p className="text-sm font-medium text-muted-foreground">Primary location</p>
-                <p className="text-foreground flex items-center gap-1">
-                  <MapPin className="w-4 h-4 shrink-0 text-[#87909B]" />{partner.location}
+              {partner.location &&
+              <div>
+                <p className="text-sm font-semibold text-foreground">Primary location</p>
+                <p className="text-[#212121] mt-0.5 flex items-center gap-1.5">
+                  <MapPin className="w-4 h-4 shrink-0" style={{ color: '#637381' }} />
+                  {partner.location}
                 </p>
               </div>
-            }
+              }
 
-            {partner.languages?.length > 0 &&
-            <div className="flex flex-col gap-y-1">
-                <p className="text-sm font-medium text-muted-foreground">Languages</p>
-                <p className="text-foreground">{partner.languages.join(', ')}</p>
+              {partner.country &&
+              <div>
+                <p className="text-sm font-semibold text-foreground">Supported locations</p>
+                <p className="text-[#212121] mt-0.5">{partner.country}</p>
               </div>
-            }
+              }
 
-            {partner.completed_projects > 0 &&
-            <div className="flex flex-col gap-y-1">
-                <p className="text-sm font-medium text-muted-foreground">Projects completed</p>
-                <p className="text-2xl font-bold text-foreground leading-none flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-primary" />{partner.completed_projects}+
+              {partner.languages?.length > 0 &&
+              <div>
+                <p className="text-sm font-semibold text-foreground">Languages</p>
+                <p className="text-[#212121] mt-0.5">{partner.languages.join(', ')}</p>
+              </div>
+              }
+
+              {partner.completed_projects > 0 &&
+              <div>
+                <p className="text-sm font-semibold text-foreground">Projects completed</p>
+                <p className="text-[#212121] mt-0.5 flex items-center gap-1.5">
+                  <CheckCircle className="w-4 h-4" style={{ color: '#637381' }} />
+                  {partner.completed_projects}+
                 </p>
               </div>
-            }
+              }
+            </div>
           </div>
         </div>
 
