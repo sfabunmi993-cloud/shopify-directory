@@ -6,17 +6,17 @@ import { SERVICES } from '@/data/services';
 import SiteFooter from '@/components/home/SiteFooter';
 
 const STEPS = [
-  { icon: Search, title: 'Browse', text: 'Refine your search based on what matters most to you, such as price, location, and services.' },
-  { icon: Star, title: 'Evaluate', text: 'Check reviews, work samples, certifications, and more to make an informed choice.' },
-  { icon: MessageSquare, title: 'Contact and collaborate', text: 'Communicate directly with the partner, set your project terms, and start collaborating.' }
-];
+{ icon: Search, title: 'Browse', text: 'Refine your search based on what matters most to you, such as price, location, and services.' },
+{ icon: Star, title: 'Evaluate', text: 'Check reviews, work samples, certifications, and more to make an informed choice.' },
+{ icon: MessageSquare, title: 'Contact and collaborate', text: 'Communicate directly with the partner, set your project terms, and start collaborating.' }];
+
 
 const TIERS = [
-  { label: 'Select partners', desc: 'New and growing partners building their experience on Shopify.', color: 'bg-muted text-muted-foreground', tier: 'standard' },
-  { label: 'Plus partners', desc: 'Established partners with a proven history of success.', color: 'bg-primary/10 text-primary', tier: 'plus' },
-  { label: 'Premier partners', desc: 'Top-performing partners delivering exceptional results.', color: 'bg-amber-50 text-amber-700', tier: 'premium' },
-  { label: 'Platinum partners', desc: 'Our most elite partners with the highest level of expertise.', color: 'bg-slate-100 text-slate-700', tier: 'premium' }
-];
+{ label: 'Select partners', desc: 'New and growing partners building their experience on Shopify.', color: 'bg-muted text-muted-foreground', tier: 'standard' },
+{ label: 'Plus partners', desc: 'Established partners with a proven history of success.', color: 'bg-primary/10 text-primary', tier: 'plus' },
+{ label: 'Premier partners', desc: 'Top-performing partners delivering exceptional results.', color: 'bg-amber-50 text-amber-700', tier: 'premium' },
+{ label: 'Platinum partners', desc: 'Our most elite partners with the highest level of expertise.', color: 'bg-slate-100 text-slate-700', tier: 'premium' }];
+
 
 export default function Home() {
   return (
@@ -40,7 +40,7 @@ export default function Home() {
                   <Link to="/directory">Hire an expert <ArrowRight className="w-4 h-4 ml-1.5" /></Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="rounded-full text-base h-12 px-8">
-                  <Link to="/become-a-partner">Become a partner</Link>
+                  <Link to="/become-a-partner">Lo</Link>
                 </Button>
               </div>
               <div className="mt-8 flex items-center gap-6 text-sm text-muted-foreground">
@@ -57,8 +57,8 @@ export default function Home() {
                 <img
                   src="https://cdn.shopify.com/b/shopify-brochure2-assets/440badc0499b9f199ed6577dea18f9a7.png?height=740"
                   alt="Shopify Partners"
-                  className="w-full h-full object-cover"
-                />
+                  className="w-full h-full object-cover" />
+                
               </div>
             </div>
           </div>
@@ -95,8 +95,8 @@ export default function Home() {
                       Learn more <ArrowRight className="w-4 h-4" />
                     </span>
                   </div>
-                </Link>
-              );
+                </Link>);
+
             })}
           </div>
         </div>
@@ -123,8 +123,8 @@ export default function Home() {
                   </div>
                   <h3 className="font-heading text-xl font-semibold text-foreground mb-2">{step.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">{step.text}</p>
-                </div>
-              );
+                </div>);
+
             })}
           </div>
           <div className="text-center mt-12">
@@ -146,20 +146,20 @@ export default function Home() {
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {TIERS.map((t) => (
-              <div key={t.label} className="rounded-2xl border border-border bg-card p-6 text-center hover:shadow-md transition-shadow">
+            {TIERS.map((t) =>
+            <div key={t.label} className="rounded-2xl border border-border bg-card p-6 text-center hover:shadow-md transition-shadow">
                 <div className={`mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-4 ${t.color}`}>
                   <Award className="w-6 h-6" />
                 </div>
                 <h3 className="font-heading text-lg font-semibold text-foreground">{t.label}</h3>
                 <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{t.desc}</p>
                 <Link
-                  to="/directory"
-                  className="inline-flex items-center gap-1 mt-4 text-sm font-medium text-primary hover:gap-2 transition-all">
+                to="/directory"
+                className="inline-flex items-center gap-1 mt-4 text-sm font-medium text-primary hover:gap-2 transition-all">
                   Browse <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>
@@ -176,6 +176,6 @@ export default function Home() {
       </section>
 
       <SiteFooter />
-    </div>
-  );
+    </div>);
+
 }
