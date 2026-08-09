@@ -181,6 +181,11 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-2 ml-auto">
+            {/* Contact us — desktop */}
+            <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex text-black hover:bg-black/5">
+              <Link to="/contact">Contact us</Link>
+            </Button>
+
             {/* Dark mode toggle */}
             <button
               onClick={() => setDark(!dark)}
