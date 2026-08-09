@@ -94,29 +94,29 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+      <DialogContent className="max-w-md max-h-[88vh] overflow-y-auto p-4 sm:p-5">
+        <DialogHeader className="mb-2">
+          <DialogTitle className="flex items-center gap-2 text-base">
             <Crown className="w-5 h-5 text-amber-500" /> Purchase Premium Badge
           </DialogTitle>
         </DialogHeader>
 
         {done ? (
-          <div className="text-center py-6 space-y-3">
-            <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto" />
-            <h3 className="font-semibold text-lg">Payment submitted!</h3>
+          <div className="text-center py-4 space-y-2">
+            <CheckCircle className="w-10 h-10 text-emerald-500 mx-auto" />
+            <h3 className="font-semibold">Payment submitted!</h3>
             <p className="text-sm text-muted-foreground">
-              Our team will verify your payment and activate your Premium badge within <strong>24 hours</strong>.
+              We'll verify your payment and activate your Premium badge within <strong>24 hours</strong>.
             </p>
-            <Button className="w-full mt-2" onClick={handleClose}>Done</Button>
+            <Button className="w-full mt-1" onClick={handleClose}>Done</Button>
           </div>
         ) : step === 1 ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {/* What you get */}
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
-              <p className="font-semibold text-amber-800 flex items-center gap-1.5"><Crown className="w-4 h-4" /> Premium Badge — ₦{pricing.premium_badge.toLocaleString()}</p>
-              <ul className="text-sm text-amber-700 space-y-1 list-disc list-inside">
-                <li>Gold ✨ Premium badge on your profile & directory listing</li>
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-1.5">
+              <p className="font-semibold text-amber-800 flex items-center gap-1.5 text-sm"><Crown className="w-4 h-4" /> Premium Badge — ₦{pricing.premium_badge.toLocaleString()}</p>
+              <ul className="text-xs text-amber-700 space-y-0.5 list-disc list-inside">
+                <li>Gold ✨ badge on profile & directory listing</li>
                 <li>Priority placement in search results</li>
                 <li>Verified trust signal for clients</li>
                 <li>One-time payment, lifetime badge</li>
@@ -124,9 +124,9 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
             </div>
 
             {/* Payment instructions */}
-            <div className="border border-border rounded-xl p-4 space-y-3">
+            <div className="border border-border rounded-xl p-3 space-y-2">
               <p className="font-semibold text-sm flex items-center gap-1.5"><CreditCard className="w-4 h-4 text-primary" /> Payment Instructions</p>
-              <p className="text-xs text-muted-foreground">Transfer ₦{pricing.premium_badge.toLocaleString()} to the account below, then click Continue to submit your proof.</p>
+              <p className="text-xs text-muted-foreground">Transfer ₦{pricing.premium_badge.toLocaleString()} to the account below, then continue to submit proof.</p>
 
               {[
                 { label: 'Bank', value: PAYMENT_DETAILS.bankName },
@@ -134,7 +134,7 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
                 { label: 'Account Number', value: PAYMENT_DETAILS.accountNumber },
                 { label: 'Amount', value: `₦${pricing.premium_badge.toLocaleString()}` },
               ].map(({ label, value }) => (
-                <div key={label} className="flex items-center justify-between gap-2 bg-muted rounded-lg px-3 py-2">
+                <div key={label} className="flex items-center justify-between gap-2 bg-muted rounded-lg px-3 py-1.5">
                   <div>
                     <p className="text-xs text-muted-foreground">{label}</p>
                     <p className="text-sm font-medium text-foreground">{value}</p>
@@ -168,9 +168,9 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
             )}
           </div>
         ) : (
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Please enter your transaction reference and upload your payment screenshot so we can verify your payment quickly.
+          <div className="space-y-3">
+            <p className="text-xs text-muted-foreground">
+              Enter your transaction reference and upload your payment screenshot for quick verification.
             </p>
             <div className="space-y-2">
               <label className="text-sm font-medium">Transaction Reference *</label>
@@ -184,7 +184,7 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
             {/* Screenshot Upload */}
             <div className="space-y-2">
               <Label className="text-sm font-semibold">Payment Screenshot *</Label>
-              <div className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:border-primary/40 transition-colors">
+              <div className="border-2 border-dashed border-border rounded-xl p-4 text-center hover:border-primary/40 transition-colors">
                 {screenshotUrl ? (
                   <div className="space-y-3">
                     <div className="flex items-center justify-center gap-2 text-green-600">
@@ -247,7 +247,7 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
                 placeholder="Any extra info about your payment..."
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
-                className="h-20 resize-none"
+                className="h-14 resize-none"
               />
             </div>
             <div className="flex gap-2">
