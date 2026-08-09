@@ -27,7 +27,7 @@ export default function PartnerAvatar({ partner, size = 'md', shape = 'rounded-l
       <img
         src={partner.logo_url}
         alt={partner.name}
-        className={`${sizeClass} ${shape} object-cover border border-border/50 px-2 ${className}`} />);
+        className={`${sizeClass} ${shape} object-cover border border-border/50 ${className}`} />);
 
 
   }
