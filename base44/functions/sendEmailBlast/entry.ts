@@ -16,9 +16,6 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Subject and body are required' }, { status: 400 });
     }
 
-    // Get Gmail access token
-    const { accessToken } = await base44.asServiceRole.connectors.getConnection('gmail');
-    
     // Determine recipient list
     let emailList = [];
     if (recipients && Array.isArray(recipients) && recipients.length > 0) {
@@ -37,45 +34,17 @@ Deno.serve(async (req) => {
     let sentCount = 0;
     let failedCount = 0;
 
+    const fromName = senderName?.trim() || 'Shopify Partners Directory';
+
     for (const email of emailList) {
-      const user = { email };
-
       try {
-        // Build RFC 2822 email message
-        const from = senderEmail?.trim() || 'fabunmi.net@gmail.com';
-        const fromName = senderName?.trim() || 'Shopify Partners Directory';
-        const messageLines = [
-          `From: ${fromName} <${from}>`,
-          `To: ${user.email}`,
-          `Subject: ${subject}`,
-          'MIME-Version: 1.0',
-          'Content-Type: text/plain; charset="UTF-8"',
-          'Content-Transfer-Encoding: quoted-printable',
-          '',
+        await base44.asServiceRole.integrations.Core.SendEmail({
+          to: email,
+          subject,
           body,
-        ];
-        
-        const rawMessage = messageLines.join('\r\n');
-        const encodedMessage = btoa(rawMessage)
-          .replace(/\+/g, '-')
-          .replace(/\//g, '_')
-          .replace(/=+$/, '');
-
-        // Send email via Gmail API
-        const response = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ raw: encodedMessage }),
+          from_name: fromName,
         });
-
-        if (response.ok) {
-          sentCount++;
-        } else {
-          failedCount++;
-        }
+        sentCount++;
       } catch (err) {
         failedCount++;
       }
