@@ -258,7 +258,7 @@ export default function Navbar() {
 
             {/* Mobile: hamburger */}
             <button className="p-2 rounded-full hover:bg-black/5 transition-colors text-black lg:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5 hidden" />}
             </button>
           </div>
         </div>
