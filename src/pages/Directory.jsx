@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import FilterSidebar from '@/components/directory/FilterSidebar';
@@ -135,21 +135,37 @@ export default function Directory() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
-      {/* Search bar */}
-      <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input
-          type="text"
-          placeholder="Search by name, ID number, tags, or services..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          className="pl-10 rounded-full h-11 text-sm"
-        />
-        {searchQuery && (
-          <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-            <X className="w-4 h-4" />
-          </button>
-        )}
+      {/* Hero */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-8 pb-10">
+        <div className="flex flex-col gap-6">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-bold text-foreground text-balance">Find service partners</h1>
+            <p className="text-muted-foreground mt-2">Browse by price, location, services, and more to find a partner that meets your needs.</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { label: 'Marketing and sales', to: '/directory?category=marketing_and_sales' },
+              { label: 'Store setup and management', to: '/directory?category=store_setup_and_management' },
+              { label: 'Development and troubleshooting', to: '/directory?category=development_and_troubleshooting' },
+              { label: 'Visual content and branding', to: '/directory?category=visual_content_and_branding' },
+              { label: 'Content writing', to: '/directory?category=content_writing' },
+              { label: 'Expert guidance', to: '/directory?category=expert_guidance' }
+            ].map((c) => (
+              <Link
+                key={c.label}
+                to={c.to}
+                className="inline-block border-2 border-border bg-card text-foreground rounded-full px-4 py-1.5 text-sm font-medium hover:border-foreground hover:bg-muted transition-colors">
+                {c.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+        <div className="hidden md:block">
+          <img
+            src="https://cdn.shopify.com/b/shopify-brochure2-assets/a7ac407a50f89efe69413cc02a73d700.png?height=363"
+            alt="Communication and collaboration illustration"
+            className="mx-auto max-h-80 object-contain" />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8">
