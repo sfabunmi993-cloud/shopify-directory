@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import FilterSidebar from '@/components/directory/FilterSidebar';
@@ -13,19 +14,27 @@ import { SlidersHorizontal, X, Search } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 
 export default function Directory() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const initialCategory = urlParams.get('category') || 'all';
-  const initialSearch = urlParams.get('search') || '';
+  const [searchParams] = useSearchParams();
 
   const [filters, setFilters] = useState({
-    category: initialCategory,
+    category: searchParams.get('category') || 'all',
     industry: 'all',
-    location: 'all',
+    location: searchParams.get('country') || 'all',
     tier: 'all',
     minPrice: '',
     maxPrice: '',
   });
-  const [searchQuery, setSearchQuery] = useState(initialSearch);
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
+
+  // Sync navbar-driven URL changes (search, category, country) into local state
+  useEffect(() => {
+    setSearchQuery(searchParams.get('search') || '');
+    setFilters(prev => ({
+      ...prev,
+      category: searchParams.get('category') || 'all',
+      location: searchParams.get('country') || prev.location,
+    }));
+  }, [searchParams]);
   const [sortBy, setSortBy] = useState('rating');
   const [compareIds, setCompareIds] = useState([]);
   const [showCompare, setShowCompare] = useState(false);
