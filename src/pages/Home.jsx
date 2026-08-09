@@ -242,7 +242,7 @@ export default function Home() {
             <div>
               <h4 className="font-semibold mb-3 text-sm">Company</h4>
               <ul className="space-y-2 text-sm text-background/70">
-                <li><Link to="/login" className="hover:text-background transition-colors">Log in</Link></li>
+                <li><a href="https://accounts.shopify.com/lookup?rid=417b6639-6ad1-4d39-9ebf-a116f7db5c72&verify=1786234370-8pe4hOmMSM3dNP5PFl%2BDPOJRDm0eo0BfN51Zq3IpRds%3D" target="_blank" rel="noopener noreferrer" className="hover:text-background transition-colors">Log in</a></li>
                 <li><Link to="/become-a-partner" className="hover:text-background transition-colors">Become a Partner</Link></li>
               </ul>
             </div>
