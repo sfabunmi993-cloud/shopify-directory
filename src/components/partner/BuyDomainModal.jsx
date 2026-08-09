@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, Copy, Check, Globe, Upload, ImageIcon } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import PaymentSupportNote from './PaymentSupportNote';
 import { toast } from 'sonner';
 
 const DOMAIN_PRICE = 10000; // NGN
@@ -129,6 +130,8 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
                 </div>
               </div>
             </div>
+
+            <PaymentSupportNote />
 
             <div className="space-y-1.5">
               <label className="text-sm font-medium">Transaction Reference (optional)</label>

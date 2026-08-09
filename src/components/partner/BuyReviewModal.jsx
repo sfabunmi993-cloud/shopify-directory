@@ -5,6 +5,7 @@ import { Star, Copy, Check, CreditCard, AlertCircle, Upload, X } from 'lucide-re
 import { toast } from 'sonner';
 import { usePricing } from '@/hooks/usePricing';
 import { base44 } from '@/api/base44Client';
+import PaymentSupportNote from './PaymentSupportNote';
 
 export default function BuyReviewModal({ isOpen, onClose, partner }) {
   const { pricing } = usePricing();
@@ -163,6 +164,8 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
               </div>
             </div>
           </div>
+
+          <PaymentSupportNote />
 
           {/* Screenshot Upload */}
           <div>

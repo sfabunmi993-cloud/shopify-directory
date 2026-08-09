@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Crown, Copy, Check, CreditCard, Loader2, CheckCircle, Upload, Image } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import PaymentSupportNote from './PaymentSupportNote';
 import { toast } from 'sonner';
 import { usePricing } from '@/hooks/usePricing';
 
@@ -144,6 +145,8 @@ export default function PurchasePremiumModal({ partner, isOpen, onClose, user })
                 </div>
               ))}
             </div>
+
+            <PaymentSupportNote />
 
             {payBtnState === 'ready' ? (
               <div className="space-y-2">
