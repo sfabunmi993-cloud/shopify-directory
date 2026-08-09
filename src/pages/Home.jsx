@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Search, Star, ShieldCheck, MessageSquare, Award, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SERVICES } from '@/data/services';
+import SiteFooter from '@/components/home/SiteFooter';
 
 const STEPS = [
   { icon: Search, title: 'Browse', text: 'Refine your search based on what matters most to you, such as price, location, and services.' },
@@ -174,38 +175,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="py-12 bg-foreground text-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid sm:grid-cols-3 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="w-6 h-6" />
-                <span className="font-heading text-lg font-bold">Partner Directory</span>
-              </div>
-              <p className="text-sm leading-relaxed text-background/60">Find the right partner for your business needs.</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-3 text-sm">Browse</h4>
-              <ul className="space-y-2 text-sm text-background/70">
-                <li><Link to="/directory" className="hover:text-background transition-colors">All Partners</Link></li>
-                <li><Link to="/directory?category=marketing_and_sales" className="hover:text-background transition-colors">Marketing & Sales</Link></li>
-                <li><Link to="/directory?category=development_and_troubleshooting" className="hover:text-background transition-colors">Development</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-3 text-sm">Company</h4>
-              <ul className="space-y-2 text-sm text-background/70">
-                <li><a href="https://accounts.shopify.com/lookup?rid=417b6639-6ad1-4d39-9ebf-a116f7db5c72&verify=1786234370-8pe4hOmMSM3dNP5PFl%2BDPOJRDm0eo0BfN51Zq3IpRds%3D" target="_blank" rel="noopener noreferrer" className="hover:text-background transition-colors">Log in</a></li>
-                <li><Link to="/become-a-partner" className="hover:text-background transition-colors">Become a Partner</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-10 pt-6 border-t border-background/10 text-xs text-background/40">
-            © {new Date().getFullYear()} Partner Directory. All rights reserved.
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
