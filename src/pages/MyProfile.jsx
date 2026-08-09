@@ -16,6 +16,7 @@ import BuyReviewModal from '@/components/partner/BuyReviewModal';
 import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
 import BuyDomainModal from '@/components/partner/BuyDomainModal';
 import PortfolioEditor from '@/components/profile/PortfolioEditor';
+import AppealForm from '@/components/partner/AppealForm';
 
 const SERVICE_CATEGORIES = [
 { label: 'Marketing and sales', value: 'marketing_and_sales' },
@@ -279,9 +280,19 @@ export default function MyProfile() {
         </div>
       }
       {partner?.status === 'restricted' &&
-      <div className="mb-4 bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-center gap-2 text-red-700 text-sm">
-          <ShieldAlert className="w-4 h-4 shrink-0" />
-          <span><strong>Account restricted.</strong> {partner.restriction_reason || 'Your account has been restricted by an admin.'}</span>
+      <div className="mb-4 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-700 text-sm">
+          <div className="flex items-center gap-2">
+            <ShieldAlert className="w-4 h-4 shrink-0" />
+            <span><strong>Account restricted.</strong> {partner.restriction_reason || 'Your account has been restricted by an admin.'}</span>
+          </div>
+          <p className="mt-2 text-xs text-red-600">Write an appeal below to restore your account automatically.</p>
+          <AppealForm
+            onResolved={() => {
+              const restored = { ...partner, status: 'approved', restriction_reason: '' };
+              setPartner(restored);
+              setForm(restored);
+            }}
+          />
         </div>
       }
 

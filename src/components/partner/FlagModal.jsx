@@ -42,11 +42,6 @@ export default function FlagModal({ partner, isOpen, onClose }) {
       status: 'pending',
     });
 
-    // increment flag count
-    await base44.entities.Partner.update(partner.id, {
-      flag_count: (partner.flag_count || 0) + 1,
-    });
-
     setSending(false);
     setSent(true);
     toast.success('Report submitted. Our team will review it.');
