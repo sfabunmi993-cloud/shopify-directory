@@ -73,13 +73,14 @@ export default function AdminDashboard() {
       if (!authed) { navigate('/login'); return; }
       const user = await base44.auth.me();
       if (user.role !== 'admin') { navigate('/'); return; }
-      loadData();
+      setLoading(true);
+      await loadData();
+      setLoading(false);
     };
     init();
   }, [navigate]);
 
   const loadData = async () => {
-    setLoading(true);
     const [allPartners, allFlags, allPayments, allAnnouncements] = await Promise.all([
       base44.entities.Partner.list('-created_date', 200),
       base44.entities.Flag.list('-created_date', 200),
@@ -90,7 +91,6 @@ export default function AdminDashboard() {
     setFlags(allFlags);
     setPayments(allPayments);
     setAnnouncements(allAnnouncements);
-    setLoading(false);
   };
 
   const handleApprove = async (partner) => {
