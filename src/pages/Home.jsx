@@ -183,6 +183,30 @@ export default function Home() {
         </div>
       </section>
 
+      {/* OPTIONS CTA */}
+      <section className="bg-[#2C3E45]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="max-w-2xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#A5D6A7]">You've got options</p>
+              <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-white mt-3">
+                Download apps or use software integrations
+              </h2>
+              <p className="text-white/80 mt-3 text-base sm:text-lg">
+                Find technology solutions that suit your growing business.
+              </p>
+            </div>
+            <Button
+              asChild
+              variant="outline"
+              className="rounded-full border-white text-white hover:bg-white hover:text-[#2C3E45] bg-transparent px-8 h-12 text-base shrink-0"
+            >
+              <Link to="/directory">Browse</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
       <SiteFooter />
     </div>);
 
