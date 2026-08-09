@@ -297,20 +297,20 @@ export default function MyProfile() {
       }
 
       {/* Inquiries Dashboard */}
-      <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 hidden">
-        <h2 className="font-semibold text-base mb-4 flex items-center gap-2">
-          <span>My Inquiries & Messages</span>
-          <span className="text-xs text-muted-foreground font-normal">(recent activity)</span>
-        </h2>
-        <InquiriesDashboard userId={user?.id} />
-      </div>
+      
+
+
+
+
+
+      
 
       {/* Delivered Projects */}
-      <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 hidden">
-        <h2 className="font-semibold text-base mb-1">Delivered Projects</h2>
-        <p className="text-xs text-muted-foreground mb-4">Projects you have delivered to clients via messages.</p>
-        <ProjectsSection partnerId={partner?.id} />
-      </div>
+      
+
+
+
+      
 
       <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 space-y-6">
         {/* Basic */}
