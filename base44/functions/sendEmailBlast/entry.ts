@@ -22,9 +22,16 @@ Deno.serve(async (req) => {
       // Use provided list of email strings
       emailList = recipients.filter(e => typeof e === 'string' && e.includes('@'));
     } else {
-      // Fall back to all users
-      const allUsers = await base44.asServiceRole.entities.User.list();
-      emailList = allUsers.map(u => u.email).filter(Boolean);
+      // Fall back to all users — paginate so no registered user is missed
+      const pageSize = 100;
+      let skip = 0;
+      let hasMore = true;
+      while (hasMore) {
+        const batch = await base44.asServiceRole.entities.User.list('-created_date', pageSize, skip);
+        emailList = emailList.concat(batch.map(u => u.email).filter(Boolean));
+        skip += batch.length;
+        hasMore = batch.length === pageSize;
+      }
     }
     
     if (emailList.length === 0) {
