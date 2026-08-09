@@ -37,7 +37,7 @@ export default function Home() {
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
                 <Button asChild size="lg" className="rounded-full text-base h-12 px-8 bg-black text-white sm:bg-gray-950">
-                  <Link to="/directory" className="bg-[#000000]">Hire an expert</Link>
+                  <Link to="/directory" className="bg-[#843e3e]">Hire an expert</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="rounded-full text-base h-12 px-8 bg-black text-white border-black sm:bg-transparent sm:text-foreground sm:border-input">
                   <a href="https://www.shopify.com/" target="_blank" rel="noopener noreferrer">Login</a>
