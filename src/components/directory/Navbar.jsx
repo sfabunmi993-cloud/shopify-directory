@@ -98,7 +98,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-white text-black border-y border-black/20 shadow-sm">
       <div className="w-full px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-16 gap-6">
+        <div className="flex items-center h-12 gap-4">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <img src="https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg" alt="Shopify" className="h-7" />
@@ -180,7 +180,7 @@ export default function Navbar() {
                 placeholder="Search by keyword, service, partner name, or country"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-11 h-11 rounded-full bg-white border-gray-300 text-black placeholder:text-gray-400" />
+                className="pl-10 h-9 rounded-full bg-white border-gray-300 text-black placeholder:text-gray-400" />
             </div>
           </form>
 
