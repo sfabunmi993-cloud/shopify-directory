@@ -199,7 +199,7 @@ export default function PartnerDetail() {
   null;
 
   return (
-    <div className="px-3 sm:px-6 lg:px-8 py-4 sm:py-8 max-w-7xl mx-auto">
+    <div className="sm:px-6 lg:px-8 sm:py-8 max-w-7xl mx-auto">
       <Link to="/directory" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-6 hidden">Back to directory        
 
       </Link>
@@ -233,12 +233,12 @@ export default function PartnerDetail() {
           {/* Partner tier badge */}
           {(() => {
             const tierLabel = partner.partner_tier === 'premium' ? 'PLATINUM' : partner.partner_tier === 'plus' ? 'PLUS' : '';
-            return tierLabel ? (
-              <div className="absolute top-3 right-3 inline-flex items-center gap-1 bg-black text-white text-[10px] font-semibold tracking-wide px-2 py-1 rounded">
+            return tierLabel ?
+            <div className="absolute top-3 right-3 inline-flex items-center gap-1 bg-black text-white text-[10px] font-semibold tracking-wide px-2 py-1 rounded">
                 <span className="w-3.5 h-3.5 bg-white text-black rounded-sm flex items-center justify-center text-[10px] font-bold leading-none">S</span>
                 SHOPIFY {tierLabel} PARTNER
-              </div>
-            ) : null;
+              </div> :
+            null;
           })()}
 
           <div className="pt-16 px-5 pb-5 space-y-4">
