@@ -106,6 +106,11 @@ export default function Navbar() {
 
           {/* Secondary nav — desktop */}
           <nav aria-label="Secondary" className="hidden lg:flex items-center gap-x-8 h-full">
+            {/* About */}
+            <Link to="/about" className="flex items-center h-full text-sm font-medium hover:underline">
+              About
+            </Link>
+
             {/* Browse */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

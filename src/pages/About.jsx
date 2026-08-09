@@ -57,6 +57,14 @@ export default function About() {
           </div>
         </section>
 
+        {/* Our story */}
+        <section>
+          <h2 className="font-heading text-2xl font-semibold mb-4">Our Story</h2>
+          <p className="text-muted-foreground leading-relaxed text-base">
+            Shopify Partners Directory started with a simple frustration: finding the right Shopify expert felt like searching for a needle in a haystack. Merchants were left to gamble on freelance marketplaces, skim scattered reviews, and hope for the best — while talented partners struggled to stand out in a sea of noise. We knew there had to be a better way. So we built a dedicated space where proven Shopify professionals could be discovered, compared, and hired with confidence. Our mission is to make every Shopify store owner's journey smoother by connecting them with partners who have already helped real businesses succeed. We focus on transparency, verified results, and honest reviews, so the trust is built into the platform itself. From store setup and custom development to marketing, branding, and growth strategy, our partners cover the full lifecycle of a Shopify business. Today, the directory serves a growing global community of merchants and experts, and we are just getting started. Every new partner, review, and success story pushes us closer to a world where no merchant ever has to guess when choosing the right help for their store.
+          </p>
+        </section>
+
         {/* Who builds it */}
         <section>
           <h2 className="font-heading text-2xl font-semibold mb-4">Who Builds It</h2>
