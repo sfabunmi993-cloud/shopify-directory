@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger } from
 '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 function useDarkMode() {
   const [dark, setDark] = useState(() => {
@@ -194,6 +194,7 @@ export default function Navbar() {
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
                     <Avatar className="w-9 h-9">
+                      {user?.picture && <AvatarImage src={user.picture} alt={user.full_name || 'Profile'} />}
                       <AvatarFallback className="bg-black/10 text-black text-xs font-semibold">{initials}</AvatarFallback>
                     </Avatar>
                     <ChevronDown className="w-3 h-3 text-black" />
@@ -285,6 +286,7 @@ export default function Navbar() {
             {user && (
               <div className="flex items-center gap-3 px-2 py-3 mb-2 bg-black/5 rounded-xl">
                 <Avatar className="w-9 h-9">
+                  {user?.picture && <AvatarImage src={user.picture} alt={user.full_name || 'Profile'} />}
                   <AvatarFallback className="bg-black/10 text-black text-sm font-semibold">{initials}</AvatarFallback>
                 </Avatar>
                 <div className="min-w-0">
