@@ -167,13 +167,13 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-2 ml-auto">
-            {/* About us — desktop */}
-            <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex text-black hover:bg-black/5">
+            {/* About us */}
+            <Button asChild variant="ghost" size="sm" className="inline-flex text-black hover:bg-black/5 text-xs sm:text-sm px-2 sm:px-4">
               <Link to="/about">About us</Link>
             </Button>
 
-            {/* Contact us — desktop */}
-            <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex text-black hover:bg-black/5">
+            {/* Contact us */}
+            <Button asChild variant="ghost" size="sm" className="inline-flex text-black hover:bg-black/5 text-xs sm:text-sm px-2 sm:px-4">
               <Link to="/contact">Contact us</Link>
             </Button>
 
