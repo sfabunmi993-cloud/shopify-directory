@@ -132,15 +132,15 @@ export default function SiteFooter() {
           </ul>
 
           {/* Social icons */}
-          <ul className="flex flex-wrap gap-4 hidden">
-            {SOCIAL.map((s) =>
-            <li key={s.label} className="h-8 w-8 rounded-full border border-white/15 flex items-center justify-center hover:opacity-70 transition-opacity duration-200">
-                <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={`External source: ${s.label} (Opens in a new window)`} className="text-white text-xs font-medium">
-                  {s.label[0]}
-                </a>
-              </li>
-            )}
-          </ul>
+          
+
+
+
+
+
+
+
+          
         </div>
       </div>
     </footer>);
