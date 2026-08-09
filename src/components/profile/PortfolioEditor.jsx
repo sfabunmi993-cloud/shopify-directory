@@ -74,7 +74,7 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
       const updated = [...items, newItem];
       await base44.entities.Partner.update(partnerId, { portfolio: updated });
       onChange(updated);
-      toast.success('Portfolio item added! Please add the store URL.');
+      toast.success('Portfolio item added!');
     } catch (err) {
       toast.error('Upload failed. Please try again.');
     } finally {
@@ -106,12 +106,7 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
     const storeUrl = (draft.store_url !== undefined ? draft.store_url : items[index]?.store_url || '').trim();
     const caption = (draft.caption !== undefined ? draft.caption : items[index]?.caption || '').trim();
 
-    if (!storeUrl) {
-      toast.error('Store URL is required.');
-      return;
-    }
-
-    const storeName = detectedNames[index] || items[index]?.store_name || getDomain(storeUrl) || '';
+    const storeName = detectedNames[index] || items[index]?.store_name || (storeUrl ? getDomain(storeUrl) : '') || '';
 
     const updated = items.map((item, i) =>
       i === index ? { ...item, store_url: storeUrl, store_name: storeName, caption } : item
@@ -148,7 +143,7 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
               {item.type === 'video' ? (
                 <video src={item.url} controls playsInline preload="metadata" className="w-full h-40 object-contain bg-black" />
               ) : (
-                <img src={item.url} alt={item.caption || 'Portfolio item'} className="w-full h-40 object-cover" />
+                <img src={item.url} alt={item.caption || 'Portfolio item'} className="w-full h-auto max-h-80 object-contain bg-muted" />
               )}
               <button
                 onClick={() => handleRemove(i)}
@@ -159,15 +154,10 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
                 {item.type === 'video' ? <Video className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
                 {item.type}
               </div>
-              {!hasStoreUrl && (
-                <div className="bg-amber-50 border-t border-amber-200 px-2 py-1 flex items-center gap-1 text-[10px] text-amber-700">
-                  <AlertCircle className="w-3 h-3 shrink-0" /> Store URL required
-                </div>
-              )}
               <div className="p-2 space-y-1.5">
                 <div>
                   <label className="text-[10px] font-medium text-muted-foreground flex items-center gap-0.5">
-                    <Globe className="w-3 h-3" /> Store URL <span className="text-red-500">*</span>
+                    <Globe className="w-3 h-3" /> Store URL
                   </label>
                   <Input
                     placeholder="https://mystore.com"
@@ -232,7 +222,7 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
 
       <p className="text-xs text-muted-foreground flex items-center gap-1">
         <Upload className="w-3 h-3" />
-        You can upload up to {MAX_ITEMS} images or videos. {items.length}/{MAX_ITEMS} used. Store URL is required and auto-detects the store homepage.
+        You can upload up to {MAX_ITEMS} images or videos. {items.length}/{MAX_ITEMS} used. Store URL is optional and auto-detects the store homepage.
       </p>
     </div>
   );

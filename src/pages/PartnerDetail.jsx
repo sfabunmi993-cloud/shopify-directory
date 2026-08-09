@@ -521,7 +521,7 @@ export default function PartnerDetail() {
                   {item.type === 'video' ?
                 <video src={item.url} controls playsInline preload="metadata" className="w-full h-48 object-contain bg-black" /> :
 
-                <img src={item.url} alt={item.caption || 'Portfolio item'} className="w-full h-40 object-cover" />
+                <img src={item.url} alt={item.caption || 'Portfolio item'} className="w-full h-auto max-h-[30rem] object-contain bg-muted" />
                 }
                   <div className="p-3 space-y-2">
                     {item.caption &&

@@ -91,7 +91,7 @@
           },
           "store_url": {
             "type": "string",
-            "description": "Required store URL associated with this portfolio item"
+            "description": "Optional store URL associated with this portfolio item"
           },
           "store_name": {
             "type": "string",
@@ -100,8 +100,7 @@
         },
         "required": [
           "type",
-          "url",
-          "store_url"
+          "url"
         ]
       }
     },
