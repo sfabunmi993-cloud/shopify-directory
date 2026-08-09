@@ -67,7 +67,7 @@ export default function SiteFooter() {
   return (
     <footer className="relative bg-black text-[#a1a1aa] font-sans py-16 px-6 sm:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="grid gap-y-12 sm:grid-cols-3 sm:gap-x-8 my-2">
+        <div className="grid gap-y-12 sm:grid-cols-3 sm:gap-x-8">
           {/* Logo / back to top */}
           <a href="#main" className="inline-flex items-center gap-2 text-white mb-8 sm:mb-0" aria-label="Back to the top">
             <img src="https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/b9198dc01_image.png" alt="Shopify" className="w-10 h-10 rounded-lg object-contain" />
