@@ -34,8 +34,8 @@ export default function SupportChat() {
         agent_name: 'support-assistant',
         metadata: {
           name: 'Support Chat',
-          description: 'User support conversation',
-        },
+          description: 'User support conversation'
+        }
       });
       setConversation(newConversation);
 
@@ -62,7 +62,7 @@ export default function SupportChat() {
     try {
       await base44.agents.addMessage(conversation, {
         role: 'user',
-        content: userMessage,
+        content: userMessage
       });
     } catch (error) {
       console.error('Failed to send message:', error);
@@ -81,19 +81,19 @@ export default function SupportChat() {
   return (
     <>
       {/* Chat Toggle Button */}
-      {!isOpen && (
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50"
-          size="icon"
-        >
+      {!isOpen &&
+      <Button
+        onClick={() => setIsOpen(true)}
+        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50 hidden"
+        size="icon">
+        
           <MessageCircle className="w-6 h-6" />
         </Button>
-      )}
+      }
 
       {/* Chat Window */}
-      {isOpen && (
-        <Card className="fixed bottom-6 right-6 w-96 h-[500px] flex flex-col shadow-2xl z-50">
+      {isOpen &&
+      <Card className="fixed bottom-6 right-6 w-96 h-[500px] flex flex-col shadow-2xl z-50">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground rounded-t-lg">
             <div className="flex items-center gap-2">
@@ -106,11 +106,11 @@ export default function SupportChat() {
               </div>
             </div>
             <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(false)}
-              className="h-8 w-8 text-primary-foreground hover:bg-primary/80"
-            >
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsOpen(false)}
+            className="h-8 w-8 text-primary-foreground hover:bg-primary/80">
+            
               <X className="w-4 h-4" />
             </Button>
           </div>
@@ -118,65 +118,65 @@ export default function SupportChat() {
           {/* Messages */}
           <ScrollArea ref={scrollRef} className="flex-1 p-4">
             <div className="space-y-4">
-              {messages.length === 0 && (
-                <div className="text-center py-8">
+              {messages.length === 0 &&
+            <div className="text-center py-8">
                   <Bot className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
                   <p className="text-sm text-muted-foreground">
                     Hi! I'm your support assistant. Ask me anything about using
                     the platform!
                   </p>
                 </div>
-              )}
-              {messages.map((message, index) => (
-                <div
-                  key={index}
-                  className={cn(
-                    'flex',
-                    message.role === 'user' ? 'justify-end' : 'justify-start'
-                  )}
-                >
+            }
+              {messages.map((message, index) =>
+            <div
+              key={index}
+              className={cn(
+                'flex',
+                message.role === 'user' ? 'justify-end' : 'justify-start'
+              )}>
+              
                   <div
-                    className={cn(
-                      'max-w-[80%] rounded-lg px-3 py-2 text-sm',
-                      message.role === 'user'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted'
-                    )}
-                  >
-                    {message.role === 'assistant' ? (
-                      <ReactMarkdown
-                        className="prose prose-sm"
-                        components={{
-                          p: ({ children }) => (
-                            <p className="my-1">{children}</p>
-                          ),
-                          ul: ({ children }) => (
-                            <ul className="list-disc list-inside my-1">
+                className={cn(
+                  'max-w-[80%] rounded-lg px-3 py-2 text-sm',
+                  message.role === 'user' ?
+                  'bg-primary text-primary-foreground' :
+                  'bg-muted'
+                )}>
+                
+                    {message.role === 'assistant' ?
+                <ReactMarkdown
+                  className="prose prose-sm"
+                  components={{
+                    p: ({ children }) =>
+                    <p className="my-1">{children}</p>,
+
+                    ul: ({ children }) =>
+                    <ul className="list-disc list-inside my-1">
                               {children}
-                            </ul>
-                          ),
-                          ol: ({ children }) => (
-                            <ol className="list-decimal list-inside my-1">
+                            </ul>,
+
+                    ol: ({ children }) =>
+                    <ol className="list-decimal list-inside my-1">
                               {children}
                             </ol>
-                          ),
-                        }}
-                      >
+
+                  }}>
+                  
                         {message.content}
-                      </ReactMarkdown>
-                    ) : (
-                      <p>{message.content}</p>
-                    )}
+                      </ReactMarkdown> :
+
+                <p>{message.content}</p>
+                }
                   </div>
                 </div>
-              ))}
-              {isLoading && (
-                <div className="flex justify-start">
+            )}
+              {isLoading &&
+            <div className="flex justify-start">
                   <div className="bg-muted rounded-lg px-3 py-2">
                     <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
                   </div>
                 </div>
-              )}
+            }
             </div>
           </ScrollArea>
 
@@ -184,24 +184,24 @@ export default function SupportChat() {
           <div className="p-4 border-t">
             <div className="flex gap-2">
               <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Ask me anything..."
-                disabled={isLoading}
-                className="flex-1"
-              />
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Ask me anything..."
+              disabled={isLoading}
+              className="flex-1" />
+            
               <Button
-                onClick={sendMessage}
-                disabled={isLoading || !input.trim()}
-                size="icon"
-              >
+              onClick={sendMessage}
+              disabled={isLoading || !input.trim()}
+              size="icon">
+              
                 <Send className="w-4 h-4" />
               </Button>
             </div>
           </div>
         </Card>
-      )}
-    </>
-  );
+      }
+    </>);
+
 }
