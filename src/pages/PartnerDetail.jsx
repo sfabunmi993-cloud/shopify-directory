@@ -246,7 +246,7 @@ export default function PartnerDetail() {
             <div>
               <h1 className="font-heading text-2xl font-bold text-foreground leading-tight">{partner.name}</h1>
               <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                <span className="inline-flex items-center text-xs px-2 py-0.5 border border-[#E0E0E0] bg-[#F5F5F5] text-[#424242] rounded-full">Service partner</span>
+                <span className="inline-flex items-center text-xs px-2 py-0.5 border border-border bg-muted text-muted-foreground rounded-full">Service partner</span>
                 {partner.is_verified &&
                 <span className="inline-flex items-center gap-1 text-xs text-blue-600 font-medium">
                   <BadgeCheck className="w-3.5 h-3.5" /> Verified
@@ -261,7 +261,7 @@ export default function PartnerDetail() {
             </div>
 
             {/* Stats line */}
-            <div className="flex items-center gap-2 text-sm text-[#424242]">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               {partner.rating > 0 &&
               <>
                 <span className="flex items-center gap-1">
@@ -269,7 +269,7 @@ export default function PartnerDetail() {
                   <span className="font-semibold text-foreground">{partner.rating}</span>
                   <span className="text-muted-foreground">({partner.review_count || 0})</span>
                 </span>
-                {partner.years_as_partner > 0 && <span className="text-[#E0E0E0]">|</span>}
+                {partner.years_as_partner > 0 && <span className="text-border">|</span>}
               </>
               }
               {partner.years_as_partner > 0 &&
