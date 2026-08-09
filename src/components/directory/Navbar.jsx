@@ -258,6 +258,13 @@ export default function Navbar() {
               </div>
             )}
 
+            {/* Mobile: Become a Partner */}
+            {!user && (
+              <Button asChild className="md:hidden rounded-full bg-black text-white hover:bg-black/90 h-9 px-4 text-sm">
+                <Link to="/register">Become a Partner</Link>
+              </Button>
+            )}
+
             {/* Mobile: hamburger */}
             <button className="p-2 rounded-full hover:bg-black/5 transition-colors text-black lg:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
