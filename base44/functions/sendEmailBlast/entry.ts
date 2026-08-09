@@ -11,6 +11,7 @@ Deno.serve(async (req) => {
     }
 
     const { subject, body, recipients, senderName, senderEmail } = await req.json();
+    void senderEmail;
     
     if (!subject || !body) {
       return Response.json({ error: 'Subject and body are required' }, { status: 400 });
@@ -22,16 +23,9 @@ Deno.serve(async (req) => {
       // Use provided list of email strings
       emailList = recipients.filter(e => typeof e === 'string' && e.includes('@'));
     } else {
-      // Fall back to all users — paginate so no registered user is missed
-      const pageSize = 100;
-      let skip = 0;
-      let hasMore = true;
-      while (hasMore) {
-        const batch = await base44.asServiceRole.entities.User.list('-created_date', pageSize, skip);
-        emailList = emailList.concat(batch.map(u => u.email).filter(Boolean));
-        skip += batch.length;
-        hasMore = batch.length === pageSize;
-      }
+      // Fall back to all registered users
+      const allUsers = await base44.asServiceRole.entities.User.filter({});
+      emailList = allUsers.map(u => u.email).filter(Boolean);
     }
     
     if (emailList.length === 0) {
@@ -43,18 +37,43 @@ Deno.serve(async (req) => {
 
     const fromName = senderName?.trim() || 'Shopify Partners Directory';
 
-    for (const email of emailList) {
+    // Send via the connected Gmail account so the blast reaches every recipient's Gmail inbox
+    const token = await base44.asServiceRole.connectors.getConnection('gmail');
+    const fromAddress = senderEmail?.trim() || 'fabunmi.net@gmail.com';
+
+    const buildRaw = (to: string) => {
+      const headers = [
+        `From: ${fromName} <${fromAddress}>`,
+        `To: ${to}`,
+        `Subject: ${subject}`,
+        'Content-Type: text/plain; charset=utf-8',
+        'MIME-Version: 1.0',
+        '',
+        body,
+      ].join('\r\n');
+      // Base64url-encode the UTF-8 RFC822 message
+      const b64 = btoa(unescape(encodeURIComponent(headers)));
+      return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    };
+
+    const sendOne = async (to: string) => {
       try {
-        await base44.asServiceRole.integrations.Core.SendEmail({
-          to: email,
-          subject,
-          body,
-          from_name: fromName,
+        const res = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ raw: buildRaw(to) }),
         });
+        if (!res.ok) throw new Error(`Gmail API ${res.status}`);
         sentCount++;
       } catch (err) {
         failedCount++;
       }
+    };
+
+    // Send in small parallel batches to stay within Gmail rate limits
+    const batchSize = 8;
+    for (let i = 0; i < emailList.length; i += batchSize) {
+      await Promise.all(emailList.slice(i, i + batchSize).map(sendOne));
     }
 
     return Response.json({ 
