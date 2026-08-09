@@ -221,28 +221,10 @@ export default function PartnerDetail() {
         </div>
       }
 
-      <div className="grid md:grid-cols-[260px_1fr] gap-4 sm:gap-8 items-start">
-
-        {/* Owner-only actions */}
-        <div className="space-y-2 mb-3">
-          {user && partner.created_by_id === user.id &&
-          <button
-            onClick={() => setBuyReviewOpen(true)}
-            className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 rounded-full">
-            <Star className="w-4 h-4 fill-amber-400 text-amber-500" /> Buy Reviews
-          </button>
-          }
-          {user && partner.created_by_id === user.id && partner.status === 'pending' &&
-          <button
-            onClick={() => setBuyDomainOpen(true)}
-            className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-primary text-primary-foreground hover:bg-primary/90 rounded-full">
-            <Globe className="w-4 h-4" /> Buy Domain
-          </button>
-          }
-        </div>
+      <div className="grid md:grid-cols-[300px_1fr] gap-4 sm:gap-8 items-start">
 
         {/* LEFT SIDEBAR CARD */}
-        <div className="relative bg-white border border-[#E0E0E0] rounded-xl shadow-sm">
+        <div className="relative bg-white border border-[#E0E0E0] rounded-xl shadow-sm mt-10">
           {/* Avatar overlapping top edge */}
           <div className="absolute left-5 -top-10">
             <PartnerAvatar partner={partner} size="lg" shape="rounded-full" className="border-2 border-white shadow-md" />
@@ -433,6 +415,24 @@ export default function PartnerDetail() {
                   {partner.completed_projects}+
                 </p>
               </div>
+              }
+            </div>
+
+            {/* Owner-only actions */}
+            <div className="space-y-2 pt-4 border-t border-[#DFE3E8]">
+              {user && partner.created_by_id === user.id &&
+              <button
+                onClick={() => setBuyReviewOpen(true)}
+                className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 rounded-full">
+                <Star className="w-4 h-4 fill-amber-400 text-amber-500" /> Buy Reviews
+              </button>
+              }
+              {user && partner.created_by_id === user.id && partner.status === 'pending' &&
+              <button
+                onClick={() => setBuyDomainOpen(true)}
+                className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-primary text-primary-foreground hover:bg-primary/90 rounded-full">
+                <Globe className="w-4 h-4" /> Buy Domain
+              </button>
               }
             </div>
           </div>
