@@ -1,21 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Search, Star, ShieldCheck, MessageSquare, Award, Sparkles } from 'lucide-react';
+import { ArrowRight, Search, Star, ShieldCheck, MessageSquare, ThumbsUp, Circle, Crosshair, Atom, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SERVICES } from '@/data/services';
 import SiteFooter from '@/components/home/SiteFooter';
 
 const STEPS = [
 { icon: Search, title: 'Browse', text: 'Refine your search based on what matters most to you, such as price, location, and services.' },
-{ icon: Star, title: 'Evaluate', text: 'Check reviews, work samples, certifications, and more to make an informed choice.' },
+{ icon: ThumbsUp, title: 'Evaluate', text: 'Check reviews, work samples, certifications, and more to make an informed choice.' },
 { icon: MessageSquare, title: 'Contact and collaborate', text: 'Communicate directly with the partner, set your project terms, and start collaborating.' }];
 
 
 const TIERS = [
-{ label: 'Select partners', desc: 'New and growing partners building their experience on Shopify.', color: 'bg-muted text-muted-foreground', tier: 'standard' },
-{ label: 'Plus partners', desc: 'Established partners with a proven history of success.', color: 'bg-primary/10 text-primary', tier: 'plus' },
-{ label: 'Premier partners', desc: 'Top-performing partners delivering exceptional results.', color: 'bg-amber-50 text-amber-700', tier: 'premium' },
-{ label: 'Platinum partners', desc: 'Our most elite partners with the highest level of expertise.', color: 'bg-slate-100 text-slate-700', tier: 'premium' }];
+{ icon: Circle, label: 'Select partners' },
+{ icon: Crosshair, label: 'Plus partners' },
+{ icon: Atom, label: 'Premier partners' }];
 
 
 export default function Home() {
@@ -103,63 +102,72 @@ export default function Home() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="py-16 lg:py-24 bg-secondary">
+      <section className="py-16 lg:py-24 bg-[#151c1a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <p className="text-sm font-semibold uppercase tracking-wide text-primary">How it works</p>
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground mt-2">Hire quickly with confidence</h2>
-            <p className="text-muted-foreground mt-3">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#d4ff8a]">How it works</p>
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-white mt-3">Hire quickly with confidence</h2>
+            <p className="text-white/60 mt-3">
               Partners listed in the directory work independently to provide you with the best service.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {STEPS.map((step, i) => {
+          <div className="grid md:grid-cols-3 gap-10">
+            {STEPS.map((step) => {
               const Icon = step.icon;
               return (
-                <div key={step.title} className="text-center">
-                  <div className="relative mx-auto w-14 h-14 rounded-full text-primary-foreground flex items-center justify-center mb-5 bg-gray-950">
-                    <Icon className="w-6 h-6" />
-                    <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-foreground text-background text-xs font-bold flex items-center justify-center">{i + 1}</span>
+                <div key={step.title}>
+                  <div className="w-12 h-12 rounded-xl bg-[#d4ff8a] flex items-center justify-center mb-5">
+                    <Icon className="w-6 h-6 text-[#151c1a]" strokeWidth={2} />
                   </div>
-                  <h3 className="font-heading text-xl font-semibold text-foreground mb-2">{step.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">{step.text}</p>
-                </div>);
-
+                  <h3 className="font-heading text-xl font-semibold text-white mb-2">{step.title}</h3>
+                  <p className="text-sm text-white/60 leading-relaxed max-w-xs">{step.text}</p>
+                </div>
+              );
             })}
-          </div>
-          <div className="text-center mt-12">
-            <Button asChild size="lg" className="rounded-full text-base h-12 px-8 bg-black text-white sm:bg-gray-950">
-              <Link to="/directory">Hire an expert</Link>
-            </Button>
           </div>
         </div>
       </section>
 
       {/* PARTNER TIERS */}
-      <section className="py-16 lg:py-24 bg-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <p className="text-sm font-semibold uppercase tracking-wide text-primary">Partner tiers</p>
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground mt-2">Find the right fit</h2>
-            <p className="text-muted-foreground mt-3">
+      <section
+        className="py-16 lg:py-24 bg-[#F4F7F6]"
+        style={{
+          backgroundImage:
+            'linear-gradient(to right, rgba(180,200,255,0.25) 1px, transparent 1px), linear-gradient(to bottom, rgba(180,200,255,0.25) 1px, transparent 1px)',
+          backgroundSize: '32px 32px',
+        }}
+      >
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#666666]">Partner tiers</p>
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-[#111111] mt-3">Find the right fit</h2>
+            <p className="text-[#444444] mt-3">
               Partners are tiered based on multiple factors, including their history of experience and proven success on Shopify.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {TIERS.map((t) =>
-            <div key={t.label} className="rounded-2xl border border-border bg-card p-6 text-center hover:shadow-md transition-shadow">
-                <div className={`mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-4 ${t.color}`}>
-                  <Award className="w-6 h-6" />
+          <div className="rounded-2xl bg-white border border-[#DDDDDD] overflow-hidden">
+            {TIERS.map((t, i) => {
+              const Icon = t.icon;
+              return (
+                <div
+                  key={t.label}
+                  className={`flex items-center justify-between gap-4 px-5 sm:px-8 py-5 ${i > 0 ? 'border-t border-[#EEEEEE]' : ''}`}
+                >
+                  <div className="flex items-center gap-4 min-w-0">
+                    <div className="w-11 h-11 rounded-lg bg-[#C8F08F] flex items-center justify-center shrink-0">
+                      <Icon className="w-5 h-5 text-[#151c1a]" strokeWidth={2} />
+                    </div>
+                    <h3 className="font-heading text-lg font-semibold text-black truncate">{t.label}</h3>
+                  </div>
+                  <Link
+                    to="/directory"
+                    className="inline-flex items-center gap-1 text-sm font-medium text-black underline underline-offset-2 shrink-0"
+                  >
+                    Browse <ArrowRight className="w-4 h-4" />
+                  </Link>
                 </div>
-                <h3 className="font-heading text-lg font-semibold text-foreground">{t.label}</h3>
-                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{t.desc}</p>
-                <Link
-                to="/directory"
-                className="inline-flex items-center gap-1 mt-4 text-sm font-medium text-primary hover:gap-2 transition-all">
-                  Browse <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            )}
+              );
+            })}
           </div>
         </div>
       </section>
