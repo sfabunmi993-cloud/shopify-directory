@@ -241,7 +241,7 @@ export default function Navbar() {
                   <Link to="/login">Log in</Link>
                 </Button>
                 <Button asChild size="sm" className="rounded-full bg-black text-white hover:bg-black/90">
-                  <Link to="/register">Become a Partner</Link>
+                  <Link to="/register">Login as an expert</Link>
                 </Button>
               </div>
             }
@@ -251,7 +251,7 @@ export default function Navbar() {
             <div className="md:hidden flex flex-col items-end gap-0.5">
                 <span className="text-[10px] text-black/60 leading-none">Are you a partner?</span>
                 <Button asChild size="sm" className="rounded-full bg-black text-white hover:bg-black/90 h-7 px-3 text-xs">
-                  <Link to="/register">Become a Partner</Link>
+                  <Link to="/register">Login as an expert</Link>
                 </Button>
               </div>
             }
@@ -345,7 +345,7 @@ export default function Navbar() {
                       <Link to="/login" onClick={() => setMobileMenuOpen(false)}>Log in</Link>
                     </Button>
                     <Button asChild className="w-full rounded-full bg-black text-white hover:bg-black/90">
-                      <Link to="/register" onClick={() => setMobileMenuOpen(false)}>Become a Partner</Link>
+                      <Link to="/register" onClick={() => setMobileMenuOpen(false)}>Login as an expert</Link>
                     </Button>
                   </div>
             }
