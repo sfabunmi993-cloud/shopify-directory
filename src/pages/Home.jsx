@@ -37,7 +37,7 @@ export default function Home() {
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
                 <Button asChild size="lg" className="rounded-full text-base h-12 px-8">
-                  <Link to="/directory">Hire an expert <ArrowRight className="w-4 h-4 ml-1.5" /></Link>
+                  <Link to="/directory" className="bg-gray-950">Hire an expert</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="rounded-full text-base h-12 px-8">
                   <a href="https://www.shopify.com/" target="_blank" rel="noopener noreferrer">Login</a>
@@ -117,7 +117,7 @@ export default function Home() {
               const Icon = step.icon;
               return (
                 <div key={step.title} className="text-center">
-                  <div className="relative mx-auto w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center mb-5">
+                  <div className="relative mx-auto w-14 h-14 rounded-full text-primary-foreground flex items-center justify-center mb-5 bg-gray-950">
                     <Icon className="w-6 h-6" />
                     <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-foreground text-background text-xs font-bold flex items-center justify-center">{i + 1}</span>
                   </div>
@@ -129,7 +129,7 @@ export default function Home() {
           </div>
           <div className="text-center mt-12">
             <Button asChild size="lg" className="rounded-full text-base h-12 px-8">
-              <Link to="/directory">Hire an expert <ArrowRight className="w-4 h-4 ml-1.5" /></Link>
+              <Link to="/directory" className="bg-gray-950">Hire an expert</Link>
             </Button>
           </div>
         </div>
@@ -165,12 +165,12 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 lg:py-20 bg-primary text-primary-foreground">
+      <section className="py-16 lg:py-20 text-primary-foreground bg-gray-950">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-heading text-3xl sm:text-4xl font-bold">Ready to grow your business?</h2>
           <p className="text-primary-foreground/80 mt-3 text-lg">Browse our directory of expert Shopify partners and hire with confidence.</p>
           <Button asChild size="lg" variant="secondary" className="rounded-full text-base h-12 px-8 mt-6 bg-white text-primary hover:bg-white/90">
-            <Link to="/directory">Hire an expert <ArrowRight className="w-4 h-4 ml-1.5" /></Link>
+            <Link to="/directory" className="text-[#040605]">Hire an expert</Link>
           </Button>
         </div>
       </section>
