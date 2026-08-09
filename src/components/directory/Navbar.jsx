@@ -180,12 +180,12 @@ export default function Navbar() {
             {user ?
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
-                    <Avatar className="w-9 h-9">
+                  <button className="flex items-center gap-1.5 hover:opacity-80 transition-opacity p-1 -m-1">
+                    <Avatar className="w-11 h-11 md:w-9 md:h-9">
                       {user?.picture && <AvatarImage src={user.picture} alt={user.full_name || 'Profile'} />}
-                      <AvatarFallback className="bg-black/10 text-black text-xs font-semibold">{initials}</AvatarFallback>
+                      <AvatarFallback className="bg-black/10 text-black text-sm md:text-xs font-semibold">{initials}</AvatarFallback>
                     </Avatar>
-                    <ChevronDown className="w-3 h-3 text-black" />
+                    <ChevronDown className="w-4 h-4 md:w-3 md:h-3 text-black" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
