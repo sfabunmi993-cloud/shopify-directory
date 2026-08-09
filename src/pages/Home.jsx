@@ -4,62 +4,62 @@ import { ArrowRight, Search, Star, ShieldCheck, MessageSquare, Award, Sparkles, 
 import { Button } from '@/components/ui/button';
 
 const SERVICES = [
-  {
-    icon: Store,
-    title: 'Store build or redesign',
-    description: 'Set up a new Shopify store or redesign an existing one with options ranging from basic theme setup to custom solutions.',
-    category: 'store_setup_and_management',
-    img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/6706093196ba5a4cfd46930c920a1270.png?width=607&height=227&crop=center'
-  },
-  {
-    icon: Palette,
-    title: 'Theme customization',
-    description: 'Create custom pages and forms to personalize how customers discover and purchase your products.',
-    category: 'store_setup_and_management',
-    img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/1320383dfa49048ed1fb8f8b1cb2c42c.png?width=607&height=227&crop=center'
-  },
-  {
-    icon: Code,
-    title: 'Custom app integrations',
-    description: 'Add features and functionality to your store that require custom code, a custom-built app, or connecting to other systems.',
-    category: 'development_and_troubleshooting',
-    img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/94cd5c18e16a269a17ff764ff24d4844.png?width=607&height=227&crop=center'
-  },
-  {
-    icon: Wrench,
-    title: 'Troubleshooting',
-    description: 'Resolve any errors or issues in your store.',
-    category: 'development_and_troubleshooting',
-    img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/a924b746f35f691d40a92aa099a8c414.png?width=607&height=227&crop=center'
-  },
-  {
-    icon: Gauge,
-    title: 'Website audit and optimization strategy',
-    description: "Improve your site's overall performance with a comprehensive website audit.",
-    category: 'store_setup_and_management',
-    img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/714865d057342633e2d74002c52426aa.png?width=607&height=227&crop=center'
-  },
-  {
-    icon: Package,
-    title: 'Product and collection setup',
-    description: 'Set up your products with images and descriptions, or offer custom options like subscriptions and gift cards.',
-    category: 'store_setup_and_management',
-    img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/230b3a3c15ead6d846414b0da3a82329.png?width=607&height=227&crop=center'
-  }
-];
+{
+  icon: Store,
+  title: 'Store build or redesign',
+  description: 'Set up a new Shopify store or redesign an existing one with options ranging from basic theme setup to custom solutions.',
+  category: 'store_setup_and_management',
+  img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/6706093196ba5a4cfd46930c920a1270.png?width=607&height=227&crop=center'
+},
+{
+  icon: Palette,
+  title: 'Theme customization',
+  description: 'Create custom pages and forms to personalize how customers discover and purchase your products.',
+  category: 'store_setup_and_management',
+  img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/1320383dfa49048ed1fb8f8b1cb2c42c.png?width=607&height=227&crop=center'
+},
+{
+  icon: Code,
+  title: 'Custom app integrations',
+  description: 'Add features and functionality to your store that require custom code, a custom-built app, or connecting to other systems.',
+  category: 'development_and_troubleshooting',
+  img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/94cd5c18e16a269a17ff764ff24d4844.png?width=607&height=227&crop=center'
+},
+{
+  icon: Wrench,
+  title: 'Troubleshooting',
+  description: 'Resolve any errors or issues in your store.',
+  category: 'development_and_troubleshooting',
+  img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/a924b746f35f691d40a92aa099a8c414.png?width=607&height=227&crop=center'
+},
+{
+  icon: Gauge,
+  title: 'Website audit and optimization strategy',
+  description: "Improve your site's overall performance with a comprehensive website audit.",
+  category: 'store_setup_and_management',
+  img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/714865d057342633e2d74002c52426aa.png?width=607&height=227&crop=center'
+},
+{
+  icon: Package,
+  title: 'Product and collection setup',
+  description: 'Set up your products with images and descriptions, or offer custom options like subscriptions and gift cards.',
+  category: 'store_setup_and_management',
+  img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/230b3a3c15ead6d846414b0da3a82329.png?width=607&height=227&crop=center'
+}];
+
 
 const STEPS = [
-  { icon: Search, title: 'Browse', text: 'Refine your search based on what matters most to you, such as price, location, and services.' },
-  { icon: Star, title: 'Evaluate', text: 'Check reviews, work samples, certifications, and more to make an informed choice.' },
-  { icon: MessageSquare, title: 'Contact and collaborate', text: 'Communicate directly with the partner, set your project terms, and start collaborating.' }
-];
+{ icon: Search, title: 'Browse', text: 'Refine your search based on what matters most to you, such as price, location, and services.' },
+{ icon: Star, title: 'Evaluate', text: 'Check reviews, work samples, certifications, and more to make an informed choice.' },
+{ icon: MessageSquare, title: 'Contact and collaborate', text: 'Communicate directly with the partner, set your project terms, and start collaborating.' }];
+
 
 const TIERS = [
-  { label: 'Select partners', desc: 'New and growing partners building their experience on Shopify.', color: 'bg-muted text-muted-foreground', tier: 'standard' },
-  { label: 'Plus partners', desc: 'Established partners with a proven history of success.', color: 'bg-primary/10 text-primary', tier: 'plus' },
-  { label: 'Premier partners', desc: 'Top-performing partners delivering exceptional results.', color: 'bg-amber-50 text-amber-700', tier: 'premium' },
-  { label: 'Platinum partners', desc: 'Our most elite partners with the highest level of expertise.', color: 'bg-slate-100 text-slate-700', tier: 'premium' }
-];
+{ label: 'Select partners', desc: 'New and growing partners building their experience on Shopify.', color: 'bg-muted text-muted-foreground', tier: 'standard' },
+{ label: 'Plus partners', desc: 'Established partners with a proven history of success.', color: 'bg-primary/10 text-primary', tier: 'plus' },
+{ label: 'Premier partners', desc: 'Top-performing partners delivering exceptional results.', color: 'bg-amber-50 text-amber-700', tier: 'premium' },
+{ label: 'Platinum partners', desc: 'Our most elite partners with the highest level of expertise.', color: 'bg-slate-100 text-slate-700', tier: 'premium' }];
+
 
 export default function Home() {
   return (
@@ -83,7 +83,7 @@ export default function Home() {
                   <Link to="/directory">Hire an expert <ArrowRight className="w-4 h-4 ml-1.5" /></Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="rounded-full text-base h-12 px-8">
-                  <Link to="/become-a-partner">Become a partner</Link>
+                  <Link to="/become-a-partner">Log</Link>
                 </Button>
               </div>
               <div className="mt-8 flex items-center gap-6 text-sm text-muted-foreground">
@@ -100,8 +100,8 @@ export default function Home() {
                 <img
                   src="https://cdn.shopify.com/b/shopify-brochure2-assets/440badc0499b9f199ed6577dea18f9a7.png?height=740"
                   alt="Shopify Partners"
-                  className="w-full h-full object-cover"
-                />
+                  className="w-full h-full object-cover" />
+                
               </div>
             </div>
           </div>
@@ -140,8 +140,8 @@ export default function Home() {
                       Browse <ArrowRight className="w-4 h-4" />
                     </Link>
                   </div>
-                </div>
-              );
+                </div>);
+
             })}
           </div>
         </div>
@@ -168,8 +168,8 @@ export default function Home() {
                   </div>
                   <h3 className="font-heading text-xl font-semibold text-foreground mb-2">{step.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">{step.text}</p>
-                </div>
-              );
+                </div>);
+
             })}
           </div>
           <div className="text-center mt-12">
@@ -191,20 +191,20 @@ export default function Home() {
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {TIERS.map((t) => (
-              <div key={t.label} className="rounded-2xl border border-border bg-card p-6 text-center hover:shadow-md transition-shadow">
+            {TIERS.map((t) =>
+            <div key={t.label} className="rounded-2xl border border-border bg-card p-6 text-center hover:shadow-md transition-shadow">
                 <div className={`mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-4 ${t.color}`}>
                   <Award className="w-6 h-6" />
                 </div>
                 <h3 className="font-heading text-lg font-semibold text-foreground">{t.label}</h3>
                 <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{t.desc}</p>
                 <Link
-                  to="/directory"
-                  className="inline-flex items-center gap-1 mt-4 text-sm font-medium text-primary hover:gap-2 transition-all">
+                to="/directory"
+                className="inline-flex items-center gap-1 mt-4 text-sm font-medium text-primary hover:gap-2 transition-all">
                   Browse <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>
@@ -252,6 +252,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>);
+
 }
