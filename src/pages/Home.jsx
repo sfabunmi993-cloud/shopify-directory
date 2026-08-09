@@ -1,142 +1,257 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import HeroSection from '@/components/directory/HeroSection';
-import PartnerCard from '@/components/directory/PartnerCard';
-import { ArrowRight, Star, Users, Globe } from 'lucide-react';
+import { ArrowRight, Search, Star, ShieldCheck, MessageSquare, Award, Sparkles, Store, Code, Wrench, Gauge, Package, Palette } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+
+const SERVICES = [
+  {
+    icon: Store,
+    title: 'Store build or redesign',
+    description: 'Set up a new Shopify store or redesign an existing one with options ranging from basic theme setup to custom solutions.',
+    category: 'store_setup_and_management',
+    img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/6706093196ba5a4cfd46930c920a1270.png?width=607&height=227&crop=center'
+  },
+  {
+    icon: Palette,
+    title: 'Theme customization',
+    description: 'Create custom pages and forms to personalize how customers discover and purchase your products.',
+    category: 'store_setup_and_management',
+    img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/1320383dfa49048ed1fb8f8b1cb2c42c.png?width=607&height=227&crop=center'
+  },
+  {
+    icon: Code,
+    title: 'Custom app integrations',
+    description: 'Add features and functionality to your store that require custom code, a custom-built app, or connecting to other systems.',
+    category: 'development_and_troubleshooting',
+    img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/94cd5c18e16a269a17ff764ff24d4844.png?width=607&height=227&crop=center'
+  },
+  {
+    icon: Wrench,
+    title: 'Troubleshooting',
+    description: 'Resolve any errors or issues in your store.',
+    category: 'development_and_troubleshooting',
+    img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/a924b746f35f691d40a92aa099a8c414.png?width=607&height=227&crop=center'
+  },
+  {
+    icon: Gauge,
+    title: 'Website audit and optimization strategy',
+    description: "Improve your site's overall performance with a comprehensive website audit.",
+    category: 'store_setup_and_management',
+    img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/714865d057342633e2d74002c52426aa.png?width=607&height=227&crop=center'
+  },
+  {
+    icon: Package,
+    title: 'Product and collection setup',
+    description: 'Set up your products with images and descriptions, or offer custom options like subscriptions and gift cards.',
+    category: 'store_setup_and_management',
+    img: 'https://cdn.shopify.com/b/shopify-brochure2-assets/230b3a3c15ead6d846414b0da3a82329.png?width=607&height=227&crop=center'
+  }
+];
+
+const STEPS = [
+  { icon: Search, title: 'Browse', text: 'Refine your search based on what matters most to you, such as price, location, and services.' },
+  { icon: Star, title: 'Evaluate', text: 'Check reviews, work samples, certifications, and more to make an informed choice.' },
+  { icon: MessageSquare, title: 'Contact and collaborate', text: 'Communicate directly with the partner, set your project terms, and start collaborating.' }
+];
+
+const TIERS = [
+  { label: 'Select partners', desc: 'New and growing partners building their experience on Shopify.', color: 'bg-muted text-muted-foreground', tier: 'standard' },
+  { label: 'Plus partners', desc: 'Established partners with a proven history of success.', color: 'bg-primary/10 text-primary', tier: 'plus' },
+  { label: 'Premier partners', desc: 'Top-performing partners delivering exceptional results.', color: 'bg-amber-50 text-amber-700', tier: 'premium' },
+  { label: 'Platinum partners', desc: 'Our most elite partners with the highest level of expertise.', color: 'bg-slate-100 text-slate-700', tier: 'premium' }
+];
 
 export default function Home() {
-  const { data: displayPartners, isLoading: loading } = useQuery({
-    queryKey: ['verified-partners'],
-    queryFn: () => base44.entities.Partner.filter({ is_verified: true }, '-rating', 50),
-    initialData: []
-  });
-
   return (
-    <div>
-      <HeroSection />
-
-      {/* Stats */}
-      <section className="border-y border-border bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+    <div className="bg-background">
+      {/* HERO */}
+      <section className="bg-gradient-to-b from-primary/5 to-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20 lg:pt-24 lg:pb-28">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Users className="w-5 h-5 text-primary" />
-                <span className="font-heading text-3xl font-bold text-foreground">4,971+</span>
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wide uppercase text-primary bg-primary/10 px-3 py-1 rounded-full">
+                <Sparkles className="w-3.5 h-3.5" /> Partner Directory
+              </span>
+              <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mt-4 leading-[1.05] tracking-tight">
+                Do more, faster with a Shopify partner
+              </h1>
+              <p className="text-lg text-muted-foreground mt-5 leading-relaxed max-w-xl">
+                Hire partners who fit your needs and budget, freeing you to focus on running your business.
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                <Button asChild size="lg" className="rounded-full text-base h-12 px-8">
+                  <Link to="/directory">Hire an expert <ArrowRight className="w-4 h-4 ml-1.5" /></Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="rounded-full text-base h-12 px-8">
+                  <Link to="/become-a-partner">Become a partner</Link>
+                </Button>
               </div>
-              <p className="text-sm text-muted-foreground">Service Partners</p>
+              <div className="mt-8 flex items-center gap-6 text-sm text-muted-foreground">
+                <div className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-primary" /> Verified experts
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Star className="w-4 h-4 text-amber-400 fill-amber-400" /> Trusted reviews
+                </div>
+              </div>
             </div>
-            <div>
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Star className="w-5 h-5 text-amber-400" />
-                <span className="font-heading text-3xl font-bold text-foreground">4.8</span>
+            <div className="relative">
+              <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-primary/10 shadow-xl">
+                <img
+                  src="https://cdn.shopify.com/b/shopify-brochure2-assets/440badc0499b9f199ed6577dea18f9a7.png?height=740"
+                  alt="Shopify Partners"
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <p className="text-sm text-muted-foreground">Average Rating</p>
-            </div>
-            <div>
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Globe className="w-5 h-5 text-primary" />
-                <span className="font-heading text-3xl font-bold text-foreground">150+</span>
-              </div>
-              <p className="text-sm text-muted-foreground">Countries</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Featured Partners */}
-      <section className="py-16 bg-secondary">
+      {/* SERVICES */}
+      <section className="py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">Top-rated partners</h2>
-              <p className="text-muted-foreground mt-1">Trusted professionals ready to help grow your business</p>
-            </div>
-            <Button asChild variant="ghost" className="hidden sm:flex text-primary font-medium">
-              <Link to="/directory">
-                View all <ArrowRight className="w-4 h-4 ml-1" />
-              </Link>
-            </Button>
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <p className="text-sm font-semibold uppercase tracking-wide text-primary">30+ services offered</p>
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground mt-2">Explore popular services</h2>
+            <p className="text-muted-foreground mt-3">
+              Whether you need help with store setup, design, marketing, or more, find partners for every project.
+            </p>
           </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            {loading ?
-            Array(4).fill(0).map((_, i) =>
-            <div key={i} className="border border-border rounded-xl p-5">
-                  <div className="flex gap-4">
-                    <Skeleton className="w-14 h-14 rounded-lg" />
-                    <div className="flex-1 space-y-2">
-                      <Skeleton className="h-5 w-40" />
-                      <Skeleton className="h-4 w-56" />
-                      <Skeleton className="h-4 w-32" />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {SERVICES.map((s) => {
+              const Icon = s.icon;
+              return (
+                <div key={s.title} className="group rounded-2xl border border-border bg-card overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="aspect-[16/6] overflow-hidden bg-muted">
+                    <img src={s.img} alt={s.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  </div>
+                  <div className="p-5">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <Icon className="w-4 h-4 text-primary" />
+                      </div>
+                      <h3 className="font-heading text-lg font-semibold text-foreground">{s.title}</h3>
                     </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{s.description}</p>
+                    <Link
+                      to={`/directory?category=${s.category}`}
+                      className="inline-flex items-center gap-1 mt-4 text-sm font-medium text-primary hover:gap-2 transition-all">
+                      Browse <ArrowRight className="w-4 h-4" />
+                    </Link>
                   </div>
                 </div>
-            ) :
-
-            displayPartners.slice(0, 6).map((partner) =>
-            <PartnerCard key={partner.id} partner={partner} />
-            )
-            }
+              );
+            })}
           </div>
+        </div>
+      </section>
 
-          <div className="mt-8 text-center sm:hidden">
-            <Button asChild variant="outline" className="rounded-full">
-              <Link to="/directory">View all partners <ArrowRight className="w-4 h-4 ml-1" /></Link>
+      {/* HOW IT WORKS */}
+      <section className="py-16 lg:py-24 bg-secondary">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <p className="text-sm font-semibold uppercase tracking-wide text-primary">How it works</p>
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground mt-2">Hire quickly with confidence</h2>
+            <p className="text-muted-foreground mt-3">
+              Partners listed in the directory work independently to provide you with the best service.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {STEPS.map((step, i) => {
+              const Icon = step.icon;
+              return (
+                <div key={step.title} className="text-center">
+                  <div className="relative mx-auto w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center mb-5">
+                    <Icon className="w-6 h-6" />
+                    <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-foreground text-background text-xs font-bold flex items-center justify-center">{i + 1}</span>
+                  </div>
+                  <h3 className="font-heading text-xl font-semibold text-foreground mb-2">{step.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">{step.text}</p>
+                </div>
+              );
+            })}
+          </div>
+          <div className="text-center mt-12">
+            <Button asChild size="lg" className="rounded-full text-base h-12 px-8">
+              <Link to="/directory">Hire an expert <ArrowRight className="w-4 h-4 ml-1.5" /></Link>
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* PARTNER TIERS */}
+      <section className="py-16 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <p className="text-sm font-semibold uppercase tracking-wide text-primary">Partner tiers</p>
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground mt-2">Find the right fit</h2>
+            <p className="text-muted-foreground mt-3">
+              Partners are tiered based on multiple factors, including their history of experience and proven success on Shopify.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {TIERS.map((t) => (
+              <div key={t.label} className="rounded-2xl border border-border bg-card p-6 text-center hover:shadow-md transition-shadow">
+                <div className={`mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-4 ${t.color}`}>
+                  <Award className="w-6 h-6" />
+                </div>
+                <h3 className="font-heading text-lg font-semibold text-foreground">{t.label}</h3>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{t.desc}</p>
+                <Link
+                  to="/directory"
+                  className="inline-flex items-center gap-1 mt-4 text-sm font-medium text-primary hover:gap-2 transition-all">
+                  Browse <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      
+      <section className="py-16 lg:py-20 bg-primary text-primary-foreground">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="font-heading text-3xl sm:text-4xl font-bold">Ready to grow your business?</h2>
+          <p className="text-primary-foreground/80 mt-3 text-lg">Browse our directory of expert Shopify partners and hire with confidence.</p>
+          <Button asChild size="lg" variant="secondary" className="rounded-full text-base h-12 px-8 mt-6 bg-white text-primary hover:bg-white/90">
+            <Link to="/directory">Hire an expert <ArrowRight className="w-4 h-4 ml-1.5" /></Link>
+          </Button>
+        </div>
+      </section>
 
-
-
-
-
-
-
-
-
-      
-
-      {/* Footer */}
-      <footer className="text-primary-foreground/70 py-12 bg-primary">
+      {/* FOOTER */}
+      <footer className="py-12 bg-foreground text-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid sm:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <img src="https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg" alt="Shopify" className="h-7 mt-4 mr-3" />
-                
+                <Store className="w-6 h-6" />
+                <span className="font-heading text-lg font-bold">Partner Directory</span>
               </div>
-              <p className="text-sm leading-relaxed">Find the right partner for your business needs.</p>
+              <p className="text-sm leading-relaxed text-background/60">Find the right partner for your business needs.</p>
             </div>
             <div>
-              <h4 className="font-semibold text-white mb-3 text-sm">Browse</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link to="/directory" className="hover:text-white transition-colors">All Partners</Link></li>
-                <li><Link to="/directory?category=marketing_and_sales" className="hover:text-white transition-colors">Marketing & Sales</Link></li>
-                <li><Link to="/directory?category=development_and_troubleshooting" className="hover:text-white transition-colors">Development</Link></li>
+              <h4 className="font-semibold mb-3 text-sm">Browse</h4>
+              <ul className="space-y-2 text-sm text-background/70">
+                <li><Link to="/directory" className="hover:text-background transition-colors">All Partners</Link></li>
+                <li><Link to="/directory?category=marketing_and_sales" className="hover:text-background transition-colors">Marketing & Sales</Link></li>
+                <li><Link to="/directory?category=development_and_troubleshooting" className="hover:text-background transition-colors">Development</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold text-white mb-3 text-sm">Company</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link to="/login" className="hover:text-white transition-colors">Log in</Link></li>
-                <li><Link to="/become-a-partner" className="hover:text-white transition-colors">Become a Partner</Link></li>
+              <h4 className="font-semibold mb-3 text-sm">Company</h4>
+              <ul className="space-y-2 text-sm text-background/70">
+                <li><Link to="/login" className="hover:text-background transition-colors">Log in</Link></li>
+                <li><Link to="/become-a-partner" className="hover:text-background transition-colors">Become a Partner</Link></li>
               </ul>
             </div>
           </div>
-          <div className="mt-10 pt-6 border-t border-white/10 text-xs text-white/40">
-            © {new Date().getFullYear()} Partners Directory. All rights reserved.
+          <div className="mt-10 pt-6 border-t border-background/10 text-xs text-background/40">
+            © {new Date().getFullYear()} Partner Directory. All rights reserved.
           </div>
         </div>
       </footer>
-    </div>);
-
+    </div>
+  );
 }
