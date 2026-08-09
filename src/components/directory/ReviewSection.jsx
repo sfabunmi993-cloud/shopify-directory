@@ -117,7 +117,7 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     : 0;
 
   return (
-    <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 w-full max-w-full">
+    <div className="bg-card border border-border rounded-2xl p-4 sm:p-6 w-full max-w-full">
       {/* Header */}
       <div className="flex items-center justify-between mb-5 mt-2">
         <div>
@@ -200,7 +200,7 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
                     <button
                       onClick={() => handleDeleteReview(review)}
                       disabled={deletingId === review.id}
-                      className="p-1 rounded hover:bg-red-50 text-muted-foreground hover:text-red-500 transition-colors"
+                      className="p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
                       title="Delete review"
                     >
                       {deletingId === review.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
