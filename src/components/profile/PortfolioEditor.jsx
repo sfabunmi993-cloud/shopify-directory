@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, Upload, X, Image as ImageIcon, Video, Plus, Globe, AlertCircle, Search } from 'lucide-react';
 import { toast } from 'sonner';
+import { compressVideo } from '@/lib/videoCompress';
 
 const MAX_ITEMS = 3;
 
@@ -23,6 +24,8 @@ function faviconUrl(url) {
 
 export default function PortfolioEditor({ portfolio = [], partnerId, onChange }) {
   const [uploading, setUploading] = useState(false);
+  const [compressing, setCompressing] = useState(false);
+  const [compressPct, setCompressPct] = useState(0);
   const [drafts, setDrafts] = useState({});
   const [detecting, setDetecting] = useState({});
   const [detectedNames, setDetectedNames] = useState({});
@@ -67,9 +70,21 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
       toast.error('Please upload an image or video file.');
       return;
     }
+    let finalFile = file;
+    if (isVideo) {
+      setCompressing(true);
+      setCompressPct(0);
+      try {
+        finalFile = await compressVideo(file, { onProgress: (p) => setCompressPct(Math.round(p * 100)) });
+      } catch {
+        finalFile = file;
+      } finally {
+        setCompressing(false);
+      }
+    }
     setUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: finalFile });
       const newItem = { type: detectType(file), url: file_url, store_url: '', store_name: '', caption: '' };
       const updated = [...items, newItem];
       await base44.entities.Partner.update(partnerId, { portfolio: updated });
@@ -202,7 +217,9 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
 
         {items.length < MAX_ITEMS && (
           <label className="border-2 border-dashed border-border rounded-xl h-44 flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-primary/40 hover:text-primary transition-all cursor-pointer">
-            {uploading ? (
+            {compressing ? (
+              <><Loader2 className="w-6 h-6 animate-spin" /><span className="text-sm">Compressing video... {compressPct}%</span></>
+            ) : uploading ? (
               <><Loader2 className="w-6 h-6 animate-spin" /><span className="text-sm">Uploading...</span></>
             ) : (
               <>
