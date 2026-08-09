@@ -82,7 +82,9 @@ export default function Navbar() {
         <div className="flex items-center h-12 gap-4">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img src="https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg" alt="Shopify" className="h-7" />
+            <a href="https://www.shopify.com/ng/partners" target="_blank" rel="noopener noreferrer">
+              <img src="https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg" alt="Shopify" className="h-7" />
+            </a>
           </Link>
 
           {/* Secondary nav — desktop */}
