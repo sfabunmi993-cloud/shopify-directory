@@ -117,7 +117,7 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
     : 0;
 
   return (
-    <div className="bg-white border border-border rounded-2xl p-6">
+    <div className="bg-white border border-border rounded-2xl p-6 w-full">
       {/* Header */}
       <div className="flex items-center justify-between mb-5 mt-2">
         <div>
