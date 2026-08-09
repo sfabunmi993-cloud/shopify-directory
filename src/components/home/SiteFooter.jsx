@@ -69,10 +69,10 @@ export default function SiteFooter() {
       <div className="max-w-7xl mx-auto">
         <div className="grid gap-y-12 sm:grid-cols-3 sm:gap-x-8 mx-1">
           {/* Logo / back to top */}
-          <a href="#main" className="inline-flex items-center gap-2 text-white sm:mb-0 text-lg mb-2 ml-16 hidden" aria-label="Back to the top">
+          
 
 
-          </a>
+          
 
           {/* Link columns */}
           <ul className="sm:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-10">
