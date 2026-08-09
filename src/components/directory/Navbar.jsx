@@ -76,28 +76,28 @@ export default function Navbar() {
   user?.email?.[0]?.toUpperCase() || '?';
 
   const serviceCategories = [
-    { label: 'Marketing and sales', to: '/directory?category=marketing_and_sales' },
-    { label: 'Store setup and management', to: '/directory?category=store_setup_and_management' },
-    { label: 'Development and troubleshooting', to: '/directory?category=development_and_troubleshooting' },
-    { label: 'Visual content and branding', to: '/directory?category=visual_content_and_branding' },
-    { label: 'Content writing', to: '/directory?category=content_writing' },
-    { label: 'Expert guidance', to: '/directory?category=expert_guidance' }
-  ];
+  { label: 'Marketing and sales', to: '/directory?category=marketing_and_sales' },
+  { label: 'Store setup and management', to: '/directory?category=store_setup_and_management' },
+  { label: 'Development and troubleshooting', to: '/directory?category=development_and_troubleshooting' },
+  { label: 'Visual content and branding', to: '/directory?category=visual_content_and_branding' },
+  { label: 'Content writing', to: '/directory?category=content_writing' },
+  { label: 'Expert guidance', to: '/directory?category=expert_guidance' }];
+
 
   const locations = [
-    { label: 'United States', to: '/directory?country=United States' },
-    { label: 'Canada', to: '/directory?country=Canada' },
-    { label: 'India', to: '/directory?country=India' },
-    { label: 'United Kingdom', to: '/directory?country=United Kingdom' },
-    { label: 'Australia', to: '/directory?country=Australia' },
-    { label: 'Germany', to: '/directory?country=Germany' },
-    { label: 'France', to: '/directory?country=France' },
-    { label: 'Italy', to: '/directory?country=Italy' }
-  ];
+  { label: 'United States', to: '/directory?country=United States' },
+  { label: 'Canada', to: '/directory?country=Canada' },
+  { label: 'India', to: '/directory?country=India' },
+  { label: 'United Kingdom', to: '/directory?country=United Kingdom' },
+  { label: 'Australia', to: '/directory?country=Australia' },
+  { label: 'Germany', to: '/directory?country=Germany' },
+  { label: 'France', to: '/directory?country=France' },
+  { label: 'Italy', to: '/directory?country=Italy' }];
+
 
   return (
     <header className="sticky top-0 z-50 bg-white text-black border-y border-black/20 shadow-sm">
-      <div className="w-full px-4 sm:px-6 lg:px-8">
+      <div className="w-full sm:px-6 lg:px-8 mx-32 px-64">
         <div className="flex items-center h-12 gap-4">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
@@ -142,11 +142,11 @@ export default function Navbar() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-64">
-                {serviceCategories.map((c) => (
-                  <DropdownMenuItem asChild key={c.label}>
+                {serviceCategories.map((c) =>
+                <DropdownMenuItem asChild key={c.label}>
                     <Link to={c.to}>{c.label}</Link>
                   </DropdownMenuItem>
-                ))}
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -158,11 +158,11 @@ export default function Navbar() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-60">
-                {locations.map((l) => (
-                  <DropdownMenuItem asChild key={l.label}>
+                {locations.map((l) =>
+                <DropdownMenuItem asChild key={l.label}>
                     <Link to={l.to}>{l.label}</Link>
                   </DropdownMenuItem>
-                ))}
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link to="/directory">View all partner locations</Link>
@@ -204,8 +204,8 @@ export default function Navbar() {
               {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
 
-            {user ? (
-              <DropdownMenu>
+            {user ?
+            <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
                     <Avatar className="w-9 h-9">
@@ -221,16 +221,16 @@ export default function Navbar() {
                     <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                   </div>
                   <DropdownMenuSeparator />
-                  {isAdmin && (
-                    <>
+                  {isAdmin &&
+                <>
                       <DropdownMenuItem asChild>
                         <Link to="/admin"><ShieldCheck className="w-4 h-4 mr-2" /> Admin Dashboard</Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                     </>
-                  )}
-                  {hasPartnerProfile ? (
-                    <>
+                }
+                  {hasPartnerProfile ?
+                <>
                       <DropdownMenuItem asChild>
                         <Link to="/my-profile"><User className="w-4 h-4 mr-2" /> My Profile</Link>
                       </DropdownMenuItem>
@@ -238,15 +238,15 @@ export default function Navbar() {
                         <Link to={`/partner/${partnerId}`}><LayoutDashboard className="w-4 h-4 mr-2" /> View Public Profile</Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                    </>
-                  ) : (
-                    <>
+                    </> :
+
+                <>
                       <DropdownMenuItem asChild>
                         <Link to="/become-a-partner"><User className="w-4 h-4 mr-2" /> Become a Partner</Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                     </>
-                  )}
+                }
                   <DropdownMenuItem asChild>
                     <Link to="/favorites"><Heart className="w-4 h-4 mr-2" /> Saved Partners</Link>
                   </DropdownMenuItem>
@@ -261,9 +261,9 @@ export default function Navbar() {
                     <LogOut className="w-4 h-4 mr-2" /> Log out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <div className="hidden md:flex items-center gap-2">
+              </DropdownMenu> :
+
+            <div className="hidden md:flex items-center gap-2">
                 <Button asChild variant="ghost" size="sm" className="text-black hover:bg-black/5">
                   <Link to="/login">Log in</Link>
                 </Button>
@@ -271,17 +271,17 @@ export default function Navbar() {
                   <Link to="/register">Become a Partner</Link>
                 </Button>
               </div>
-            )}
+            }
 
             {/* Mobile: Become a Partner */}
-            {!user && (
-              <div className="md:hidden flex flex-col items-end gap-0.5">
+            {!user &&
+            <div className="md:hidden flex flex-col items-end gap-0.5">
                 <span className="text-[10px] text-black/60 leading-none">Are you a partner?</span>
                 <Button asChild size="sm" className="rounded-full bg-black text-white hover:bg-black/90 h-7 px-3 text-xs">
                   <Link to="/register">Become a Partner</Link>
                 </Button>
               </div>
-            )}
+            }
 
             {/* Mobile: hamburger */}
             <button className="p-2 rounded-full hover:bg-black/5 transition-colors text-black lg:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -292,7 +292,7 @@ export default function Navbar() {
 
         {/* Mobile search bar */}
         <div className="md:hidden pb-3">
-          <form onSubmit={(e) => { handleSearch(e); setMobileMenuOpen(false); }}>
+          <form onSubmit={(e) => {handleSearch(e);setMobileMenuOpen(false);}}>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
@@ -306,10 +306,10 @@ export default function Navbar() {
         </div>
 
         {/* Mobile menu drawer */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-black/10 py-4 space-y-1">
-            {user && (
-              <div className="flex items-center gap-3 px-2 py-3 mb-2 bg-black/5 rounded-xl">
+        {mobileMenuOpen &&
+        <div className="lg:hidden border-t border-black/10 py-4 space-y-1">
+            {user &&
+          <div className="flex items-center gap-3 px-2 py-3 mb-2 bg-black/5 rounded-xl">
                 <Avatar className="w-9 h-9">
                   {user?.picture && <AvatarImage src={user.picture} alt={user.full_name || 'Profile'} />}
                   <AvatarFallback className="bg-black/10 text-black text-sm font-semibold">{initials}</AvatarFallback>
@@ -319,32 +319,32 @@ export default function Navbar() {
                   <p className="text-xs text-gray-500 truncate">{user.email}</p>
                 </div>
               </div>
-            )}
+          }
             <MobileLink to="/directory" onClick={() => setMobileMenuOpen(false)}>Browse All</MobileLink>
-            {serviceCategories.map((c) => (
-              <MobileLink key={c.label} to={c.to} onClick={() => setMobileMenuOpen(false)}>{c.label}</MobileLink>
-            ))}
-            {user ? (
-              <>
+            {serviceCategories.map((c) =>
+          <MobileLink key={c.label} to={c.to} onClick={() => setMobileMenuOpen(false)}>{c.label}</MobileLink>
+          )}
+            {user ?
+          <>
                 {isAdmin && <MobileLink to="/admin" onClick={() => setMobileMenuOpen(false)} highlight>Admin Dashboard</MobileLink>}
-                {hasPartnerProfile ? (
-                  <>
+                {hasPartnerProfile ?
+            <>
                     <MobileLink to="/my-profile" onClick={() => setMobileMenuOpen(false)}>My Profile</MobileLink>
                     <MobileLink to={`/partner/${partnerId}`} onClick={() => setMobileMenuOpen(false)}>View Public Profile</MobileLink>
-                  </>
-                ) : (
-                  <MobileLink to="/become-a-partner" onClick={() => setMobileMenuOpen(false)}>Become a Partner</MobileLink>
-                )}
+                  </> :
+
+            <MobileLink to="/become-a-partner" onClick={() => setMobileMenuOpen(false)}>Become a Partner</MobileLink>
+            }
                 <div className="pt-2 mt-2 border-t border-black/10">
                   <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-3 py-2.5 text-sm font-medium text-destructive hover:bg-destructive/10 rounded-lg transition-colors">
+                onClick={handleLogout}
+                className="w-full text-left px-3 py-2.5 text-sm font-medium text-destructive hover:bg-destructive/10 rounded-lg transition-colors">
                     Log out
                   </button>
                 </div>
-              </>
-            ) : (
-              <div className="flex flex-col gap-2 pt-2">
+              </> :
+
+          <div className="flex flex-col gap-2 pt-2">
                 <Button asChild variant="outline" className="w-full rounded-full border-black/20 text-black">
                   <Link to="/login" onClick={() => setMobileMenuOpen(false)}>Log in</Link>
                 </Button>
@@ -352,12 +352,12 @@ export default function Navbar() {
                   <Link to="/register" onClick={() => setMobileMenuOpen(false)}>Become a Partner</Link>
                 </Button>
               </div>
-            )}
+          }
           </div>
-        )}
+        }
       </div>
-    </header>
-  );
+    </header>);
+
 }
 
 function MobileLink({ to, onClick, children, highlight }) {
@@ -367,6 +367,6 @@ function MobileLink({ to, onClick, children, highlight }) {
       onClick={onClick}
       className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors hover:bg-black/5 text-black ${highlight ? 'text-primary' : ''}`}>
       {children}
-    </Link>
-  );
+    </Link>);
+
 }
