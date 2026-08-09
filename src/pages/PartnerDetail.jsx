@@ -287,7 +287,7 @@ export default function PartnerDetail() {
 
           {/* CTA Buttons */}
           <div className="space-y-2">
-            <Button className="w-full rounded-none" onClick={() => setContactOpen(true)}>
+            <Button className="w-full rounded-sm" onClick={() => setContactOpen(true)}>
                 <MessageSquare className="w-4 h-4 mr-1.5" /> Contact
               </Button>
             {partner.whatsapp_url &&
