@@ -58,7 +58,14 @@ export default function HeroSearch() {
   return (
     <div ref={wrapperRef} className="relative flex flex-col sm:flex-row gap-3 max-w-xl">
       <div className="relative flex-1">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+        <button
+          type="button"
+          onClick={() => runSearch(query)}
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-7 h-7 -ml-1.5 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+          aria-label="Search"
+        >
+          <Search className="w-5 h-5" />
+        </button>
         <input
           type="text"
           value={query}
