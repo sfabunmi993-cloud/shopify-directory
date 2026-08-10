@@ -33,11 +33,6 @@ export default function AdPopup() {
 
   const dismiss = () => {
     setVisible(false);
-    // Show the popup a second time (twice per login session), then stop.
-    shownCountRef.current += 1;
-    if (shownCountRef.current < 2 && ad) {
-      setTimeout(() => setVisible(true), 2000);
-    }
   };
 
   if (!visible || !ad) return null;
