@@ -46,65 +46,65 @@ export default function AdPopup() {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300">
       <div
         className="relative w-full max-w-md rounded-2xl shadow-2xl overflow-hidden"
-        style={{ backgroundColor: ad.bg_color || '#ffffff' }}
-      >
+        style={{ backgroundColor: ad.bg_color || '#ffffff' }}>
+        
         {/* Close X */}
         <button
           onClick={dismiss}
           className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/10 hover:bg-black/20 flex items-center justify-center transition-colors"
-          style={{ color: ad.text_color || '#111' }}
-        >
+          style={{ color: ad.text_color || '#111' }}>
+          
           <X className="w-4 h-4" />
         </button>
 
         {/* Video or Image */}
-        {ad.video_url ? (
-          <video
-            src={ad.video_url}
-            controls
-            autoPlay
-            className="w-full"
-            style={{ maxHeight: 300 }}
-          />
-        ) : ad.image_url ? (
-          <img
-            src={ad.image_url}
-            alt="Promotion"
-            className="w-full"
-            style={{ maxHeight: 300, objectFit: 'contain' }}
-            onError={e => e.target.style.display = 'none'}
-          />
-        ) : null}
+        {ad.video_url ?
+        <video
+          src={ad.video_url}
+          controls
+          autoPlay
+          className="w-full my-8"
+          style={{ maxHeight: 300 }} /> :
+
+        ad.image_url ?
+        <img
+          src={ad.image_url}
+          alt="Promotion"
+          className="w-full"
+          style={{ maxHeight: 300, objectFit: 'contain' }}
+          onError={(e) => e.target.style.display = 'none'} /> :
+
+        null}
 
         {/* Content */}
         <div className="p-6">
           <h2 className="text-xl font-bold leading-tight" style={{ color: ad.text_color || '#111' }}>
             {ad.title}
           </h2>
-          {ad.content && (
-            <p className="mt-2 text-sm leading-relaxed opacity-80" style={{ color: ad.text_color || '#111' }}>
+          {ad.content &&
+          <p className="mt-2 text-sm leading-relaxed opacity-80" style={{ color: ad.text_color || '#111' }}>
               {ad.content}
             </p>
-          )}
+          }
 
           <div className="flex gap-3 mt-5">
             <button
               className="flex-1 text-center py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
               style={{ backgroundColor: ad.button_color || '#166534' }}
-              onClick={() => { dismiss(); navigate(`/ad?id=${ad.id}`); }}
-            >
+              onClick={() => {dismiss();navigate(`/ad?id=${ad.id}`);}}>
+              
               {ad.button_text || 'Learn More'}
             </button>
             <button
               onClick={dismiss}
               className="px-4 py-2.5 rounded-xl text-sm font-medium border transition-colors hover:bg-black/5"
-              style={{ color: ad.text_color || '#111', borderColor: `${ad.text_color || '#111'}33` }}
-            >
+              style={{ color: ad.text_color || '#111', borderColor: `${ad.text_color || '#111'}33` }}>
+              
               No thanks
             </button>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
