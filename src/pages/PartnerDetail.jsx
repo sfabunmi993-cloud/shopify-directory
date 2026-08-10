@@ -285,9 +285,15 @@ export default function PartnerDetail() {
             </div>
 
             {/* Contact button */}
+            {contactHref ?
+            <Button asChild className="w-full h-11 bg-[#2e4049] hover:bg-[#2e4049]/90 rounded-lg text-white font-medium">
+              <a href={contactHref} target="_blank" rel="noopener noreferrer">Contact</a>
+            </Button>
+            :
             <Button className="w-full h-11 bg-[#2e4049] hover:bg-[#2e4049]/90 rounded-lg text-white font-medium" onClick={() => setContactOpen(true)}>
               Contact
             </Button>
+            }
 
             {/* Secondary actions */}
             {partner.whatsapp_url &&
