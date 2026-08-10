@@ -19,6 +19,11 @@ Deno.serve(async (req) => {
         .filter(Boolean)
     );
 
+    // Also protect partners manually marked as domain-purchased
+    for (const p of partners) {
+      if (p.domain_purchased) domainPaid.add(p.id);
+    }
+
     const cutoff = Date.now() - GRACE_MINUTES * 60 * 1000;
     const toRevert = partners.filter(
       (p) =>

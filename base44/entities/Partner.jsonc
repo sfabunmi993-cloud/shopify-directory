@@ -194,6 +194,11 @@
       "default": false,
       "description": "Whether this partner is approved for unlimited review purchases"
     },
+    "domain_purchased": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this partner has purchased a custom domain (manually marked or via payment)"
+    },
     "status": {
       "type": "string",
       "enum": [

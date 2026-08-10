@@ -18,7 +18,7 @@ function getPartnerRank(reviewCount = 0) {
 }
 
 export default function PartnerList(props) {
-  const { partners, onApprove, onRestrict, onBulkApprove, onBulkRestrict, onEditId, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds } = props;
+  const { partners, onApprove, onRestrict, onBulkApprove, onBulkRestrict, onEditId, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds, onToggleDomain } = props;
   const [selected, setSelected] = useState([]);
 
   if (partners.length === 0) {
@@ -146,6 +146,16 @@ export default function PartnerList(props) {
                 >
                   <InfinityIcon className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">{p.unlimited_reviews ? 'Unlimited ✓' : 'Unlimited'}</span>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className={`rounded-full gap-1 ${p.domain_purchased ? 'text-emerald-700 border-emerald-300 bg-emerald-50 hover:bg-emerald-100' : 'text-slate-500 border-slate-200 hover:bg-slate-50'}`}
+                  title={p.domain_purchased ? 'Remove domain mark' : 'Mark as domain-purchased'}
+                  onClick={() => onToggleDomain(p)}
+                >
+                  <Globe className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{p.domain_purchased ? 'Domain ✓' : 'Mark Domain'}</span>
                 </Button>
                 {showApprove && (
                   <Button size="sm" variant="outline" className="rounded-full text-emerald-700 border-emerald-200 hover:bg-emerald-50"
