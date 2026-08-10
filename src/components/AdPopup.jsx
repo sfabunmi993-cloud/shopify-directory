@@ -3,17 +3,12 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
 
-const SESSION_KEY = 'ad_popup_dismissed';
-
 export default function AdPopup() {
   const [ad, setAd] = useState(null);
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const dismissed = sessionStorage.getItem(SESSION_KEY);
-    if (dismissed) return;
-
     const load = async () => {
       try {
         const authed = await base44.auth.isAuthenticated();
@@ -36,7 +31,6 @@ export default function AdPopup() {
 
   const dismiss = () => {
     setVisible(false);
-    sessionStorage.setItem(SESSION_KEY, '1');
   };
 
   if (!visible || !ad) return null;
