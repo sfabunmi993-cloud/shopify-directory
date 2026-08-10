@@ -18,7 +18,7 @@ function getPartnerRank(reviewCount = 0) {
 }
 
 export default function PartnerList(props) {
-  const { partners, onApprove, onRestrict, onBulkApprove, onBulkRestrict, onEditId, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds, onToggleDomain } = props;
+  const { partners, onApprove, onRestrict, onBulkApprove, onBulkRestrict, onBulkMarkDomain, onEditId, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds, onToggleDomain } = props;
   const [selected, setSelected] = useState([]);
 
   if (partners.length === 0) {
@@ -55,6 +55,9 @@ export default function PartnerList(props) {
           </Button>
           <Button size="sm" variant="outline" className="rounded-full text-red-700 border-red-200 hover:bg-red-50" onClick={handleBulkRestrict}>
             <ShieldAlert className="w-3.5 h-3.5 mr-1" /> Restrict selected
+          </Button>
+          <Button size="sm" variant="outline" className="rounded-full text-emerald-700 border-emerald-200 hover:bg-emerald-50" onClick={() => { onBulkMarkDomain?.(selected); clearSelection(); }}>
+            <Globe className="w-3.5 h-3.5 mr-1" /> Mark domain selected
           </Button>
           <Button size="sm" variant="ghost" className="rounded-full" onClick={clearSelection}>Clear</Button>
         </div>
