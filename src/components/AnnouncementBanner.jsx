@@ -21,20 +21,33 @@ export default function AnnouncementBanner() {
     } catch {
       setDismissed([]);
     }
+
+    const priorityRank = { urgent: 4, high: 3, medium: 2, low: 1 };
+    const pickTop = (records) => {
+      const active = (records || []).filter((a) => a.is_active);
+      if (active.length === 0) {
+        setAnnouncement(null);
+        return;
+      }
+      const top = active.sort(
+        (a, b) => (priorityRank[b.priority] || 0) - (priorityRank[a.priority] || 0)
+      )[0];
+      setAnnouncement(top);
+    };
+
+    // Initial fetch
     base44.entities.Announcement.list('-created_date', 50)
-      .then((records) => {
-        const active = records.filter((a) => a.is_active);
-        if (active.length === 0) {
-          setAnnouncement(null);
-          return;
-        }
-        const priorityRank = { urgent: 4, high: 3, medium: 2, low: 1 };
-        const top = active.sort(
-          (a, b) => (priorityRank[b.priority] || 0) - (priorityRank[a.priority] || 0)
-        )[0];
-        setAnnouncement(top);
-      })
+      .then(pickTop)
       .catch(() => setAnnouncement(null));
+
+    // Realtime: update instantly when any announcement is created/updated/deleted
+    const unsubscribe = base44.entities.Announcement.subscribe((event) => {
+      base44.entities.Announcement.list('-created_date', 50)
+        .then(pickTop)
+        .catch(() => {});
+    });
+
+    return unsubscribe;
   }, []);
 
   if (!announcement || dismissed.includes(announcement.id)) return null;
