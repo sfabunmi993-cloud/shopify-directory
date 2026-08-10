@@ -146,9 +146,9 @@ export default function HeroSearch() {
           </div>
         }
       </div>
-      <Button type="submit" onClick={handleSubmit} size="icon" className="h-12 w-12 rounded-full bg-black text-white hover:bg-black/90 shrink-0 hidden">
-        <Search className="w-5 h-5" />
-      </Button>
+      
+
+      
     </div>);
 
 }
