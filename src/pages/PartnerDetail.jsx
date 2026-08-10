@@ -120,6 +120,10 @@ export default function PartnerDetail() {
       }
     };
     init();
+    // Count this as a profile view (click) for analytics.
+    if (partnerId) {
+      base44.functions.invoke('incrementPartnerView', { partner_id: partnerId }).catch(() => {});
+    }
   }, [partnerId]);
 
   const handleToggleFavorite = async () => {

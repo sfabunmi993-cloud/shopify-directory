@@ -9,7 +9,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
     }
 
-    const partners = await base44.asServiceRole.entities.Partner.list('-review_count', 200);
+    const partners = await base44.asServiceRole.entities.Partner.list('-profile_views', 200);
 
     const analyticsArray = partners
       .filter(p => p.status === 'approved')
@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
         partner_id: p.id,
         partner_name: p.name,
         slug: p.slug,
-        total_users: p.review_count || 0,
+        total_users: p.profile_views || 0,
         rating: p.rating || 0,
         completed_projects: p.completed_projects || 0,
       }));

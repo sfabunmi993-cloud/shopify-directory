@@ -1081,7 +1081,7 @@ function PartnerAnalytics({ analyticsData, loading, onRefresh }) {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="font-heading text-xl font-bold text-foreground">Partner Activity Overview</h3>
-          <p className="text-sm text-muted-foreground mt-1">Reviews & ratings per approved partner</p>
+          <p className="text-sm text-muted-foreground mt-1">Profile clicks per approved partner</p>
         </div>
         <Button onClick={onRefresh} variant="outline" size="sm">
           <TrendingUp className="w-4 h-4 mr-1.5" />
@@ -1113,7 +1113,7 @@ function PartnerAnalytics({ analyticsData, loading, onRefresh }) {
                 <div className="flex items-center gap-4 shrink-0">
                   <div className="text-right">
                     <p className="text-sm font-bold text-foreground">{reviews.toLocaleString()}</p>
-                    <p className="text-xs text-muted-foreground">reviews</p>
+                    <p className="text-xs text-muted-foreground">clicks</p>
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-bold text-amber-600">★ {partner.rating?.toFixed(1) || '—'}</p>

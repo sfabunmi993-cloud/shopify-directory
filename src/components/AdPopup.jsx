@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
@@ -7,6 +7,7 @@ export default function AdPopup() {
   const [ad, setAd] = useState(null);
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
+  const shownCountRef = useRef(0);
 
   useEffect(() => {
     const load = async () => {
@@ -21,6 +22,7 @@ export default function AdPopup() {
         const ads = await base44.entities.AdPromotion.filter({ is_active: true });
         if (ads.length > 0) {
           setAd(ads[0]);
+          // Show the ad for the first time shortly after login.
           setTimeout(() => setVisible(true), 2000);
         }
       } catch (_) {}
@@ -31,6 +33,11 @@ export default function AdPopup() {
 
   const dismiss = () => {
     setVisible(false);
+    // Show the popup a second time (twice per login session), then stop.
+    shownCountRef.current += 1;
+    if (shownCountRef.current < 2 && ad) {
+      setTimeout(() => setVisible(true), 2000);
+    }
   };
 
   if (!visible || !ad) return null;

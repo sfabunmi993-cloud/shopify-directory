@@ -162,6 +162,11 @@
       "type": "number",
       "description": "Number of completed projects"
     },
+    "profile_views": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of times this partner's profile has been viewed (clicks)"
+    },
     "languages": {
       "type": "array",
       "description": "Languages spoken",
