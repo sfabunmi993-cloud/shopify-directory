@@ -56,7 +56,6 @@ export default function AdPopup() {
             src={ad.video_url}
             controls
             autoPlay
-            muted
             className="w-full"
             style={{ maxHeight: 300 }}
           />
