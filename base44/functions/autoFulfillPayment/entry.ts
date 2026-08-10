@@ -41,6 +41,7 @@ Deno.serve(async (req) => {
             rating: r.rating,
             comment: r.comment,
             is_purchased: true,
+            payment_id: payment.id,
           });
         }
         // Recompute and store the partner rating.

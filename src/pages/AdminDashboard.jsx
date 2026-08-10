@@ -319,7 +319,13 @@ export default function AdminDashboard() {
 
   const handleRejectPayment = async (payment) => {
     await base44.entities.Payment.update(payment.id, { status: 'rejected' });
-    toast.success('Payment rejected.');
+    // Remove any reviews that were auto-added for this payment and recompute the rating.
+    try {
+      await base44.functions.invoke('rollbackPaymentReviews', { id: payment.id, partner_id: payment.partner_id });
+    } catch (err) {
+      console.error('Failed to roll back reviews:', err);
+    }
+    toast.success('Payment rejected & linked reviews removed.');
     loadData();
   };
 
@@ -1007,6 +1013,13 @@ function PaymentList({ payments, onApprove, onReject }) {
               </Button>
               <Button size="sm" variant="outline" className="rounded-full text-red-700 border-red-200 hover:bg-red-50" onClick={() => onReject(pay)}>
                 <XCircle className="w-3.5 h-3.5 mr-1" /> Reject
+              </Button>
+            </div>
+          )}
+          {pay.status === 'approved' && (
+            <div className="flex gap-2 shrink-0">
+              <Button size="sm" variant="outline" className="rounded-full text-red-700 border-red-200 hover:bg-red-50" onClick={() => onReject(pay)}>
+                <XCircle className="w-3.5 h-3.5 mr-1" /> Reject & Remove Reviews
               </Button>
             </div>
           )}

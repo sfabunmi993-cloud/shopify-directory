@@ -28,6 +28,10 @@
       "default": false,
       "description": "Whether this review was submitted as part of a purchased review package"
     },
+    "payment_id": {
+      "type": "string",
+      "description": "ID of the payment that generated this review (for purchased review packages), used to roll back reviews if the payment is rejected"
+    },
     "portfolio_item_url": {
       "type": "string",
       "description": "URL of the portfolio item this review is for (if reviewing a specific portfolio item)"
