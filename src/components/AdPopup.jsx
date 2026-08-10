@@ -16,6 +16,13 @@ export default function AdPopup() {
 
     const load = async () => {
       try {
+        const authed = await base44.auth.isAuthenticated();
+        if (!authed) return;
+        const me = await base44.auth.me();
+        // Only show the ad popup to experts (users with a partner profile)
+        const partners = await base44.entities.Partner.filter({ created_by_id: me.id });
+        if (partners.length === 0) return;
+
         const ads = await base44.entities.AdPromotion.filter({ is_active: true });
         if (ads.length > 0) {
           setAd(ads[0]);
