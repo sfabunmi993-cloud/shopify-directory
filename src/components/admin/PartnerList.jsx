@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Link as LinkIcon, Eye, Edit2, BadgeCheck, Star, Infinity as InfinityIcon, Bell, XCircle, CheckCircle, EyeOff, Trash2, Loader2, ShieldAlert } from 'lucide-react';
+import { Link as LinkIcon, Eye, Edit2, BadgeCheck, Star, Infinity as InfinityIcon, Bell, XCircle, CheckCircle, EyeOff, Trash2, Loader2, ShieldAlert, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 
 const STATUS_STYLES = {
@@ -18,7 +18,7 @@ function getPartnerRank(reviewCount = 0) {
 }
 
 export default function PartnerList(props) {
-  const { partners, onApprove, onRestrict, onBulkApprove, onBulkRestrict, onEditId, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete } = props;
+  const { partners, onApprove, onRestrict, onBulkApprove, onBulkRestrict, onEditId, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds } = props;
   const [selected, setSelected] = useState([]);
 
   if (partners.length === 0) {
@@ -29,6 +29,11 @@ export default function PartnerList(props) {
   const toggleSelect = (id) => setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   const toggleSelectAll = () => setSelected(allSelected ? [] : partners.map(p => p.id));
   const clearSelection = () => setSelected([]);
+  const selectDomainPaid = () => {
+    const ids = partners.filter(p => domainPaidPartnerIds?.has(p.id)).map(p => p.id);
+    setSelected(ids);
+    if (ids.length === 0) toast.info('No domain-paid partners in this list.');
+  };
 
   const handleBulkApprove = () => {
     onBulkApprove?.(selected);
@@ -56,7 +61,7 @@ export default function PartnerList(props) {
       )}
 
       {/* Select all row */}
-      <div className="flex items-center gap-3 px-1">
+      <div className="flex items-center gap-3 flex-wrap px-1">
         <input
           type="checkbox"
           checked={allSelected}
@@ -66,6 +71,9 @@ export default function PartnerList(props) {
         <span className="text-xs text-muted-foreground">
           {selected.length} of {partners.length} selected
         </span>
+        <Button size="sm" variant="outline" className="rounded-full h-7 text-xs gap-1" onClick={selectDomainPaid}>
+          <Globe className="w-3 h-3" /> Select domain-paid
+        </Button>
       </div>
 
       {partners.map(p => {
