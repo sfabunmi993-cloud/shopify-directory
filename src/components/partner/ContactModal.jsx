@@ -108,18 +108,8 @@ export default function ContactModal({ partner, isOpen, onClose, mode = 'inquiry
       is_read: false
     });
 
-    // Notify the partner via their registered login email (backend guarantees deliverable address)
-    base44.functions.invoke('notifyPartnerInquiry', {
-      partner_id: partner.id,
-      client_name: form.full_name.trim(),
-      client_email: form.email.trim(),
-      country: form.country,
-      store_url: form.store_url.trim() || undefined,
-      service: form.service,
-      budget: form.budget.trim(),
-      collaborator_code: form.collaborator_code.trim() || undefined,
-      message: form.message.trim(),
-    }).catch(() => {});
+    // Partner notification is sent automatically via Gmail by the "Notify on New Message"
+    // automation when this Message record is created above.
 
     setSending(false);
     setSent(true);
