@@ -17,6 +17,7 @@ import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
 import BuyDomainModal from '@/components/partner/BuyDomainModal';
 import PortfolioEditor from '@/components/profile/PortfolioEditor';
 import AppealForm from '@/components/partner/AppealForm';
+import SupportContactBar from '@/components/profile/SupportContactBar';
 
 const SERVICE_CATEGORIES = [
 { label: 'Marketing and sales', value: 'marketing_and_sales' },
@@ -649,6 +650,8 @@ export default function MyProfile() {
           </Button>
         </div>
       </div>
+
+      <SupportContactBar />
 
       <BuyReviewModal isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} partner={partner} />
       <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />

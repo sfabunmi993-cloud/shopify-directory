@@ -22,6 +22,13 @@ export default function SupportChat() {
     }
   }, [isOpen]);
 
+  // Allow other components (e.g. SupportContactBar) to open the chat.
+  useEffect(() => {
+    const handler = () => setIsOpen(true);
+    window.addEventListener('open-support-chat', handler);
+    return () => window.removeEventListener('open-support-chat', handler);
+  }, []);
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -84,7 +91,7 @@ export default function SupportChat() {
       {!isOpen &&
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50 hidden"
+        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50"
         size="icon">
         
           <MessageCircle className="w-6 h-6" />
