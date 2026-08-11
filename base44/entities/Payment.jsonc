@@ -47,6 +47,11 @@
     "conversation_id": {
       "type": "string",
       "description": "Linked conversation ID if any"
+    },
+    "pending_reminder_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the partner has already been notified that this payment is still pending after 48 hours"
     }
   },
   "required": [
