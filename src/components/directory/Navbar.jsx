@@ -188,12 +188,8 @@ export default function Navbar() {
             {user ?
             <Sheet>
                 <SheetTrigger asChild>
-                  <button className="flex items-center gap-1.5 hover:opacity-80 transition-opacity p-1 -m-1">
-                    <Avatar className="w-11 h-11 md:w-9 md:h-9">
-                      {user?.picture && <AvatarImage src={user.picture} alt={user.full_name || 'Profile'} />}
-                      <AvatarFallback className="bg-black/10 text-black text-sm md:text-xs font-semibold">{initials}</AvatarFallback>
-                    </Avatar>
-                    <ChevronDown className="w-4 h-4 md:w-3 md:h-3 text-black" />
+                  <button className="flex items-center hover:opacity-80 transition-opacity p-2 -m-1 text-black">
+                    <Menu className="w-5 h-5" />
                   </button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-72 p-0">
