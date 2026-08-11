@@ -6,6 +6,7 @@ export const DEFAULT_PRICING = {
   reviews_5: 8000,
   reviews_10: 14000,
   reviews_20: 26000,
+  domain_purchase: 10000,
 };
 
 export function usePricing() {

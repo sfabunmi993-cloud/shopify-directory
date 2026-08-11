@@ -18,7 +18,7 @@ function getPartnerRank(reviewCount = 0) {
 }
 
 export default function PartnerList(props) {
-  const { partners, onApprove, onRestrict, onRevert, onBulkApprove, onBulkRestrict, onBulkMarkDomain, onEditId, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds, onToggleDomain } = props;
+  const { partners, onApprove, onRestrict, onRevert, onBulkApprove, onBulkRestrict, onBulkMarkDomain, onEditId, onEditDetails, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds, onToggleDomain } = props;
   const [selected, setSelected] = useState([]);
 
   if (partners.length === 0) {
@@ -117,6 +117,12 @@ export default function PartnerList(props) {
                 <Button size="sm" variant="ghost" className="h-8 w-8 p-0" title="Edit Partner ID" onClick={() => onEditId(p)}>
                   <Edit2 className="w-4 h-4" />
                 </Button>
+                {onEditDetails && (
+                  <Button size="sm" variant="outline" className="rounded-full gap-1 text-primary border-primary/30 hover:bg-primary/5" title="Edit account details" onClick={() => onEditDetails(p)}>
+                    <Edit2 className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Edit</span>
+                  </Button>
+                )}
                 <Button
                   size="sm"
                   variant="outline"

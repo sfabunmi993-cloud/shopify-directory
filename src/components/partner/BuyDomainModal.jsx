@@ -6,13 +6,15 @@ import { Loader2, Copy, Check, Globe, Upload, ImageIcon } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import PaymentSupportNote from './PaymentSupportNote';
 import { toast } from 'sonner';
+import { usePricing } from '@/hooks/usePricing';
 
-const DOMAIN_PRICE = 10000; // NGN
 const ACCOUNT_NAME = 'RONKE FABUNMI';
 const ACCOUNT_NUMBER = '7031665045';
 const BANK_NAME = 'Opay';
 
 export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
+  const { pricing } = usePricing();
+  const DOMAIN_PRICE = pricing.domain_purchase || 10000;
   const [transactionRef, setTransactionRef] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);

@@ -11,6 +11,7 @@ import AnnouncementsSection from '@/components/admin/AnnouncementsSection';
 import AdsSection from '@/components/admin/AdsSection';
 import BroadcastUpdateSection from '@/components/admin/BroadcastUpdateSection';
 import PartnerList from '@/components/admin/PartnerList';
+import EditPartnerDialog from '@/components/admin/EditPartnerDialog';
 import { DEFAULT_PRICING } from '@/hooks/usePricing';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -66,6 +67,7 @@ export default function AdminDashboard() {
   const [creatingAnnouncement, setCreatingAnnouncement] = useState(false);
   const [bannerDialog, setBannerDialog] = useState(null);
   const [bannerMessage, setBannerMessage] = useState('');
+  const [editPartnerDialog, setEditPartnerDialog] = useState(null);
   const [manualReviewMode, setManualReviewMode] = useState(false);
   const [manualReviews, setManualReviews] = useState([{ name: '', rating: 5, comment: '' }]);
 
@@ -526,13 +528,13 @@ export default function AdminDashboard() {
         </TabsList>
 
         <TabsContent value="pending">
-          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} />
+          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} />
         </TabsContent>
         <TabsContent value="approved">
-          <PartnerList partners={approved} onRestrict={setRestrictDialog} onRevert={handleRevertToPending} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove={false} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} />
+          <PartnerList partners={approved} onRestrict={setRestrictDialog} onRevert={handleRevertToPending} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove={false} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} />
         </TabsContent>
         <TabsContent value="restricted">
-          <PartnerList partners={restricted} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} />
+          <PartnerList partners={restricted} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} />
         </TabsContent>
         <TabsContent value="payments">
           <PaymentList payments={payments} onApprove={handleApprovePayment} onReject={handleRejectPayment} />
@@ -961,6 +963,14 @@ export default function AdminDashboard() {
         </DialogContent>
       </Dialog>
 
+      {/* Edit Partner Details Dialog */}
+      <EditPartnerDialog
+        partner={editPartnerDialog}
+        open={!!editPartnerDialog}
+        onClose={() => setEditPartnerDialog(null)}
+        onSaved={loadData}
+      />
+
       {/* Restrict Dialog */}
       <Dialog open={!!restrictDialog} onOpenChange={() => { setRestrictDialog(null); setRestrictReason(''); }}>
         <DialogContent>
@@ -1180,6 +1190,7 @@ function PricingSettings() {
     { key: 'reviews_5', label: '5 Reviews Package', prefix: '₦', suffix: 'NGN' },
     { key: 'reviews_10', label: '10 Reviews Package', prefix: '₦', suffix: 'NGN' },
     { key: 'reviews_20', label: '20 Reviews Package', prefix: '₦', suffix: 'NGN' },
+    { key: 'domain_purchase', label: 'Domain Purchase', prefix: '₦', suffix: 'NGN' },
   ];
 
   return (
