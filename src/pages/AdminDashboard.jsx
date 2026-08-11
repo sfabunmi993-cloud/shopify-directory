@@ -70,6 +70,8 @@ export default function AdminDashboard() {
   const [editPartnerDialog, setEditPartnerDialog] = useState(null);
   const [manualReviewMode, setManualReviewMode] = useState(false);
   const [manualReviews, setManualReviews] = useState([{ name: '', rating: 5, comment: '' }]);
+  const [removeMode, setRemoveMode] = useState(false);
+  const [removeCount, setRemoveCount] = useState('5');
 
   useEffect(() => {
     const init = async () => {
@@ -244,6 +246,23 @@ export default function AdminDashboard() {
     setReviewCount('10');
     loadData();
     setGeneratingReviews(null);
+  };
+
+  const handleRemovePurchasedReviews = async (partner) => {
+    const n = Math.min(Math.max(parseInt(removeCount) || 0, 1), 500);
+    setGeneratingReviews(partner.id);
+    try {
+      const res = await base44.functions.invoke('removePurchasedReviews', { partner_id: partner.id, count: n });
+      toast.success(`${res?.data?.removed ?? n} purchased review(s) removed from ${partner.name}.`);
+      setReviewCountDialog(null);
+      setRemoveCount('5');
+      setRemoveMode(false);
+      loadData();
+    } catch (err) {
+      toast.error(err?.response?.data?.error || 'Failed to remove reviews');
+    } finally {
+      setGeneratingReviews(null);
+    }
   };
 
   const handleAddManualReview = async (partner) => {
@@ -606,7 +625,7 @@ export default function AdminDashboard() {
       </Dialog>
 
       {/* Generate Reviews Dialog */}
-      <Dialog open={!!reviewCountDialog} onOpenChange={() => { setReviewCountDialog(null); setReviewCount('10'); setManualReviewMode(false); setManualReviews([{ name: '', rating: 5, comment: '' }]); }}>
+      <Dialog open={!!reviewCountDialog} onOpenChange={() => { setReviewCountDialog(null); setReviewCount('10'); setManualReviewMode(false); setManualReviews([{ name: '', rating: 5, comment: '' }]); setRemoveMode(false); setRemoveCount('5'); }}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>Manage Reviews — {reviewCountDialog?.name}</DialogTitle>
@@ -615,20 +634,52 @@ export default function AdminDashboard() {
           {/* Tab toggle */}
           <div className="flex rounded-lg border border-border overflow-hidden text-sm font-medium">
             <button
-              className={`flex-1 py-2 transition-colors ${!manualReviewMode ? 'bg-primary text-primary-foreground' : 'bg-white text-muted-foreground hover:bg-muted'}`}
-              onClick={() => setManualReviewMode(false)}
+              className={`flex-1 py-2 transition-colors ${!manualReviewMode && !removeMode ? 'bg-primary text-primary-foreground' : 'bg-white text-muted-foreground hover:bg-muted'}`}
+              onClick={() => { setManualReviewMode(false); setRemoveMode(false); }}
             >
               Auto-Generate
             </button>
             <button
               className={`flex-1 py-2 transition-colors ${manualReviewMode ? 'bg-primary text-primary-foreground' : 'bg-white text-muted-foreground hover:bg-muted'}`}
-              onClick={() => setManualReviewMode(true)}
+              onClick={() => { setManualReviewMode(true); setRemoveMode(false); }}
             >
               Paste / Manual
             </button>
+            <button
+              className={`flex-1 py-2 transition-colors ${removeMode ? 'bg-destructive text-destructive-foreground' : 'bg-white text-muted-foreground hover:bg-muted'}`}
+              onClick={() => { setManualReviewMode(false); setRemoveMode(true); }}
+            >
+              Remove
+            </button>
           </div>
 
-          {!manualReviewMode ? (
+          {removeMode ? (
+            <>
+              <p className="text-sm text-muted-foreground">
+                Remove the most recent purchased reviews from <strong>{reviewCountDialog?.name}</strong>'s profile. Only paid (purchased) reviews are removed; organic reviews stay.
+              </p>
+              <Input
+                type="number"
+                min="1"
+                placeholder="e.g. 5"
+                value={removeCount}
+                onChange={e => setRemoveCount(e.target.value)}
+              />
+              <DialogFooter>
+                <Button variant="outline" onClick={() => { setReviewCountDialog(null); setRemoveMode(false); setRemoveCount('5'); }}>Cancel</Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => handleRemovePurchasedReviews(reviewCountDialog)}
+                  disabled={!removeCount || generatingReviews === reviewCountDialog?.id}
+                >
+                  {generatingReviews === reviewCountDialog?.id
+                    ? <Loader2 className="w-4 h-4 animate-spin" />
+                    : <><Trash2 className="w-4 h-4 mr-1.5" /> Remove {removeCount || 0} Review(s)</>
+                  }
+                </Button>
+              </DialogFooter>
+            </>
+          ) : !manualReviewMode ? (
             <>
               <p className="text-sm text-muted-foreground">
                 How many reviews to auto-generate for <strong>{reviewCountDialog?.name}</strong>? (max 20)
