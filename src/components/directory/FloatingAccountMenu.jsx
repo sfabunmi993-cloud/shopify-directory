@@ -45,7 +45,7 @@ export default function FloatingAccountMenu() {
     <div className="fixed top-2 right-3 z-[55]">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="flex items-center hover:opacity-80 transition-opacity rounded-full ring-2 ring-black/10 hover:ring-black/20 bg-white shadow-sm py-1 px-2 my-12 mx-3">
+          <button className="flex items-center hover:opacity-80 transition-opacity rounded-full ring-2 ring-black/10 hover:ring-black/20 bg-white shadow-sm mx-3 my-24">
             <Avatar className="w-9 h-9">
               {partnerLogo ?
               <AvatarImage src={partnerLogo} alt={user.full_name || 'Account'} /> :
