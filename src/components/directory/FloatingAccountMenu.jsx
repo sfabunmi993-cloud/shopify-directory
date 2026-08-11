@@ -52,7 +52,7 @@ export default function FloatingAccountMenu() {
 
               user?.picture && <AvatarImage src={user.picture} alt={user.full_name || 'Profile'} />
               }
-              <AvatarFallback className="bg-black/10 text-black text-xs font-semibold my-1">{initials}</AvatarFallback>
+              <AvatarFallback className="bg-black/10 text-black text-xs font-semibold px-3">{initials}</AvatarFallback>
             </Avatar>
           </button>
         </DropdownMenuTrigger>
