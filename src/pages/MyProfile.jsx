@@ -225,6 +225,8 @@ export default function MyProfile() {
         </div>
       </div>
 
+      <SupportContactBar />
+
       {/* Rank Banner */}
       {partner && (() => {
         const reviewCount = partner.review_count || 0;
@@ -650,8 +652,6 @@ export default function MyProfile() {
           </Button>
         </div>
       </div>
-
-      <SupportContactBar />
 
       <BuyReviewModal isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} partner={partner} />
       <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
