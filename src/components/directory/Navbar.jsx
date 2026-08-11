@@ -185,7 +185,7 @@ export default function Navbar() {
                       {user?.picture && <AvatarImage src={user.picture} alt={user.full_name || 'Profile'} />}
                       <AvatarFallback className="bg-black/10 text-black text-sm md:text-xs font-semibold">{initials}</AvatarFallback>
                     </Avatar>
-                    <ChevronDown className="w-4 h-4 md:w-3 md:h-3 text-black" />
+                    <ChevronDown className="w-4 h-4 md:w-3 md:h-3 text-black my-8 mx-3 py-1" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
@@ -367,4 +367,4 @@ function MobileLink({ to, onClick, children, highlight, icon: Icon }) {
       <span className="truncate">{children}</span>
     </Link>);
 
-  }
+}
