@@ -209,10 +209,16 @@ export default function PartnerDetail() {
       </Link>
 
       {partner.status === 'pending' &&
-      <div className="mb-4 bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-3 flex items-center gap-2 text-amber-600 dark:text-amber-400 text-sm">
-          <ShieldAlert className="w-4 h-4 shrink-0" />
-          <span className="text-center">This profile is pending admin approval and is not yet visible in the directory. to make it visible  you need to purchase a domain name in few days or your account will be deleted 
-        </span>
+      <div className="mb-4 bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3 text-amber-600 dark:text-amber-400 text-sm">
+          <ShieldAlert className="w-4 h-4 shrink-0 hidden sm:block" />
+          <span className="text-center sm:text-left flex-1">This profile is pending admin approval and is not yet visible in the directory. To make it visible you need to purchase a domain name in few days or your account will be deleted.</span>
+          {user && partner.created_by_id === user.id && !partner.domain_purchased &&
+          <Button
+            onClick={() => setBuyDomainOpen(true)}
+            className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full h-9 px-4 shrink-0">
+            <Globe className="w-4 h-4" /> Buy Domain
+          </Button>
+          }
         </div>}
 
       {partner.admin_banner && user && (user.id === partner.created_by_id || user.role === 'admin') &&
