@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, EyeOff, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2, Infinity, Bell, Landmark } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, EyeOff, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2, Infinity, Bell, Landmark, ImageIcon } from 'lucide-react';
 import AnnouncementsSection from '@/components/admin/AnnouncementsSection';
 import AdsSection from '@/components/admin/AdsSection';
 import BroadcastUpdateSection from '@/components/admin/BroadcastUpdateSection';
@@ -1287,6 +1287,19 @@ function PricingSettings() {
             />
           </div>
         ))}
+        <div className="flex items-center justify-between gap-3 pt-2 border-t border-border">
+          <div>
+            <p className="text-sm font-medium flex items-center gap-1.5"><ImageIcon className="w-4 h-4" /> Require Payment Screenshot</p>
+            <p className="text-xs text-muted-foreground">Force partners to upload a receipt before submitting a payment.</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setPrices(p => ({ ...p, require_payment_screenshot: !p.require_payment_screenshot }))}
+            className={`relative w-11 h-6 rounded-full transition-colors ${prices.require_payment_screenshot ? 'bg-primary' : 'bg-muted'}`}
+          >
+            <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${prices.require_payment_screenshot ? 'translate-x-5' : ''}`} />
+          </button>
+        </div>
         <Button className="w-full mt-2" onClick={handleSave} disabled={saving}>
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Settings'}
         </Button>

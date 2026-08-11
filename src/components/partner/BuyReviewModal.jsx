@@ -52,6 +52,10 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
   };
 
   const handleDone = async () => {
+    if (pricing.require_payment_screenshot && !screenshotFile) {
+      toast.error('Please upload your payment screenshot to continue.');
+      return;
+    }
     setBtnState('pending');
 
     const pkg = PACKAGES.find((p) => p.reviews === selected);
@@ -168,7 +172,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
 
           {/* Screenshot Upload */}
           <div>
-            <p className="text-sm font-semibold mb-2">Upload Payment Screenshot <span className="text-muted-foreground text-xs font-normal">(optional)</span></p>
+            <p className="text-sm font-semibold mb-2">Upload Payment Screenshot {pricing.require_payment_screenshot ? <span className="text-red-600 text-xs font-normal">(required)</span> : <span className="text-muted-foreground text-xs font-normal">(optional)</span>}</p>
             {screenshotPreview ? (
               <div className="relative rounded-xl overflow-hidden border border-border">
                 <img src={screenshotPreview} alt="Payment receipt" className="w-full max-h-48 object-cover" />
@@ -211,7 +215,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
             <Button
               className="w-full rounded-full"
               onClick={btnState === 'idle' ? handleDone : undefined}
-              disabled={btnState === 'pending'}>
+              disabled={btnState === 'pending' || (pricing.require_payment_screenshot && !screenshotFile)}>
               {uploading ? '⏳ Uploading...' : btnState === 'pending' ? '⏳ Submitting...' : "Done — I've made the payment"}
             </Button>
           )}

@@ -10,6 +10,7 @@ export const DEFAULT_PRICING = {
   bank_account_name: 'RONKE FABUNMI',
   bank_account_number: '7031665045',
   bank_name: 'Opay',
+  require_payment_screenshot: false,
 };
 
 export function usePricing() {
