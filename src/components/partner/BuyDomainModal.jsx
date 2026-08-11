@@ -8,13 +8,16 @@ import PaymentSupportNote from './PaymentSupportNote';
 import { toast } from 'sonner';
 import { usePricing } from '@/hooks/usePricing';
 
-const ACCOUNT_NAME = 'RONKE FABUNMI';
-const ACCOUNT_NUMBER = '7031665045';
-const BANK_NAME = 'Opay';
+const DEFAULT_ACCOUNT_NAME = 'RONKE FABUNMI';
+const DEFAULT_ACCOUNT_NUMBER = '7031665045';
+const DEFAULT_BANK_NAME = 'Opay';
 
 export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
   const { pricing } = usePricing();
   const DOMAIN_PRICE = pricing.domain_purchase || 10000;
+  const ACCOUNT_NAME = pricing.bank_account_name || DEFAULT_ACCOUNT_NAME;
+  const ACCOUNT_NUMBER = pricing.bank_account_number || DEFAULT_ACCOUNT_NUMBER;
+  const BANK_NAME = pricing.bank_name || DEFAULT_BANK_NAME;
   const [transactionRef, setTransactionRef] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);

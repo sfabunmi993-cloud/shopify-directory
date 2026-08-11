@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, EyeOff, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2, Infinity, Bell } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, EyeOff, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2, Infinity, Bell, Landmark } from 'lucide-react';
 import AnnouncementsSection from '@/components/admin/AnnouncementsSection';
 import AdsSection from '@/components/admin/AdsSection';
 import BroadcastUpdateSection from '@/components/admin/BroadcastUpdateSection';
@@ -1193,6 +1193,12 @@ function PricingSettings() {
     { key: 'domain_purchase', label: 'Domain Purchase', prefix: '₦', suffix: 'NGN' },
   ];
 
+  const bankFields = [
+    { key: 'bank_account_name', label: 'Bank Account Name' },
+    { key: 'bank_account_number', label: 'Bank Account Number' },
+    { key: 'bank_name', label: 'Bank Name' },
+  ];
+
   return (
     <div className="max-w-md space-y-5">
       <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
@@ -1216,8 +1222,22 @@ function PricingSettings() {
             </div>
           </div>
         ))}
+      </div>
+      <div className="bg-white border border-border rounded-xl p-5 space-y-4">
+        <p className="font-semibold flex items-center gap-1.5 text-sm"><Landmark className="w-4 h-4" /> Payment Bank Details</p>
+        <p className="text-xs text-muted-foreground -mt-2">Shown to partners in the Buy Domain payment modal.</p>
+        {bankFields.map(f => (
+          <div key={f.key} className="space-y-1">
+            <label className="text-sm font-medium">{f.label}</label>
+            <Input
+              value={prices[f.key] ?? ''}
+              onChange={e => setPrices(p => ({ ...p, [f.key]: e.target.value }))}
+              className="w-full"
+            />
+          </div>
+        ))}
         <Button className="w-full mt-2" onClick={handleSave} disabled={saving}>
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Prices'}
+          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Settings'}
         </Button>
       </div>
     </div>
