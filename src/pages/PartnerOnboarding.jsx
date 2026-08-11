@@ -7,7 +7,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, X, Plus, Loader2, ArrowRight, ArrowLeft, Sparkles, Tag } from 'lucide-react';
+import { CheckCircle, X, Plus, Loader2, ArrowRight, ArrowLeft, Sparkles, Tag, Wand2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const STEPS = ['Basic Info', 'Services', 'Details'];
 
@@ -56,6 +57,10 @@ export default function PartnerOnboarding() {
   const [newLanguage, setNewLanguage] = useState('');
 
   const [newTag, setNewTag] = useState('');
+  const [aiMode, setAiMode] = useState(false);
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [aiName, setAiName] = useState('');
+  const [aiService, setAiService] = useState('');
   const [form, setForm] = useState({
     name: '',
     description: '',
@@ -120,6 +125,61 @@ export default function PartnerOnboarding() {
 
   const generateSlug = (name) => {
     return name.toLowerCase().replace(/[^a-z0-9]/g, '');
+  };
+
+  const handleAiGenerate = async () => {
+    if (!aiName.trim() || !aiService) return;
+    setAiGenerating(true);
+    try {
+      const categoryLabel = SERVICE_CATEGORIES.find(c => c.value === aiService)?.label || aiService;
+      const prompt = `You are creating a Shopify Partner directory profile for an agency named "${aiName.trim()}" that specializes in "${categoryLabel}". Generate a complete, realistic, professional partner profile. Return JSON only.`;
+      const schema = {
+        type: 'object',
+        properties: {
+          description: { type: 'string', description: 'One-line tagline (max 120 chars)' },
+          full_description: { type: 'string', description: '2-3 paragraph detailed description of services and approach' },
+          industry: { type: 'string', enum: INDUSTRIES.map(i => i.value) },
+          services: { type: 'array', items: { type: 'string' }, description: '4-6 relevant services from this category' },
+          tags: { type: 'array', items: { type: 'string' }, description: '5-8 lowercase searchable keywords' },
+          starting_price: { type: 'number', description: 'Starting price in USD (50-500)' },
+          location: { type: 'string', description: 'City, Country' },
+          country: { type: 'string', enum: COUNTRIES },
+          languages: { type: 'array', items: { type: 'string' } },
+          years_as_partner: { type: 'number', description: '1-10' },
+          completed_projects: { type: 'number', description: '10-200' },
+        },
+        required: ['description', 'full_description', 'industry', 'services', 'tags', 'starting_price', 'location', 'country', 'languages', 'years_as_partner', 'completed_projects'],
+      };
+      const res = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        response_json_schema: schema,
+        model: 'gpt_5_mini',
+      });
+      const data = res.data || res;
+      const merged = {
+        ...form,
+        name: aiName.trim(),
+        service_category: aiService,
+        description: data.description || '',
+        full_description: data.full_description || '',
+        industry: data.industry || '',
+        services: Array.isArray(data.services) ? data.services : [],
+        tags: Array.isArray(data.tags) ? data.tags.map(t => String(t).toLowerCase().replace(/\s+/g, '-')) : [],
+        starting_price: data.starting_price ? String(data.starting_price) : '',
+        location: data.location || '',
+        country: data.country || '',
+        languages: Array.isArray(data.languages) ? data.languages : ['English'],
+        years_as_partner: data.years_as_partner ? String(data.years_as_partner) : '',
+        completed_projects: data.completed_projects ? String(data.completed_projects) : '',
+      };
+      setForm(merged);
+      setAiMode(false);
+      setStep(1);
+      toast.success('Profile generated! Review and publish.');
+    } catch (err) {
+      toast.error('AI generation failed. Try manual mode.');
+    }
+    setAiGenerating(false);
   };
 
   const handleSubmit = async () => {
@@ -195,8 +255,59 @@ export default function PartnerOnboarding() {
 
         {/* Card */}
         <div className="bg-white border border-border rounded-2xl p-6 md:p-8 shadow-sm">
-          {/* Step 0: Basic Info */}
+          {/* Mode toggle */}
           {step === 0 && (
+            <div className="flex rounded-xl border border-border overflow-hidden mb-6 text-sm font-medium">
+              <button
+                className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 transition-colors ${!aiMode ? 'bg-primary text-primary-foreground' : 'bg-white text-muted-foreground hover:bg-muted'}`}
+                onClick={() => setAiMode(false)}
+              >
+                <Tag className="w-4 h-4" /> Manual Setup
+              </button>
+              <button
+                className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 transition-colors ${aiMode ? 'bg-primary text-primary-foreground' : 'bg-white text-muted-foreground hover:bg-muted'}`}
+                onClick={() => setAiMode(true)}
+              >
+                <Wand2 className="w-4 h-4" /> Quick Setup with AI
+              </button>
+            </div>
+          )}
+
+          {/* AI Quick Setup */}
+          {step === 0 && aiMode && (
+            <div className="space-y-5">
+              <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
+                <p className="text-sm text-primary flex items-center gap-1.5 font-medium">
+                  <Sparkles className="w-4 h-4" /> Just enter your name and service — AI fills the rest!
+                </p>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label>Agency / Partner name <span className="text-destructive">*</span></Label>
+                <Input placeholder="e.g. Acme Agency" value={aiName} onChange={e => setAiName(e.target.value)} />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label>Primary service category <span className="text-destructive">*</span></Label>
+                <Select value={aiService} onValueChange={setAiService}>
+                  <SelectTrigger><SelectValue placeholder="Choose a category" /></SelectTrigger>
+                  <SelectContent>
+                    {SERVICE_CATEGORIES.map(c => (
+                      <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Button className="w-full rounded-full" disabled={!aiName.trim() || !aiService || aiGenerating} onClick={handleAiGenerate}>
+                {aiGenerating ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> Generating profile...</> : <><Wand2 className="w-4 h-4 mr-1.5" /> Generate My Profile with AI</>}
+              </Button>
+              <p className="text-xs text-muted-foreground text-center">AI will create a complete profile you can review before publishing.</p>
+            </div>
+          )}
+
+          {/* Step 0: Basic Info */}
+          {step === 0 && !aiMode && (
             <div className="space-y-5">
               <h2 className="font-heading text-xl font-semibold">Basic information</h2>
 
