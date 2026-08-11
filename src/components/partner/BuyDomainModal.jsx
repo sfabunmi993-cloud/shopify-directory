@@ -2,9 +2,10 @@ import React, { useState, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, Copy, Check, Globe, Upload, ImageIcon } from 'lucide-react';
+import { Loader2, Check, Globe, Upload, ImageIcon } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import PaymentSupportNote from './PaymentSupportNote';
+import PaystackPaymentCard from './PaystackPaymentCard';
 import { toast } from 'sonner';
 import { usePricing } from '@/hooks/usePricing';
 
@@ -21,7 +22,6 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
   const [transactionRef, setTransactionRef] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [copied, setCopied] = useState('');
   const [screenshot, setScreenshot] = useState(null); // { file, previewUrl, uploadedUrl }
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
@@ -48,12 +48,6 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
     } finally {
       setUploading(false);
     }
-  };
-
-  const copy = (text, key) => {
-    navigator.clipboard.writeText(text);
-    setCopied(key);
-    setTimeout(() => setCopied(''), 2000);
   };
 
   const handleSubmit = async () => {
@@ -108,37 +102,12 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
               <p className="text-sm text-muted-foreground">Custom domain setup and configuration for your partner profile.</p>
             </div>
 
-            <div className="bg-white border border-border rounded-xl p-3 sm:p-4 space-y-3">
-              <p className="text-xs font-semibold uppercase text-muted-foreground tracking-wide">Payment Details</p>
-              <div className="space-y-2.5">
-                <div className="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-1 pb-2.5 border-b border-border">
-                  <span className="text-sm text-muted-foreground">Amount</span>
-                  <span className="font-bold text-foreground text-lg">₦{DOMAIN_PRICE.toLocaleString()}</span>
-                </div>
-                <div className="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-1">
-                  <span className="text-sm text-muted-foreground">Bank</span>
-                  <span className="font-medium text-sm text-foreground">{BANK_NAME}</span>
-                </div>
-                <div className="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-1">
-                  <span className="text-sm text-muted-foreground">Account Name</span>
-                  <div className="flex items-center gap-1">
-                    <span className="font-semibold text-sm text-foreground">{ACCOUNT_NAME}</span>
-                    <button onClick={() => copy(ACCOUNT_NAME, 'name')} className="p-1 rounded hover:bg-muted transition-colors">
-                      {copied === 'name' ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5 text-muted-foreground" />}
-                    </button>
-                  </div>
-                </div>
-                <div className="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-1">
-                  <span className="text-sm text-muted-foreground">Account Number</span>
-                  <div className="flex items-center gap-1">
-                    <span className="font-semibold text-sm font-mono tracking-wide text-foreground">{ACCOUNT_NUMBER}</span>
-                    <button onClick={() => copy(ACCOUNT_NUMBER, 'acct')} className="p-1 rounded hover:bg-muted transition-colors">
-                      {copied === 'acct' ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5 text-muted-foreground" />}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <PaystackPaymentCard
+              amount={DOMAIN_PRICE}
+              bankName={BANK_NAME}
+              accountName={ACCOUNT_NAME}
+              accountNumber={ACCOUNT_NUMBER}
+            />
 
             <PaymentSupportNote />
 
@@ -163,7 +132,7 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
                 </button>}
             </div>
 
-            <Button className="w-full rounded-full" onClick={handleSubmit} disabled={submitting || uploading || (pricing.require_payment_screenshot && !screenshot?.uploadedUrl)}>
+            <Button className="w-full rounded-lg bg-[#0BAB6D] hover:bg-[#0A9E62] text-white font-semibold" onClick={handleSubmit} disabled={submitting || uploading || (pricing.require_payment_screenshot && !screenshot?.uploadedUrl)}>
               {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : null}
               {submitting ? 'Submitting...' : "I've Made the Payment →"}
             </Button>

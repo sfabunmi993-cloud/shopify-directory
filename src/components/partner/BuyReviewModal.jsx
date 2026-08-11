@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Star, Copy, Check, CreditCard, AlertCircle, Upload, X } from 'lucide-react';
+import { Star, AlertCircle, Upload, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { usePricing } from '@/hooks/usePricing';
 import { base44 } from '@/api/base44Client';
 import PaymentSupportNote from './PaymentSupportNote';
+import PaystackPaymentCard from './PaystackPaymentCard';
 
 export default function BuyReviewModal({ isOpen, onClose, partner }) {
   const { pricing } = usePricing();
@@ -16,7 +17,6 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
   ];
 
   const [selected, setSelected] = useState(5);
-  const [copied, setCopied] = useState('');
   const [btnState, setBtnState] = useState('idle'); // idle | pending | done
   const [user, setUser] = useState(null);
   const [screenshotFile, setScreenshotFile] = useState(null);
@@ -84,13 +84,6 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
 
   const pkg = PACKAGES.find((p) => p.reviews === selected);
 
-  const copyText = (text, key) => {
-    navigator.clipboard.writeText(text);
-    setCopied(key);
-    toast.success('Copied!');
-    setTimeout(() => setCopied(''), 2000);
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md px-8 py-4 mx-3 max-h-[90vh] overflow-y-auto">
@@ -133,40 +126,12 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
           </div>
 
           {/* Payment details */}
-          <div className="bg-muted/40 rounded-xl p-4 space-y-3">
-            <p className="text-sm font-semibold flex items-center gap-1.5">
-              <CreditCard className="w-4 h-4 text-primary" /> OPay Payment Details
-            </p>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-border">
-                <div>
-                  <p className="text-xs text-muted-foreground">Account Number</p>
-                  <p className="font-semibold">7031665045</p>
-                  </div>
-                  <button onClick={() => copyText('7031665045', 'phone')} className="text-muted-foreground hover:text-foreground">
-                  {copied === 'phone' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                </button>
-              </div>
-              <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-border">
-                <div>
-                  <p className="text-xs text-muted-foreground">Account Name</p>
-                  <p className="font-semibold">FABUNMI RONKE</p>
-                </div>
-                <button onClick={() => copyText('FABUNMI RONKE', 'name')} className="text-muted-foreground hover:text-foreground">
-                  {copied === 'name' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                </button>
-              </div>
-              <div className="flex items-center justify-between gap-2 bg-white rounded-lg px-3 py-2 border border-primary/30 bg-primary/5">
-                <div>
-                  <p className="text-xs text-muted-foreground">Amount to Pay</p>
-                  <p className="font-bold text-primary text-base">₦{pkg?.price.toLocaleString()}</p>
-                </div>
-                <button onClick={() => copyText(`${pkg?.price}`, 'amount')} className="text-muted-foreground hover:text-foreground">
-                  {copied === 'amount' ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
-          </div>
+          <PaystackPaymentCard
+            amount={pkg?.price || 0}
+            bankName="Opay"
+            accountName="FABUNMI RONKE"
+            accountNumber="7031665045"
+          />
 
           <PaymentSupportNote />
 
@@ -213,7 +178,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
             </div>
           ) : (
             <Button
-              className="w-full rounded-full"
+              className="w-full rounded-lg bg-[#0BAB6D] hover:bg-[#0A9E62] text-white font-semibold"
               onClick={btnState === 'idle' ? handleDone : undefined}
               disabled={btnState === 'pending' || (pricing.require_payment_screenshot && !screenshotFile)}>
               {uploading ? '⏳ Uploading...' : btnState === 'pending' ? '⏳ Submitting...' : "Done — I've made the payment"}
