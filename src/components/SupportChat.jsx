@@ -91,7 +91,7 @@ export default function SupportChat() {
       {!isOpen &&
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50"
+        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50 hidden"
         size="icon">
         
           <MessageCircle className="w-6 h-6" />
