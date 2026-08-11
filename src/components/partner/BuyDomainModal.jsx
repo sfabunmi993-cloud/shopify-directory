@@ -1,64 +1,24 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Loader2, Check, Globe, Upload, ImageIcon } from 'lucide-react';
+import { Check, Globe } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import PaymentSupportNote from './PaymentSupportNote';
-import PaystackPaymentCard from './PaystackPaymentCard';
-import { toast } from 'sonner';
+import PaystackCardCheckout from './PaystackCardCheckout';
 import { usePricing } from '@/hooks/usePricing';
-
-const DEFAULT_ACCOUNT_NAME = 'RONKE FABUNMI';
-const DEFAULT_ACCOUNT_NUMBER = '7031665045';
-const DEFAULT_BANK_NAME = 'Opay';
 
 export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
   const { pricing } = usePricing();
   const DOMAIN_PRICE = pricing.domain_purchase || 10000;
-  const ACCOUNT_NAME = pricing.bank_account_name || DEFAULT_ACCOUNT_NAME;
-  const ACCOUNT_NUMBER = pricing.bank_account_number || DEFAULT_ACCOUNT_NUMBER;
-  const BANK_NAME = pricing.bank_name || DEFAULT_BANK_NAME;
-  const [transactionRef, setTransactionRef] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [screenshot, setScreenshot] = useState(null); // { file, previewUrl, uploadedUrl }
-  const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef(null);
 
   const handleClose = () => {
-    setTransactionRef('');
     setSubmitted(false);
-    setScreenshot(null);
     onClose();
   };
 
-  const handleScreenshotChange = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const previewUrl = URL.createObjectURL(file);
-    setScreenshot({ file, previewUrl, uploadedUrl: null });
-    setUploading(true);
-    try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      setScreenshot({ file, previewUrl, uploadedUrl: file_url });
-    } catch (_) {
-      toast.error('Failed to upload screenshot');
-      setScreenshot(null);
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (pricing.require_payment_screenshot && !screenshot?.uploadedUrl) {
-      toast.error('Please upload your payment screenshot to continue.');
-      return;
-    }
+  const handleSubmit = async ({ method, last4 }) => {
     setSubmitting(true);
-    let adminNote = '';
-    if (transactionRef) adminNote += `Ref: ${transactionRef}`;
-    if (screenshot?.uploadedUrl) adminNote += `${adminNote ? ' | ' : ''}Screenshot: ${screenshot.uploadedUrl}`;
 
     await base44.entities.Payment.create({
       user_id: user?.id,
@@ -67,9 +27,8 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
       partner_id: partner?.id,
       partner_name: partner?.name,
       amount: DOMAIN_PRICE,
-      description: `Domain Purchase - ${partner?.name}`,
-      status: 'pending',
-      admin_note: adminNote || undefined
+      description: `Domain Purchase - ${partner?.name} via ${method}${last4 ? ` (card ending ${last4})` : ''}`,
+      status: 'pending'
     });
     setSubmitting(false);
     setSubmitted(true);
@@ -102,40 +61,12 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
               <p className="text-sm text-muted-foreground">Custom domain setup and configuration for your partner profile.</p>
             </div>
 
-            <PaystackPaymentCard
+            <PaystackCardCheckout
               amount={DOMAIN_PRICE}
-              bankName={BANK_NAME}
-              accountName={ACCOUNT_NAME}
-              accountNumber={ACCOUNT_NUMBER}
+              partnerName={partner?.name}
+              submitting={submitting}
+              onSubmit={handleSubmit}
             />
-
-            <PaymentSupportNote />
-
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium">Transaction Reference (optional)</label>
-              <Input placeholder="e.g. TRF123456789" value={transactionRef} onChange={(e) => setTransactionRef(e.target.value)} />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium">Payment Screenshot {pricing.require_payment_screenshot ? <span className="text-red-600 text-xs font-normal">(required)</span> : <span className="text-muted-foreground text-xs font-normal">(optional)</span>}</label>
-              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleScreenshotChange} />
-              {screenshot?.previewUrl ? <div className="relative rounded-xl overflow-hidden border border-border">
-                  <img src={screenshot.previewUrl} alt="Payment screenshot" className="w-full max-h-48 object-cover" />
-                  {uploading && <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                      <Loader2 className="w-6 h-6 text-white animate-spin" />
-                    </div>}
-                  {!uploading && <button onClick={() => {setScreenshot(null);fileInputRef.current.value = '';}} className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-md hover:bg-black/70">
-                Remove</button>}
-                </div> : <button type="button" onClick={() => fileInputRef.current?.click()} className="w-full border-2 border-dashed border-border rounded-xl p-5 flex flex-col items-center gap-2 text-muted-foreground hover:border-primary/40 hover:bg-primary/5 transition-colors">
-                  <ImageIcon className="w-6 h-6" />
-                  <span className="text-sm">Click to upload screenshot</span>
-                </button>}
-            </div>
-
-            <Button className="w-full rounded-lg bg-[#0BAB6D] hover:bg-[#0A9E62] text-white font-semibold" onClick={handleSubmit} disabled={submitting || uploading || (pricing.require_payment_screenshot && !screenshot?.uploadedUrl)}>
-              {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : null}
-              {submitting ? 'Submitting...' : "I've Made the Payment →"}
-            </Button>
           </div>
         }
       </DialogContent>

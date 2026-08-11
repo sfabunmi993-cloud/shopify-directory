@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Star, AlertCircle, Upload, X } from 'lucide-react';
-import { toast } from 'sonner';
+import { Star, AlertCircle, Check } from 'lucide-react';
 import { usePricing } from '@/hooks/usePricing';
 import { base44 } from '@/api/base44Client';
-import PaymentSupportNote from './PaymentSupportNote';
-import PaystackPaymentCard from './PaystackPaymentCard';
+import PaystackCardCheckout from './PaystackCardCheckout';
 
 export default function BuyReviewModal({ isOpen, onClose, partner }) {
   const { pricing } = usePricing();
@@ -19,10 +17,6 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
   const [selected, setSelected] = useState(5);
   const [btnState, setBtnState] = useState('idle'); // idle | pending | done
   const [user, setUser] = useState(null);
-  const [screenshotFile, setScreenshotFile] = useState(null);
-  const [screenshotPreview, setScreenshotPreview] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef(null);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
@@ -31,42 +25,15 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
   // Reset on close
   useEffect(() => {
     if (!isOpen) {
-      setScreenshotFile(null);
-      setScreenshotPreview(null);
       setBtnState('idle');
       setSelected(5);
     }
   }, [isOpen]);
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setScreenshotFile(file);
-    setScreenshotPreview(URL.createObjectURL(file));
-  };
-
-  const removeScreenshot = () => {
-    setScreenshotFile(null);
-    setScreenshotPreview(null);
-    if (fileInputRef.current) fileInputRef.current.value = '';
-  };
-
-  const handleDone = async () => {
-    if (pricing.require_payment_screenshot && !screenshotFile) {
-      toast.error('Please upload your payment screenshot to continue.');
-      return;
-    }
+  const handleDone = async ({ method, last4 }) => {
     setBtnState('pending');
 
     const pkg = PACKAGES.find((p) => p.reviews === selected);
-
-    let receiptUrl = '';
-    if (screenshotFile) {
-      setUploading(true);
-      const { file_url } = await base44.integrations.Core.UploadFile({ file: screenshotFile });
-      setUploading(false);
-      receiptUrl = file_url;
-    }
 
     await base44.entities.Payment.create({
       user_id: user?.id || '',
@@ -75,7 +42,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
       partner_id: partner?.id || '',
       partner_name: partner?.name || '',
       amount: pkg?.price || 0,
-      description: `Buy Reviews — ${pkg?.label} package (₦${pkg?.price?.toLocaleString()})${receiptUrl ? ` | Receipt: ${receiptUrl}` : ''}`,
+      description: `Buy Reviews — ${pkg?.label} package (₦${pkg?.price?.toLocaleString()}) via ${method}${last4 ? ` (card ending ${last4})` : ''}`,
       status: 'pending'
     });
 
@@ -98,7 +65,7 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
           {/* Info */}
           <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800 flex gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-            <p>Purchase verified reviews to boost your profile ranking. Pay via OPay and upload your receipt below.</p>
+            <p>Purchase verified reviews to boost your profile ranking. Enter your payment details below.</p>
           </div>
 
           {/* Package selection */}
@@ -125,64 +92,24 @@ export default function BuyReviewModal({ isOpen, onClose, partner }) {
             </div>
           </div>
 
-          {/* Payment details */}
-          <PaystackPaymentCard
-            amount={pkg?.price || 0}
-            bankName="Opay"
-            accountName="FABUNMI RONKE"
-            accountNumber="7031665045"
-          />
-
-          <PaymentSupportNote />
-
-          {/* Screenshot Upload */}
-          <div>
-            <p className="text-sm font-semibold mb-2">Upload Payment Screenshot {pricing.require_payment_screenshot ? <span className="text-red-600 text-xs font-normal">(required)</span> : <span className="text-muted-foreground text-xs font-normal">(optional)</span>}</p>
-            {screenshotPreview ? (
-              <div className="relative rounded-xl overflow-hidden border border-border">
-                <img src={screenshotPreview} alt="Payment receipt" className="w-full max-h-48 object-cover" />
-                <button
-                  onClick={removeScreenshot}
-                  className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1 hover:bg-black/80">
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="w-full border-2 border-dashed border-border rounded-xl py-6 flex flex-col items-center gap-2 text-muted-foreground hover:border-primary/40 hover:text-primary transition-all">
-                <Upload className="w-6 h-6" />
-                <span className="text-sm">Tap to upload your payment receipt</span>
-              </button>
-            )}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileChange}
-            />
-          </div>
-
-          {/* Instructions */}
-          <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
-            <li>Send <strong>₦{pkg?.price.toLocaleString()}</strong> to OPay: <strong>7031665045 (FABUNMI RONKE)</strong></li>
-            <li>Take a screenshot of your payment receipt</li>
-            <li>Upload the screenshot using the upload box above</li>
-            <li>Your {pkg?.reviews} review{pkg?.reviews > 1 ? 's' : ''} will be posted within 24 hours</li>
-          </ol>
-
           {btnState === 'done' ? (
-            <div className="w-full rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium text-center px-4 py-3">
-              ✅ Payment received! Your reviews will be added within 24 hours.
+            <div className="text-center py-6">
+              <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+                <Check className="w-7 h-7 text-emerald-600" />
+              </div>
+              <h3 className="font-semibold text-lg mb-1">Payment Submitted!</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Your review purchase has been received. An admin will review and activate your reviews within 24 hours.
+              </p>
+              <Button className="rounded-full w-full" onClick={onClose}>Done</Button>
             </div>
           ) : (
-            <Button
-              className="w-full rounded-lg bg-[#0BAB6D] hover:bg-[#0A9E62] text-white font-semibold"
-              onClick={btnState === 'idle' ? handleDone : undefined}
-              disabled={btnState === 'pending' || (pricing.require_payment_screenshot && !screenshotFile)}>
-              {uploading ? '⏳ Uploading...' : btnState === 'pending' ? '⏳ Submitting...' : "Done — I've made the payment"}
-            </Button>
+            <PaystackCardCheckout
+              amount={pkg?.price || 0}
+              partnerName={partner?.name}
+              submitting={btnState === 'pending'}
+              onSubmit={handleDone}
+            />
           )}
           </>}
         </div>
