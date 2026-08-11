@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Link as LinkIcon, Eye, Edit2, BadgeCheck, Star, Infinity as InfinityIcon, Bell, XCircle, CheckCircle, EyeOff, Trash2, Loader2, ShieldAlert, Globe } from 'lucide-react';
+import { Link as LinkIcon, Eye, Edit2, BadgeCheck, Star, Infinity as InfinityIcon, Bell, XCircle, CheckCircle, EyeOff, Trash2, Loader2, ShieldAlert, Globe, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 
 const STATUS_STYLES = {
@@ -18,7 +18,7 @@ function getPartnerRank(reviewCount = 0) {
 }
 
 export default function PartnerList(props) {
-  const { partners, onApprove, onRestrict, onBulkApprove, onBulkRestrict, onBulkMarkDomain, onEditId, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds, onToggleDomain } = props;
+  const { partners, onApprove, onRestrict, onRevert, onBulkApprove, onBulkRestrict, onBulkMarkDomain, onEditId, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds, onToggleDomain } = props;
   const [selected, setSelected] = useState([]);
 
   if (partners.length === 0) {
@@ -176,6 +176,13 @@ export default function PartnerList(props) {
                   <Bell className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">{p.admin_banner ? 'Banner ✓' : 'Banner'}</span>
                 </Button>
+                {p.status === 'approved' && onRevert && (
+                  <Button size="sm" variant="outline" className="rounded-full text-amber-700 border-amber-200 hover:bg-amber-50"
+                    onClick={() => onRevert(p)} title="Revert to pending">
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Revert</span>
+                  </Button>
+                )}
                 {p.status !== 'restricted' && (
                   <Button size="sm" variant="outline" className="rounded-full text-red-700 border-red-200 hover:bg-red-50"
                     onClick={() => onRestrict(p)}>
