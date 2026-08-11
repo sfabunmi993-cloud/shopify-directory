@@ -11,6 +11,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger } from
 '@/components/ui/dropdown-menu';
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription } from
+'@/components/ui/sheet';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 export default function Navbar() {
@@ -178,8 +186,8 @@ export default function Navbar() {
             </Button>
 
             {user ?
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+            <Sheet>
+                <SheetTrigger asChild>
                   <button className="flex items-center gap-1.5 hover:opacity-80 transition-opacity p-1 -m-1">
                     <Avatar className="w-11 h-11 md:w-9 md:h-9">
                       {user?.picture && <AvatarImage src={user.picture} alt={user.full_name || 'Profile'} />}
@@ -187,54 +195,45 @@ export default function Navbar() {
                     </Avatar>
                     <ChevronDown className="w-4 h-4 md:w-3 md:h-3 text-black" />
                   </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <div className="px-3 py-2">
-                    <p className="text-sm font-medium truncate">{user.full_name || 'Account'}</p>
-                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-                  </div>
-                  <DropdownMenuSeparator />
-                  {isAdmin &&
-                <>
-                      <DropdownMenuItem asChild>
-                        <Link to="/admin"><ShieldCheck className="w-4 h-4 mr-2" /> Admin Dashboard</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                    </>
-                }
-                  {hasPartnerProfile ?
-                <>
-                      <DropdownMenuItem asChild>
-                        <Link to="/my-profile"><User className="w-4 h-4 mr-2" /> My Profile</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to={`/partner/${partnerId}`}><LayoutDashboard className="w-4 h-4 mr-2" /> View Public Profile</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                    </> :
+                </SheetTrigger>
+                <SheetContent side="right" className="w-72 p-0">
+                  <SheetHeader className="px-5 pt-5 pb-3">
+                    <SheetTitle className="truncate">{user.full_name || 'Account'}</SheetTitle>
+                    <SheetDescription className="truncate">{user.email}</SheetDescription>
+                  </SheetHeader>
+                  <div className="px-3 pb-6 overflow-y-auto">
+                    {isAdmin &&
+                  <>
+                        <SheetLink to="/admin" icon={ShieldCheck}>Admin Dashboard</SheetLink>
+                        <div className="my-2 border-t border-border" />
+                      </>
+                  }
+                    {hasPartnerProfile ?
+                  <>
+                        <SheetLink to="/my-profile" icon={User}>My Profile</SheetLink>
+                        <SheetLink to={`/partner/${partnerId}`} icon={LayoutDashboard}>View Public Profile</SheetLink>
+                        <SheetLink to="/favorites" icon={Heart}>Saved Partners</SheetLink>
+                        <SheetLink to="/messages" icon={MessageSquare}>Messages</SheetLink>
+                        <SheetLink to="/private-messages" icon={Inbox}>Private Messages</SheetLink>
+                        <div className="my-2 border-t border-border" />
+                      </> :
 
-                <>
-                      <DropdownMenuItem asChild>
-                        <Link to="/become-a-partner"><User className="w-4 h-4 mr-2" /> Become a Partner</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                    </>
-                }
-                  <DropdownMenuItem asChild>
-                    
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
-                    <LogOut className="w-4 h-4 mr-2" /> Log out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu> :
+                  <>
+                        <SheetLink to="/become-a-partner" icon={User}>Become a Partner</SheetLink>
+                        <SheetLink to="/favorites" icon={Heart}>Saved Partners</SheetLink>
+                        <SheetLink to="/messages" icon={MessageSquare}>Messages</SheetLink>
+                        <SheetLink to="/private-messages" icon={Inbox}>Private Messages</SheetLink>
+                        <div className="my-2 border-t border-border" />
+                      </>
+                  }
+                    <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 rounded-md transition-colors">
+                      <LogOut className="w-4 h-4" /> Log out
+                    </button>
+                  </div>
+                </SheetContent>
+              </Sheet> :
 
             <div className="hidden md:flex items-center gap-2">
                 <Button asChild variant="ghost" size="sm" className="text-black hover:bg-black/5">
@@ -366,5 +365,14 @@ function MobileLink({ to, onClick, children, highlight, icon: Icon }) {
       {Icon && <Icon className="w-3.5 h-3.5 shrink-0" />}
       <span className="truncate">{children}</span>
     </Link>);
+}
 
+function SheetLink({ to, icon: Icon, children }) {
+  return (
+    <Link
+      to={to}
+      className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-black/5 text-foreground">
+      {Icon && <Icon className="w-4 h-4 shrink-0" />}
+      <span className="truncate">{children}</span>
+    </Link>);
 }
