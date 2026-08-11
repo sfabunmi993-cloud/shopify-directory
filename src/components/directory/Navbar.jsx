@@ -19,6 +19,7 @@ export default function Navbar() {
   const [user, setUser] = useState(null);
   const [hasPartnerProfile, setHasPartnerProfile] = useState(false);
   const [partnerId, setPartnerId] = useState(null);
+  const [partnerLogo, setPartnerLogo] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
@@ -36,6 +37,7 @@ export default function Navbar() {
         if (partners.length > 0) {
           setHasPartnerProfile(true);
           setPartnerId(partners[0].id);
+          setPartnerLogo(partners[0].logo_url || null);
         }
       }
     });
@@ -180,8 +182,13 @@ export default function Navbar() {
             {user ?
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center hover:opacity-80 transition-opacity p-2 -m-1 text-black">
-                    <Menu className="w-5 h-5" />
+                  <button className="flex items-center hover:opacity-80 transition-opacity p-1 -m-1 text-black rounded-full ring-2 ring-black/10 hover:ring-black/20">
+                    <Avatar className="w-8 h-8">
+                      {partnerLogo ?
+                        <AvatarImage src={partnerLogo} alt={user.full_name || 'Account'} /> :
+                        (user?.picture && <AvatarImage src={user.picture} alt={user.full_name || 'Profile'} />)}
+                      <AvatarFallback className="bg-black/10 text-black text-xs font-semibold">{initials}</AvatarFallback>
+                    </Avatar>
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
