@@ -80,7 +80,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-white text-black border-y border-black/20 shadow-sm">
-      <div className="w-full px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 bg-gray-200">
         <div className="flex items-center h-12 gap-4">
           {/* Logo */}
           <a href="https://www.shopify.com/ng/partners" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 shrink-0">
@@ -185,8 +185,8 @@ export default function Navbar() {
                   <button className="flex items-center hover:opacity-80 transition-opacity p-1 -m-1 text-black rounded-full ring-2 ring-black/10 hover:ring-black/20">
                     <Avatar className="w-8 h-8">
                       {partnerLogo ?
-                        <AvatarImage src={partnerLogo} alt={user.full_name || 'Account'} /> :
-                        (user?.picture && <AvatarImage src={user.picture} alt={user.full_name || 'Profile'} />)}
+                    <AvatarImage src={partnerLogo} alt={user.full_name || 'Account'} /> :
+                    user?.picture && <AvatarImage src={user.picture} alt={user.full_name || 'Profile'} />}
                       <AvatarFallback className="bg-black/10 text-black text-xs font-semibold">{initials}</AvatarFallback>
                     </Avatar>
                   </button>
