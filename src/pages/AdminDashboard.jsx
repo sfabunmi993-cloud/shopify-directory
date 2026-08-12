@@ -1080,6 +1080,11 @@ function PaymentList({ payments, onApprove, onReject }) {
             </div>
             <p className="text-sm font-bold text-foreground mt-1">${pay.amount?.toLocaleString()}</p>
             {pay.description && <p className="text-xs text-muted-foreground mt-0.5">{pay.description}</p>}
+            {pay.screenshot_url &&
+              <a href={pay.screenshot_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 mt-1.5 text-xs text-primary hover:underline">
+                <ImageIcon className="w-3.5 h-3.5" /> View payment screenshot
+              </a>
+            }
             <p className="text-xs text-muted-foreground mt-1">{pay.created_date ? format(new Date(pay.created_date), 'MMM d, yyyy') : ''}</p>
           </div>
           {pay.status === 'pending' && (

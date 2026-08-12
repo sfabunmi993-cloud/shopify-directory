@@ -52,6 +52,10 @@
       "type": "boolean",
       "default": false,
       "description": "Whether the partner has already been notified that this payment is still pending after 48 hours"
+    },
+    "screenshot_url": {
+      "type": "string",
+      "description": "URL of the uploaded payment receipt screenshot (for premium badge / review / domain purchases)"
     }
   },
   "required": [
