@@ -43,21 +43,28 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Only email the partner owner once the account is actually restricted
-    if (shouldRestrict) {
-      let toEmail = '';
-      let ownerName = partner.name || 'Partner';
-      try {
-        const owner = await base44.asServiceRole.entities.User.get(partner.created_by_id);
-        if (owner?.email) toEmail = owner.email;
-        if (owner?.full_name) ownerName = owner.full_name;
-      } catch {}
+    // Always notify the partner owner that their account was reported
+    let toEmail = '';
+    let ownerName = partner.name || 'Partner';
+    try {
+      const owner = await base44.asServiceRole.entities.User.get(partner.created_by_id);
+      if (owner?.email) toEmail = owner.email;
+      if (owner?.full_name) ownerName = owner.full_name;
+    } catch {}
 
-      if (toEmail) {
+    if (toEmail) {
+      if (shouldRestrict) {
         const body = `Hi ${ownerName},\n\nYour partner account "${partner.name}" has been reported multiple times and automatically restricted.\n\nLatest reason: ${reasonText}${reportDetails}\n\nTo restore your account, log in to your profile and submit an appeal from the restriction banner. Once you submit your appeal, your account will be automatically restored.\n\nBest regards,\nShopify Partner Base Team`;
         waitUntil(base44.asServiceRole.integrations.Core.SendEmail({
           to: toEmail,
           subject: 'Your account has been restricted — submit an appeal',
+          body,
+        }));
+      } else {
+        const body = `Hi ${ownerName},\n\nSomeone has reported your partner account "${partner.name}". Your account is still active, but repeated reports may lead to automatic restriction.\n\nReason: ${reasonText}${reportDetails}\n\nReports so far: ${newFlagCount}. If you receive 3 or more reports, your account will be automatically restricted until you submit an appeal.\n\nBest regards,\nShopify Partner Base Team`;
+        waitUntil(base44.asServiceRole.integrations.Core.SendEmail({
+          to: toEmail,
+          subject: 'Someone reported your account',
           body,
         }));
       }
