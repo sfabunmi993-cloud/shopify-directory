@@ -136,8 +136,9 @@ export default function Messages() {
     }
     // Load hire status for this conversation
     const hireMsg = msgs.find((m) => m.message_type === 'hire');
-    if (hireMsg && isPartnerSide) {
-      // Check if there's an approved project
+    if (hireMsg) {
+      // Compute hire status for both partner and client sides so the client
+      // can see the "Leave Review" button once a project is completed.
       const projects = await base44.entities.Project.filter({ conversation_id: conv.id });
       if (projects.length > 0) {
         setHireStatus((prev) => ({ ...prev, [conv.id]: projects[0].status === 'completed' ? 'completed' : 'approved' }));
