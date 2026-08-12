@@ -22,17 +22,17 @@ export default function Directory() {
     location: searchParams.get('country') || 'all',
     tier: 'all',
     minPrice: '',
-    maxPrice: '',
+    maxPrice: ''
   });
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
 
   // Sync navbar-driven URL changes (search, category, country) into local state
   useEffect(() => {
     setSearchQuery(searchParams.get('search') || '');
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       category: searchParams.get('category') || 'all',
-      location: searchParams.get('country') || prev.location,
+      location: searchParams.get('country') || prev.location
     }));
   }, [searchParams]);
   const [sortBy, setSortBy] = useState('rating');
@@ -40,26 +40,26 @@ export default function Directory() {
   const [showCompare, setShowCompare] = useState(false);
 
   const toggleCompare = (partner) => {
-    setCompareIds(prev =>
-      prev.includes(partner.id)
-        ? prev.filter(id => id !== partner.id)
-        : prev.length < 4 ? [...prev, partner.id] : prev
+    setCompareIds((prev) =>
+    prev.includes(partner.id) ?
+    prev.filter((id) => id !== partner.id) :
+    prev.length < 4 ? [...prev, partner.id] : prev
     );
   };
 
   const { data: partners, isLoading } = useQuery({
     queryKey: ['partners'],
     queryFn: () => base44.entities.Partner.list('-rating', 500),
-    initialData: [],
+    initialData: []
   });
 
   const comparePartners = useMemo(
-    () => partners.filter(p => compareIds.includes(p.id)),
+    () => partners.filter((p) => compareIds.includes(p.id)),
     [partners, compareIds]
   );
 
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
+    setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
   const clearFilters = () => {
@@ -71,37 +71,37 @@ export default function Directory() {
     let results = [...partners];
 
     // Exclude hidden partners from directory view
-    results = results.filter(p => !p.is_hidden && p.status === 'approved');
+    results = results.filter((p) => !p.is_hidden && p.status === 'approved');
 
     if (searchQuery) {
       const q = searchQuery.toLowerCase().trim();
-      results = results.filter(p =>
-        p.name?.toLowerCase().includes(q) ||
-        p.description?.toLowerCase().includes(q) ||
-        p.location?.toLowerCase().includes(q) ||
-        p.partner_number?.toLowerCase().includes(q) ||
-        p.services?.some(s => s.toLowerCase().includes(q)) ||
-        p.tags?.some(t => t.toLowerCase().includes(q))
+      results = results.filter((p) =>
+      p.name?.toLowerCase().includes(q) ||
+      p.description?.toLowerCase().includes(q) ||
+      p.location?.toLowerCase().includes(q) ||
+      p.partner_number?.toLowerCase().includes(q) ||
+      p.services?.some((s) => s.toLowerCase().includes(q)) ||
+      p.tags?.some((t) => t.toLowerCase().includes(q))
       );
     }
 
     if (filters.category !== 'all') {
-      results = results.filter(p => p.service_category === filters.category);
+      results = results.filter((p) => p.service_category === filters.category);
     }
     if (filters.industry !== 'all') {
-      results = results.filter(p => p.industry === filters.industry);
+      results = results.filter((p) => p.industry === filters.industry);
     }
     if (filters.location !== 'all') {
-      results = results.filter(p => p.country === filters.location);
+      results = results.filter((p) => p.country === filters.location);
     }
     if (filters.tier !== 'all') {
-      results = results.filter(p => p.partner_tier === filters.tier);
+      results = results.filter((p) => p.partner_tier === filters.tier);
     }
     if (filters.minPrice) {
-      results = results.filter(p => (p.starting_price || 0) >= Number(filters.minPrice));
+      results = results.filter((p) => (p.starting_price || 0) >= Number(filters.minPrice));
     }
     if (filters.maxPrice) {
-      results = results.filter(p => (p.starting_price || 0) <= Number(filters.maxPrice));
+      results = results.filter((p) => (p.starting_price || 0) <= Number(filters.maxPrice));
     }
 
     if (sortBy === 'rating') {
@@ -127,14 +127,14 @@ export default function Directory() {
     return (
       <ComparePartners
         partners={comparePartners}
-        onRemove={(id) => setCompareIds(prev => prev.filter(x => x !== id))}
-        onClose={() => setShowCompare(false)}
-      />
-    );
+        onRemove={(id) => setCompareIds((prev) => prev.filter((x) => x !== id))}
+        onClose={() => setShowCompare(false)} />);
+
+
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 bg-gray-50">
       {/* Hero */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-8 pb-10">
         <div className="flex flex-col gap-6">
@@ -144,20 +144,20 @@ export default function Directory() {
           </div>
           <div className="flex flex-wrap gap-2">
             {[
-              { label: 'Marketing and sales', to: '/directory?category=marketing_and_sales' },
-              { label: 'Store setup and management', to: '/directory?category=store_setup_and_management' },
-              { label: 'Development and troubleshooting', to: '/directory?category=development_and_troubleshooting' },
-              { label: 'Visual content and branding', to: '/directory?category=visual_content_and_branding' },
-              { label: 'Content writing', to: '/directory?category=content_writing' },
-              { label: 'Expert guidance', to: '/directory?category=expert_guidance' }
-            ].map((c) => (
-              <Link
-                key={c.label}
-                to={c.to}
-                className="inline-block border-2 border-border bg-card text-foreground rounded-full px-4 py-1.5 text-sm font-medium hover:border-foreground hover:bg-muted transition-colors">
+            { label: 'Marketing and sales', to: '/directory?category=marketing_and_sales' },
+            { label: 'Store setup and management', to: '/directory?category=store_setup_and_management' },
+            { label: 'Development and troubleshooting', to: '/directory?category=development_and_troubleshooting' },
+            { label: 'Visual content and branding', to: '/directory?category=visual_content_and_branding' },
+            { label: 'Content writing', to: '/directory?category=content_writing' },
+            { label: 'Expert guidance', to: '/directory?category=expert_guidance' }].
+            map((c) =>
+            <Link
+              key={c.label}
+              to={c.to}
+              className="inline-block border-2 border-border bg-card text-foreground rounded-full px-4 py-1.5 text-sm font-medium hover:border-foreground hover:bg-muted transition-colors">
                 {c.label}
               </Link>
-            ))}
+            )}
           </div>
         </div>
         <div className="hidden md:block">
@@ -216,9 +216,9 @@ export default function Directory() {
           </div>
 
           <div className="space-y-3">
-            {isLoading ? (
-              Array(6).fill(0).map((_, i) => (
-                <div key={i} className="border border-border rounded-xl p-5">
+            {isLoading ?
+            Array(6).fill(0).map((_, i) =>
+            <div key={i} className="border border-border rounded-xl p-5">
                   <div className="flex gap-4">
                     <Skeleton className="w-14 h-14 rounded-lg shrink-0" />
                     <div className="flex-1 space-y-2">
@@ -229,34 +229,34 @@ export default function Directory() {
                     </div>
                   </div>
                 </div>
-              ))
-            ) : filteredPartners.length === 0 ? (
-              <div className="text-center py-20">
+            ) :
+            filteredPartners.length === 0 ?
+            <div className="text-center py-20">
                 <p className="text-lg font-medium text-foreground">No partners found</p>
                 <p className="text-sm text-muted-foreground mt-1">Try adjusting your search or filters</p>
                 <Button variant="outline" size="sm" onClick={clearFilters} className="mt-4 rounded-full">
                   <X className="w-3 h-3 mr-1" /> Clear all filters
                 </Button>
-              </div>
-            ) : (
-              filteredPartners.map((partner) => (
-                <PartnerCard
-                  key={partner.id}
-                  partner={partner}
-                  compareSelected={compareIds.includes(partner.id)}
-                  onToggleCompare={() => toggleCompare(partner)}
-                />
-              ))
-            )}
+              </div> :
+
+            filteredPartners.map((partner) =>
+            <PartnerCard
+              key={partner.id}
+              partner={partner}
+              compareSelected={compareIds.includes(partner.id)}
+              onToggleCompare={() => toggleCompare(partner)} />
+
+            )
+            }
           </div>
         </div>
       </div>
       <CompareBar
         partners={comparePartners}
-        onRemove={(id) => setCompareIds(prev => prev.filter(x => x !== id))}
+        onRemove={(id) => setCompareIds((prev) => prev.filter((x) => x !== id))}
         onCompare={() => setShowCompare(true)}
-        onClear={() => setCompareIds([])}
-      />
-    </div>
-  );
+        onClear={() => setCompareIds([])} />
+      
+    </div>);
+
 }
