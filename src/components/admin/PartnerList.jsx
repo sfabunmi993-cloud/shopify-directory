@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Link as LinkIcon, Eye, Edit2, BadgeCheck, Star, Infinity as InfinityIcon, Bell, XCircle, CheckCircle, EyeOff, Trash2, Loader2, ShieldAlert, Globe, RotateCcw } from 'lucide-react';
+import { Link as LinkIcon, Eye, Edit2, BadgeCheck, Star, Infinity as InfinityIcon, Bell, XCircle, CheckCircle, EyeOff, Trash2, Loader2, ShieldAlert, Globe, RotateCcw, Crown } from 'lucide-react';
 import { toast } from 'sonner';
 
 const STATUS_STYLES = {
@@ -18,7 +18,7 @@ function getPartnerRank(reviewCount = 0) {
 }
 
 export default function PartnerList(props) {
-  const { partners, onApprove, onRestrict, onRevert, onBulkApprove, onBulkRestrict, onBulkMarkDomain, onEditId, onEditDetails, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds, onToggleDomain } = props;
+  const { partners, onApprove, onRestrict, onRevert, onBulkApprove, onBulkRestrict, onBulkMarkDomain, onEditId, onEditDetails, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onTogglePremium, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds, onToggleDomain } = props;
   const [selected, setSelected] = useState([]);
 
   if (partners.length === 0) {
@@ -155,6 +155,16 @@ export default function PartnerList(props) {
                 >
                   <InfinityIcon className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">{p.unlimited_reviews ? 'Unlimited ✓' : 'Unlimited'}</span>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className={`rounded-full gap-1 ${p.partner_tier === 'premium' ? 'text-amber-700 border-amber-300 bg-amber-50 hover:bg-amber-100' : 'text-slate-500 border-slate-200 hover:bg-slate-50'}`}
+                  title={p.partner_tier === 'premium' ? 'Remove Premium tag' : 'Grant Premium tag'}
+                  onClick={() => onTogglePremium(p)}
+                >
+                  <Crown className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{p.partner_tier === 'premium' ? 'Premium ✓' : 'Premium'}</span>
                 </Button>
                 <Button
                   size="sm"
