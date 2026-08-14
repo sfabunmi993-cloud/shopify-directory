@@ -252,7 +252,7 @@ export default function Navbar() {
                   <a href="https://www.shopify.com/" target="_blank" rel="noopener noreferrer">Log in</a>
                 </Button>
                 <Button asChild size="sm" className="rounded-full bg-black text-white hover:bg-black/90">
-                  <Link to="/register">Login as an expert</Link>
+                  <Link to="/register">Login </Link>
                 </Button>
               </div>
             }
