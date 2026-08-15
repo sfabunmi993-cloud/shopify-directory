@@ -5,7 +5,16 @@ const GRACE_MINUTES = 0;
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-
+return new Response(
+  JSON.stringify({
+    success: true,
+    skipped: true,
+    message: 'Automatic partner revert is disabled'
+  }),
+  {
+    headers: { 'Content-Type': 'application/json' }
+  }
+);
     const [partners, payments] = await Promise.all([
       base44.asServiceRole.entities.Partner.list('-updated_date', 500),
       base44.asServiceRole.entities.Payment.list('-created_date', 500),
