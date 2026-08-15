@@ -33,11 +33,11 @@ Deno.serve(async (req) => {
         new Date(p.updated_date).getTime() < cutoff
     );
 
-    if (toRevert.length > 0) {
-      await base44.asServiceRole.entities.Partner.bulkUpdate(
-        toRevert.map((p) => ({ id: p.id, status: 'pending' }))
-      );
-    }
+if (toRevert.length > 0) {
+  await base44.asServiceRole.entities.Partner.bulkUpdate(
+    toRevert.map((p) => ({ id: p.id, status: 'pending' }))
+  );
+}
 
     return Response.json({
       success: true,
