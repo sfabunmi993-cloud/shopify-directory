@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, X, ChevronDown, LogOut, User, LayoutDashboard, Heart, MessageSquare, ShieldCheck, Inbox } from 'lucide-react';
+import { Search, X, ChevronDown, LogOut, Heart, MessageSquare, Inbox } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
@@ -19,7 +19,6 @@ export default function Navbar() {
   const [user, setUser] = useState(null);
   const [hasPartnerProfile, setHasPartnerProfile] = useState(false);
   const [partnerId, setPartnerId] = useState(null);
-  const [partnerLogo, setPartnerLogo] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
@@ -37,7 +36,6 @@ export default function Navbar() {
         if (partners.length > 0) {
           setHasPartnerProfile(true);
           setPartnerId(partners[0].id);
-          setPartnerLogo(partners[0].logo_url || null);
         }
       }
     });
@@ -80,7 +78,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-white text-black border-y border-black/20 shadow-sm">
-      <div className="w-full px-4 sm:px-6 lg:px-8 bg-gray-200">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-12 gap-4">
           {/* Logo */}
           <a href="https://www.shopify.com/ng/partners" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 shrink-0">
@@ -179,80 +177,13 @@ export default function Navbar() {
               <Link to="/contact">Contact us</Link>
             </Button>
 
-            {user ?
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="flex items-center hover:opacity-80 transition-opacity p-1 -m-1 text-black rounded-full ring-2 ring-black/10 hover:ring-black/20">
-                    <Avatar className="w-8 h-8">
-                      {partnerLogo ?
-                    <AvatarImage src={partnerLogo} alt={user.full_name || 'Account'} /> :
-                    user?.picture && <AvatarImage src={user.picture} alt={user.full_name || 'Profile'} />}
-                      <AvatarFallback className="bg-black/10 text-black text-xs font-semibold">{initials}</AvatarFallback>
-                    </Avatar>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <div className="px-3 py-2">
-                    <p className="text-sm font-medium truncate">{user.full_name || 'Account'}</p>
-                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-                  </div>
-                  <DropdownMenuSeparator />
-                  {isAdmin &&
-                <>
-                      <DropdownMenuItem asChild>
-                        <Link to="/admin"><ShieldCheck className="w-4 h-4 mr-2" /> Admin Dashboard</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                    </>
-                }
-                  {hasPartnerProfile ?
-                <>
-                      <DropdownMenuItem asChild>
-                        <Link to="/my-profile"><User className="w-4 h-4 mr-2" /> My Profile</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to={`/partner/${partnerId}`}><LayoutDashboard className="w-4 h-4 mr-2" /> View Public Profile</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/favorites"><Heart className="w-4 h-4 mr-2" /> Saved Partners</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/messages"><MessageSquare className="w-4 h-4 mr-2" /> Messages</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/private-messages"><Inbox className="w-4 h-4 mr-2" /> Private Messages</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                    </> :
-
-                <>
-                      <DropdownMenuItem asChild>
-                        <Link to="/become-a-partner"><User className="w-4 h-4 mr-2" /> Become a Partner</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/favorites"><Heart className="w-4 h-4 mr-2" /> Saved Partners</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/messages"><MessageSquare className="w-4 h-4 mr-2" /> Messages</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/private-messages"><Inbox className="w-4 h-4 mr-2" /> Private Messages</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                    </>
-                }
-                  <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
-                    <LogOut className="w-4 h-4 mr-2" /> Log out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu> :
-
+            {!user &&
             <div className="hidden md:flex items-center gap-2">
                 <Button asChild variant="ghost" size="sm" className="text-black hover:bg-black/5">
                   <a href="https://www.shopify.com/" target="_blank" rel="noopener noreferrer">Log in</a>
                 </Button>
                 <Button asChild size="sm" className="rounded-full bg-black text-white hover:bg-black/90">
-                  <Link to="/register">Login </Link>
+                  <Link to="/register">Login as an expert</Link>
                 </Button>
               </div>
             }
@@ -262,7 +193,7 @@ export default function Navbar() {
             <div className="md:hidden flex flex-col items-end gap-0.5">
                 <span className="text-[10px] text-black/60 leading-none">Are you a partner?</span>
                 <Button asChild size="sm" className="rounded-full bg-black text-white hover:bg-black/90 h-7 px-3 text-xs">
-                  <Link to="/register">Login </Link>
+                  <Link to="/register">Login as an expert</Link>
                 </Button>
               </div>
             }

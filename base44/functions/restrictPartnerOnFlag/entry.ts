@@ -27,23 +27,14 @@ Deno.serve(async (req) => {
     const reasonText = REASON_LABELS[flag.reason] || flag.reason || 'A policy violation';
     const reportDetails = flag.details ? `\n\nReport details: "${flag.details}"` : '';
 
-    // Bump the flag count; only auto-restrict once it reaches 3 reports
-    const newFlagCount = (partner.flag_count || 0) + 1;
-    const shouldRestrict = newFlagCount >= 3 && partner.status !== 'restricted';
+    // Automatically restrict the partner and bump the flag count
+    await base44.asServiceRole.entities.Partner.update(partnerId, {
+      status: 'restricted',
+      restriction_reason: `Your account was reported for: ${reasonText}. Submit an appeal from your profile to restore your account.`,
+      flag_count: (partner.flag_count || 0) + 1,
+    });
 
-    if (shouldRestrict) {
-      await base44.asServiceRole.entities.Partner.update(partnerId, {
-        status: 'restricted',
-        restriction_reason: `Your account was reported 3 times. Latest reason: ${reasonText}. Submit an appeal from your profile to restore your account.`,
-        flag_count: newFlagCount,
-      });
-    } else {
-      await base44.asServiceRole.entities.Partner.update(partnerId, {
-        flag_count: newFlagCount,
-      });
-    }
-
-    // Always notify the partner owner that their account was reported
+    // Email the partner owner (registered user) so they can write an appeal
     let toEmail = '';
     let ownerName = partner.name || 'Partner';
     try {
@@ -53,21 +44,12 @@ Deno.serve(async (req) => {
     } catch {}
 
     if (toEmail) {
-      if (shouldRestrict) {
-        const body = `Hi ${ownerName},\n\nYour partner account "${partner.name}" has been reported multiple times and automatically restricted.\n\nLatest reason: ${reasonText}${reportDetails}\n\nTo restore your account, log in to your profile and submit an appeal from the restriction banner. Once you submit your appeal, your account will be automatically restored.\n\nBest regards,\nShopify Partner Base Team`;
-        waitUntil(base44.asServiceRole.integrations.Core.SendEmail({
-          to: toEmail,
-          subject: 'Your account has been restricted — submit an appeal',
-          body,
-        }));
-      } else {
-        const body = `Hi ${ownerName},\n\nSomeone has reported your partner account "${partner.name}". Your account is still active, but repeated reports may lead to automatic restriction.\n\nReason: ${reasonText}${reportDetails}\n\nReports so far: ${newFlagCount}. If you receive 3 or more reports, your account will be automatically restricted until you submit an appeal.\n\nBest regards,\nShopify Partner Base Team`;
-        waitUntil(base44.asServiceRole.integrations.Core.SendEmail({
-          to: toEmail,
-          subject: 'Someone reported your account',
-          body,
-        }));
-      }
+      const body = `Hi ${ownerName},\n\nYour partner account "${partner.name}" has been reported and automatically restricted.\n\nReason: ${reasonText}${reportDetails}\n\nTo restore your account, log in to your profile and submit an appeal from the restriction banner. Once you submit your appeal, your account will be automatically restored.\n\nBest regards,\nShopify Partner Base Team`;
+      waitUntil(base44.asServiceRole.integrations.Core.SendEmail({
+        to: toEmail,
+        subject: 'Your account has been restricted — submit an appeal',
+        body,
+      }));
     }
 
     return Response.json({ success: true });
