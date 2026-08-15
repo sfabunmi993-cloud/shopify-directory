@@ -528,10 +528,7 @@ export default function AdminDashboard() {
             <Mail className="w-4 h-4 mr-1.5" />
             Email Blast
           </TabsTrigger>
-          <TabsTrigger value="analytics">
-            <BarChart3 className="w-4 h-4 mr-1.5" />
-            Analytics
-          </TabsTrigger>
+         
           <TabsTrigger value="announcements">
             <Megaphone className="w-4 h-4 mr-1.5" />
             Announcements <Badge variant="secondary" className="ml-1.5">{announcements.length}</Badge>
