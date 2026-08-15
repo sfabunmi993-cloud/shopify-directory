@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
-const GRACE_MINUTES = 5;
+const GRACE_MINUTES = 0;
 
 Deno.serve(async (req) => {
   try {
