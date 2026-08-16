@@ -487,6 +487,39 @@ export default function MyProfile() {
 
         <hr className="border-border" />
 
+        {/* Social Media */}
+        <div>
+          <h2 className="font-semibold text-base mb-4">Social Media Links</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label>Instagram URL</Label>
+              <Input type="url" placeholder="https://instagram.com/yourhandle" value={form.instagram_url || ''} onChange={(e) => set('instagram_url', e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Twitter / X URL</Label>
+              <Input type="url" placeholder="https://x.com/yourhandle" value={form.twitter_url || ''} onChange={(e) => set('twitter_url', e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>LinkedIn URL</Label>
+              <Input type="url" placeholder="https://linkedin.com/company/yourcompany" value={form.linkedin_url || ''} onChange={(e) => set('linkedin_url', e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Facebook URL</Label>
+              <Input type="url" placeholder="https://facebook.com/yourpage" value={form.facebook_url || ''} onChange={(e) => set('facebook_url', e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>TikTok URL</Label>
+              <Input type="url" placeholder="https://tiktok.com/@yourhandle" value={form.tiktok_url || ''} onChange={(e) => set('tiktok_url', e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>YouTube URL</Label>
+              <Input type="url" placeholder="https://youtube.com/@yourchannel" value={form.youtube_url || ''} onChange={(e) => set('youtube_url', e.target.value)} />
+            </div>
+          </div>
+        </div>
+
+        <hr className="border-border" />
+
         {/* Portfolio */}
         <div>
           <h2 className="font-semibold text-base mb-1">Portfolio</h2>
