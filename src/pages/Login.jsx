@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Loader2, ShieldCheck } from "lucide-react";
 import GoogleIcon from "@/components/GoogleIcon";
 import toast from "react-hot-toast";
+import { motion } from "framer-motion";
+import LoginCardIntro from "@/components/LoginCardIntro";
 
 const SHOPIFY_LOGO =
   "https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg";
@@ -62,9 +64,17 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-[#0b0c0d] flex flex-col items-center justify-center px-4 py-10">
-      <img src={SHOPIFY_LOGO} alt="Shopify" className="w-8 h-8 mb-6" />
+      <motion.img
+        src={SHOPIFY_LOGO}
+        alt="Shopify"
+        className="w-8 h-8 mb-6"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      />
 
-      <div className="w-full max-w-[440px] bg-white rounded-2xl px-8 py-10 shadow-xl">
+      <LoginCardIntro>
+      <div className="w-full bg-white rounded-2xl px-8 py-10 shadow-xl">
         <h1 className="text-[28px] font-bold text-[#212326] leading-tight">Log in</h1>
         <p className="text-[15px] text-[#6d7175] mt-1 mb-8">Continue to Shopify</p>
 
@@ -202,6 +212,7 @@ export default function Login() {
           </button>
         </div>
       </div>
+      </LoginCardIntro>
 
       <p className="text-[15px] text-white mt-8">
         New to Shopify?{" "}
