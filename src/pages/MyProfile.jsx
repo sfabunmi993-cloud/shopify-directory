@@ -476,8 +476,17 @@ export default function MyProfile() {
               <Input type="number" value={form.starting_price || ''} onChange={(e) => set('starting_price', e.target.value)} />
             </div>
             <div className="space-y-1.5">
-              <Label>Years as a Shopify partner</Label>
-              <Input type="number" min="0" value={form.years_as_partner || ''} onChange={(e) => set('years_as_partner', e.target.value)} />
+              <Label>Partner since (year)</Label>
+              <Input
+                type="number"
+                min="1990"
+                max={new Date().getFullYear()}
+                value={form.years_as_partner ? new Date().getFullYear() - form.years_as_partner : ''}
+                onChange={(e) => {
+                  const year = Number(e.target.value);
+                  set('years_as_partner', year ? Math.max(0, new Date().getFullYear() - year) : 0);
+                }} />
+              <p className="text-xs text-muted-foreground">The year you became a Shopify partner. Shown as "Partner since" on your public profile.</p>
             </div>
             <div className="space-y-1.5">
               <Label>Completed projects</Label>
