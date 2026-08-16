@@ -10,9 +10,25 @@ const TABS = [
   { to: '/my-profile', label: 'Profile', icon: User },
 ];
 
+function isNativeApp() {
+  if (typeof window === 'undefined') return false;
+  if (window.Capacitor?.isNativePlatform?.()) return true;
+  if (window.cordova || window.Ionic) return true;
+  const ua = window.navigator.userAgent || '';
+  // iOS WKWebView (in-app) omits "Safari"
+  if (/(iPhone|iPad|iPod)/i.test(ua) && /AppleWebKit/i.test(ua) && !/Safari/i.test(ua)) return true;
+  // Android WebView
+  if (/Android/i.test(ua) && /; wv\)/i.test(ua)) return true;
+  if (window.matchMedia?.('(display-mode: standalone)')?.matches) return true;
+  return false;
+}
+
 export default function MobileBottomNav() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Only show the bottom nav inside the native mobile app; hide in all browsers
+  if (!isNativeApp()) return null;
 
   const isActive = (tab) => {
     if (tab.exact) return location.pathname === '/';
