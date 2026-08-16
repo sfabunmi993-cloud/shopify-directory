@@ -68,7 +68,7 @@ export default function About() {
         {/* Who builds it */}
         <section>
           <h2 className="font-heading text-2xl font-semibold mb-4">Who Builds It</h2>
-          <p className="text-muted-foreground leading-relaxed text-base">Shopify Partners Directory is built and maintained by Fabunmi Sa  a dedicated team passionate about the Shopify ecosystem. We are a group of e-commerce enthusiasts, developers, and community builders who believe that finding the right expert should be simple, transparent, and accessible to everyone. Our team continuously improves the platform based on feedback from both partners and merchants to ensure the best possible experience on all sides.
+          <p className="text-muted-foreground leading-relaxed text-base">Shopify Partners Directory is built and maintained by Fabunmi Samuel  a dedicated team passionate about the Shopify ecosystem. We are a group of e-commerce enthusiasts, developers, and community builders who believe that finding the right expert should be simple, transparent, and accessible to everyone. Our team continuously improves the platform based on feedback from both partners and merchants to ensure the best possible experience on all sides.
 
           </p>
         </section>
