@@ -17,6 +17,7 @@ import BuyReviewModal from '@/components/partner/BuyReviewModal';
 import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
 import BuyDomainModal from '@/components/partner/BuyDomainModal';
 import PortfolioEditor from '@/components/profile/PortfolioEditor';
+import TestimonialsEditor from '@/components/profile/TestimonialsEditor';
 import AppealForm from '@/components/partner/AppealForm';
 import SupportContactBar from '@/components/profile/SupportContactBar';
 
@@ -529,6 +530,17 @@ export default function MyProfile() {
             partnerId={partner?.id}
             onChange={(updated) => set('portfolio', updated)} />
           
+        </div>
+
+        <hr className="border-border" />
+
+        {/* Testimonials */}
+        <div>
+          <h2 className="font-semibold text-base mb-1">Client Testimonials</h2>
+          <p className="text-xs text-muted-foreground mb-4">Add up to 15 testimonials. They scroll automatically sideways on your public profile.</p>
+          <TestimonialsEditor
+            testimonials={form.testimonials || []}
+            onChange={(updated) => set('testimonials', updated)} />
         </div>
 
         <hr className="border-border" />

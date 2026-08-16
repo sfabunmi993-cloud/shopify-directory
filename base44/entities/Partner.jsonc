@@ -104,6 +104,30 @@
         ]
       }
     },
+    "testimonials": {
+      "type": "array",
+      "description": "Up to 15 client testimonials with image and text, displayed in an auto-scrolling carousel",
+      "items": {
+        "type": "object",
+        "properties": {
+          "image_url": {
+            "type": "string",
+            "description": "URL of the testimonial author's photo or screenshot"
+          },
+          "text": {
+            "type": "string",
+            "description": "The testimonial text"
+          },
+          "author_name": {
+            "type": "string",
+            "description": "Name of the person giving the testimonial"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      }
+    },
     "service_category": {
       "type": "string",
       "enum": [

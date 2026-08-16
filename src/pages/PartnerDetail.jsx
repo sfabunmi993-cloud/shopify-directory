@@ -12,6 +12,7 @@ import ReviewSection from '@/components/directory/ReviewSection';
 import RatingSummary from '@/components/directory/RatingSummary';
 import PartnerAvatar from '@/components/directory/PartnerAvatar';
 import PortfolioItemReview from '@/components/directory/PortfolioItemReview';
+import TestimonialsScroller from '@/components/directory/TestimonialsScroller';
 import ContactModal from '@/components/partner/ContactModal';
 import FlagModal from '@/components/partner/FlagModal';
 import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
@@ -615,6 +616,14 @@ export default function PartnerDetail() {
                 </div>
               )}
             </div>
+          </div>
+          }
+
+          {/* Testimonials */}
+          {partner.testimonials?.length > 0 &&
+          <div>
+            <h2 className="font-heading text-xl font-bold text-foreground mb-3">Client Testimonials</h2>
+            <TestimonialsScroller testimonials={partner.testimonials} />
           </div>
           }
 
