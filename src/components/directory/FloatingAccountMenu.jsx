@@ -42,7 +42,7 @@ export default function FloatingAccountMenu() {
     : user.email?.[0]?.toUpperCase() || '?';
 
   return (
-    <div className="fixed right-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] md:top-2 md:bottom-auto z-[55]">
+    <div className="relative flex items-center">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="flex items-center hover:opacity-80 transition-opacity p-1 rounded-full ring-2 ring-black/10 hover:ring-black/20 bg-white shadow-sm">

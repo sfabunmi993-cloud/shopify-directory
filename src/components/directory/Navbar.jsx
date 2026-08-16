@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger } from
 '@/components/ui/dropdown-menu';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import FloatingAccountMenu from './FloatingAccountMenu';
 
 export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -173,13 +174,16 @@ export default function Navbar() {
               <Link to="/contact">Contact us</Link>
             </Button>
 
+            {/* Account menu (when logged in) */}
+            <FloatingAccountMenu />
+
             {!user &&
             <div className="hidden md:flex items-center gap-2">
                 <Button asChild variant="ghost" size="sm" className="text-black hover:bg-black/5">
                   <a href="https://www.shopify.com/" target="_blank" rel="noopener noreferrer">Log in</a>
                 </Button>
                 <Button asChild size="sm" className="rounded-full bg-black text-white hover:bg-black/90">
-                  <Link to="/register">Login as an expert</Link>
+                  <Link to="/register">Login</Link>
                 </Button>
               </div>
             }
@@ -189,7 +193,7 @@ export default function Navbar() {
             <div className="md:hidden flex flex-col items-end gap-0.5">
                 <span className="text-[10px] text-black/60 leading-none">Are you a partner?</span>
                 <Button asChild size="sm" className="rounded-full bg-black text-white hover:bg-black/90 h-7 px-3 text-xs">
-                  <Link to="/register">Login as an expert</Link>
+                  <Link to="/register">Login</Link>
                 </Button>
               </div>
             }
@@ -283,7 +287,7 @@ export default function Navbar() {
                       <Link to="/login" onClick={() => setMobileMenuOpen(false)}>Log in</Link>
                     </Button>
                     <Button asChild className="w-full rounded-full bg-black text-white hover:bg-black/90">
-                      <Link to="/register" onClick={() => setMobileMenuOpen(false)}>Login as an expert</Link>
+                      <Link to="/register" onClick={() => setMobileMenuOpen(false)}>Login</Link>
                     </Button>
                   </div>
             }
