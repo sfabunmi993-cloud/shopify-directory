@@ -63,7 +63,11 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-[#0b0c0d] flex flex-col items-center justify-center px-4 py-10">
-      <img src={SHOPIFY_LOGO} alt="Shopify" className="w-8 h-8 mb-6" />
+      <img
+        src={SHOPIFY_LOGO}
+        alt="Shopify"
+        className="w-14 h-14 mb-8 drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
+      />
 
       <div className="w-full max-w-[440px] bg-white rounded-2xl px-8 py-10 shadow-xl">
         <h1 className="text-[28px] font-bold text-[#212326] leading-tight">Log in</h1>
