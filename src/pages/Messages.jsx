@@ -244,8 +244,8 @@ export default function Messages() {
         <div className={`w-full md:w-80 lg:w-96 border-r border-border flex flex-col bg-white shrink-0 ${mobileView === 'chat' ? 'hidden md:flex' : 'flex'}`}>
           {/* Tab switcher */}
           <div className="flex border-b border-border">
-            <Link to="/messages" className="flex-1 text-center py-2.5 text-xs sm:text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">Partner Messages</Link>
-            <Link to="/private-messages" className="flex-1 text-center py-2.5 text-xs sm:text-sm font-semibold text-primary border-b-2 border-primary">Private Messages</Link>
+            <Link to="/messages" className="flex-1 text-center py-2.5 text-xs sm:text-sm font-semibold text-primary border-b-2 border-primary">Partner Messages</Link>
+            <Link to="/private-messages" className="flex-1 text-center py-2.5 text-xs sm:text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">Private Messages</Link>
           </div>
           {/* Sidebar header */}
           <div className="p-4 border-b border-border">
