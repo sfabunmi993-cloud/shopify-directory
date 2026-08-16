@@ -25,8 +25,16 @@ export default function ExpertFeaturePopup() {
         const partners = await base44.entities.Partner.filter({ created_by_id: user.id });
         if (!active) return;
         if (partners.length === 0) return; // not a partner/expert
-        if (localStorage.getItem(`${STORAGE_KEY}_${user.id}`)) return;
+        const p = partners[0];
+        // Stop showing once they've added testimonials
+        if (Array.isArray(p.testimonials) && p.testimonials.length > 0) {
+          localStorage.removeItem(`${STORAGE_KEY}_${user.id}_count`);
+          return;
+        }
+        const shown = parseInt(localStorage.getItem(`${STORAGE_KEY}_${user.id}_count`) || '0', 10);
+        if (shown >= 3) return;
         setUserId(user.id);
+        localStorage.setItem(`${STORAGE_KEY}_${user.id}_count`, String(shown + 1));
         setOpen(true);
       } catch {
         // ignore — never block the app
@@ -35,17 +43,11 @@ export default function ExpertFeaturePopup() {
     return () => { active = false; };
   }, []);
 
-  const markSeen = () => {
-    if (userId) localStorage.setItem(`${STORAGE_KEY}_${userId}`, '1');
-  };
-
   const handleDismiss = () => {
-    markSeen();
     setOpen(false);
   };
 
   const handleGo = () => {
-    markSeen();
     setOpen(false);
     navigate('/my-profile?focus=testimonials');
   };
