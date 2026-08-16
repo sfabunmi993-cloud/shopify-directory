@@ -7,9 +7,16 @@ import { Loader2, ShieldCheck } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import GoogleIcon from "@/components/GoogleIcon";
 import toast from "react-hot-toast";
+import { motion } from "framer-motion";
 
 const SHOPIFY_LOGO =
   "https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg";
+
+const fallIn = {
+  initial: { y: "-100vh", opacity: 0 },
+  animate: { y: 0, opacity: 1 },
+  transition: { type: "spring", stiffness: 90, damping: 18, mass: 0.8 }
+};
 
 function AppleIcon({ className = "" }) {
   return (
@@ -98,207 +105,218 @@ export default function Register() {
     return (
       <div className="min-h-screen bg-[#0b0c0d] flex flex-col items-center justify-center px-4 py-10">
         <img src={SHOPIFY_LOGO} alt="Shopify" className="w-8 h-8 mb-6" />
-        <div className="w-full max-w-[440px] bg-white rounded-2xl px-8 py-10 shadow-xl">
-          <h1 className="text-[28px] font-bold text-[#212326] leading-tight">Verify your email</h1>
-          <p className="text-[15px] text-[#6d7175] mt-1 mb-8">We sent a code to {email}</p>
+        <motion.div variants={fallIn} initial="initial" animate="animate" className="w-full max-w-[440px]">
+          <div className="w-full bg-white rounded-2xl px-8 py-10 shadow-xl">
+            <h1 className="text-[28px] font-bold text-[#212326] leading-tight">Verify your email</h1>
+            <p className="text-[15px] text-[#6d7175] mt-1 mb-8">We sent a code to {email}</p>
 
-          {error && (
-            <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-sm">{error}</div>
-          )}
-
-          <div className="flex justify-center mb-6">
-            <InputOTP
-              maxLength={6}
-              value={otpCode}
-              onChange={setOtpCode}
-              autoFocus
-              autoComplete="one-time-code"
-            >
-              <InputOTPGroup>
-                <InputOTPSlot index={0} />
-                <InputOTPSlot index={1} />
-                <InputOTPSlot index={2} />
-                <InputOTPSlot index={3} />
-                <InputOTPSlot index={4} />
-                <InputOTPSlot index={5} />
-              </InputOTPGroup>
-            </InputOTP>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleVerify}
-            disabled={loading || otpCode.length < 6}
-            className="w-full h-11 rounded-lg bg-[#006fbb] hover:bg-[#005a99] text-white text-[15px] font-medium disabled:opacity-50 transition-colors"
-          >
-            {loading ? (
-              <span className="inline-flex items-center justify-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin" /> Verifying...
-              </span>
-            ) : (
-              "Verify"
+            {error && (
+              <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-sm">{error}</div>
             )}
-          </button>
 
-          <p className="text-center text-[14px] text-[#6d7175] mt-4">
-            Didn't receive the code?{" "}
-            <button onClick={handleResend} className="text-[#006fbb] font-medium hover:underline">
-              Resend
+            <div className="flex justify-center mb-6">
+              <InputOTP
+                maxLength={6}
+                value={otpCode}
+                onChange={setOtpCode}
+                autoFocus
+                autoComplete="one-time-code"
+              >
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleVerify}
+              disabled={loading || otpCode.length < 6}
+              className="w-full h-11 rounded-lg bg-[#006fbb] hover:bg-[#005a99] text-white text-[15px] font-medium disabled:opacity-50 transition-colors"
+            >
+              {loading ? (
+                <span className="inline-flex items-center justify-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" /> Verifying...
+                </span>
+              ) : (
+                "Verify"
+              )}
             </button>
-          </p>
-        </div>
+
+            <p className="text-center text-[14px] text-[#6d7175] mt-4">
+              Didn't receive the code?{" "}
+              <button onClick={handleResend} className="text-[#006fbb] font-medium hover:underline">
+                Resend
+              </button>
+            </p>
+          </div>
+        </motion.div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-[#0b0c0d] flex flex-col items-center justify-center px-4 py-10">
-      <img src={SHOPIFY_LOGO} alt="Shopify" className="w-8 h-8 mb-6" />
+      <motion.img
+        src={SHOPIFY_LOGO}
+        alt="Shopify"
+        className="w-8 h-8 mb-6"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      />
 
-      <div className="w-full max-w-[440px] bg-white rounded-2xl px-8 py-10 shadow-xl">
-        <h1 className="text-[28px] font-bold text-[#212326] leading-tight">Create account</h1>
-        <p className="text-[15px] text-[#6d7175] mt-1 mb-8">Continue to Shopify</p>
+      <motion.div variants={fallIn} initial="initial" animate="animate" className="w-full max-w-[440px]">
+        <div className="w-full bg-white rounded-2xl px-8 py-10 shadow-xl">
+          <h1 className="text-[28px] font-bold text-[#212326] leading-tight">Create account</h1>
+          <p className="text-[15px] text-[#6d7175] mt-1 mb-8">Continue to Shopify</p>
 
-        {error && (
-          <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-sm">{error}</div>
-        )}
+          {error && (
+            <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-sm">{error}</div>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-[13px] font-medium text-[#212326]">
-              Email
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              autoComplete="email"
-              autoFocus
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="h-11 rounded-lg border-[#c9ccd1] focus:border-[#006fbb] focus:ring-[#006fbb] text-[15px]"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-[13px] font-medium text-[#212326]">
-              Password
-            </Label>
-            <Input
-              id="password"
-              type="password"
-              autoComplete="new-password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="h-11 rounded-lg border-[#c9ccd1] focus:border-[#006fbb] focus:ring-[#006fbb] text-[15px]"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirm" className="text-[13px] font-medium text-[#212326]">
-              Confirm Password
-            </Label>
-            <Input
-              id="confirm"
-              type="password"
-              autoComplete="new-password"
-              placeholder="Confirm password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="h-11 rounded-lg border-[#c9ccd1] focus:border-[#006fbb] focus:ring-[#006fbb] text-[15px]"
-              required
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-[13px] font-medium text-[#212326]">
+                Email
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                autoComplete="email"
+                autoFocus
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="h-11 rounded-lg border-[#c9ccd1] focus:border-[#006fbb] focus:ring-[#006fbb] text-[15px]"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-[13px] font-medium text-[#212326]">
+                Password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                autoComplete="new-password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="h-11 rounded-lg border-[#c9ccd1] focus:border-[#006fbb] focus:ring-[#006fbb] text-[15px]"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirm" className="text-[13px] font-medium text-[#212326]">
+                Confirm Password
+              </Label>
+              <Input
+                id="confirm"
+                type="password"
+                autoComplete="new-password"
+                placeholder="Confirm password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="h-11 rounded-lg border-[#c9ccd1] focus:border-[#006fbb] focus:ring-[#006fbb] text-[15px]"
+                required
+              />
+            </div>
 
-          <div className="flex items-start gap-3 rounded-lg border border-[#c9ccd1] p-3">
+            <div className="flex items-start gap-3 rounded-lg border border-[#c9ccd1] p-3">
+              <button
+                type="button"
+                onClick={() => setHumanChecked((v) => !v)}
+                className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center border transition-colors ${
+                  humanChecked ? "bg-[#006fbb] border-[#006fbb]" : "bg-white border-[#c9ccd1]"
+                }`}
+                aria-pressed={humanChecked}
+                aria-label="I am human"
+              >
+                {humanChecked && <ShieldCheck className="w-3.5 h-3.5 text-white" />}
+              </button>
+              <div className="flex-1">
+                <p className="text-[14px] text-[#212326] font-medium">I am human</p>
+                <p className="text-[11px] text-[#6d7175] mt-0.5">Privacy - Terms</p>
+              </div>
+            </div>
+
             <button
-              type="button"
-              onClick={() => setHumanChecked((v) => !v)}
-              className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center border transition-colors ${
-                humanChecked ? "bg-[#006fbb] border-[#006fbb]" : "bg-white border-[#c9ccd1]"
-              }`}
-              aria-pressed={humanChecked}
-              aria-label="I am human"
+              type="submit"
+              disabled={loading || !email}
+              className="w-full h-11 rounded-lg bg-[#e8e8e8] text-white text-[15px] font-medium enabled:bg-[#006fbb] enabled:hover:bg-[#005a99] transition-colors"
             >
-              {humanChecked && <ShieldCheck className="w-3.5 h-3.5 text-white" />}
+              {loading ? (
+                <span className="inline-flex items-center justify-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" /> Creating account...
+                </span>
+              ) : (
+                "Create account"
+              )}
             </button>
-            <div className="flex-1">
-              <p className="text-[14px] text-[#212326] font-medium">I am human</p>
-              <p className="text-[11px] text-[#6d7175] mt-0.5">Privacy - Terms</p>
+          </form>
+
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-[#e1e3e5]" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-white px-3 text-[13px] text-[#6d7175]">or</span>
             </div>
           </div>
 
           <button
-            type="submit"
-            disabled={loading || !email}
-            className="w-full h-11 rounded-lg bg-[#e8e8e8] text-white text-[15px] font-medium enabled:bg-[#006fbb] enabled:hover:bg-[#005a99] transition-colors"
-          >
-            {loading ? (
-              <span className="inline-flex items-center justify-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin" /> Creating account...
-              </span>
-            ) : (
-              "Create account"
-            )}
-          </button>
-        </form>
-
-        <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-[#e1e3e5]" />
-          </div>
-          <div className="relative flex justify-center">
-            <span className="bg-white px-3 text-[13px] text-[#6d7175]">or</span>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          onClick={handleUnsupported}
-          className="w-full h-11 rounded-lg bg-[#f6f6f7] hover:bg-[#ececee] text-[#212326] text-[15px] font-medium inline-flex items-center justify-center gap-2 transition-colors"
-        >
-          <span className="w-5 h-5 rounded-full bg-[#212326] text-white inline-flex items-center justify-center text-[10px]">
-            <ShieldCheck className="w-3 h-3" />
-          </span>
-          Sign in with passkey
-        </button>
-
-        <div className="flex items-center justify-center gap-3 mt-6">
-          <button
-            type="button"
-            onClick={handleGoogle}
-            aria-label="Continue with Google"
-            className="w-11 h-11 rounded-lg border border-[#c9ccd1] hover:bg-[#f6f6f7] inline-flex items-center justify-center transition-colors"
-          >
-            <GoogleIcon className="w-5 h-5" />
-          </button>
-          <button
-            type="button"
-            onClick={handleApple}
-            aria-label="Continue with Apple"
-            className="w-11 h-11 rounded-lg bg-[#212326] hover:opacity-90 text-white inline-flex items-center justify-center transition-opacity"
-          >
-            <AppleIcon className="w-5 h-5" />
-          </button>
-          <button
-            type="button"
-            onClick={handleFacebook}
-            aria-label="Continue with Facebook"
-            className="w-11 h-11 rounded-lg bg-[#1877f2] hover:opacity-90 text-white inline-flex items-center justify-center transition-opacity"
-          >
-            <FacebookIcon className="w-5 h-5" />
-          </button>
-          <button
             type="button"
             onClick={handleUnsupported}
-            aria-label="Continue with WhatsApp"
-            className="w-11 h-11 rounded-lg bg-[#25d366] hover:opacity-90 text-white inline-flex items-center justify-center transition-opacity"
+            className="w-full h-11 rounded-lg bg-[#f6f6f7] hover:bg-[#ececee] text-[#212326] text-[15px] font-medium inline-flex items-center justify-center gap-2 transition-colors"
           >
-            <WhatsAppIcon className="w-5 h-5" />
+            <span className="w-5 h-5 rounded-full bg-[#212326] text-white inline-flex items-center justify-center text-[10px]">
+              <ShieldCheck className="w-3 h-3" />
+            </span>
+            Sign in with passkey
           </button>
+
+          <div className="flex items-center justify-center gap-3 mt-6">
+            <button
+              type="button"
+              onClick={handleGoogle}
+              aria-label="Continue with Google"
+              className="w-11 h-11 rounded-lg border border-[#c9ccd1] hover:bg-[#f6f6f7] inline-flex items-center justify-center transition-colors"
+            >
+              <GoogleIcon className="w-5 h-5" />
+            </button>
+            <button
+              type="button"
+              onClick={handleApple}
+              aria-label="Continue with Apple"
+              className="w-11 h-11 rounded-lg bg-[#212326] hover:opacity-90 text-white inline-flex items-center justify-center transition-opacity"
+            >
+              <AppleIcon className="w-5 h-5" />
+            </button>
+            <button
+              type="button"
+              onClick={handleFacebook}
+              aria-label="Continue with Facebook"
+              className="w-11 h-11 rounded-lg bg-[#1877f2] hover:opacity-90 text-white inline-flex items-center justify-center transition-opacity"
+            >
+              <FacebookIcon className="w-5 h-5" />
+            </button>
+            <button
+              type="button"
+              onClick={handleUnsupported}
+              aria-label="Continue with WhatsApp"
+              className="w-11 h-11 rounded-lg bg-[#25d366] hover:opacity-90 text-white inline-flex items-center justify-center transition-opacity"
+            >
+              <WhatsAppIcon className="w-5 h-5" />
+            </button>
+          </div>
         </div>
-      </div>
+      </motion.div>
 
       <p className="text-[15px] text-white mt-8">
         Already have an account?{" "}
