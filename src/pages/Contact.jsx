@@ -55,7 +55,7 @@ export default function Contact() {
 
             </p>
           </div>
-<script src="https://widget.trustmary.com/l7koy1Ihd"></script>
+
           <div className="space-y-4">
             <div className="flex items-start gap-3">
               <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
