@@ -186,9 +186,9 @@ export default function Directory() {
         {/* Main Content */}
         <div>
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-            <p className="text-sm text-muted-foreground hidden">
-              {isLoading ? 'Loading...' : `Showing ${filteredPartners.length} partner${filteredPartners.length !== 1 ? 's' : ''}`}
-            </p>
+            
+
+            
 
             <div className="flex items-center gap-2">
               {/* Mobile filter trigger */}
