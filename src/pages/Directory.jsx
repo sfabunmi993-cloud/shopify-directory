@@ -140,7 +140,7 @@ export default function Directory() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
+    <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-28 ${compareIds.length > 0 ? 'pb-48' : ''}`}>
       <PullToRefresh onRefresh={handleRefresh} />
       {/* Hero */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-8 pb-10">
@@ -194,11 +194,11 @@ export default function Directory() {
               {/* Mobile filter trigger */}
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="outline" size="sm" className="md:hidden">
+                  <Button variant="outline" className="md:hidden h-11 min-h-[44px] px-4">
                     <SlidersHorizontal className="w-4 h-4 mr-1.5" /> Filters
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-[300px] overflow-y-auto">
+                <SheetContent side="left" className="w-[85vw] max-w-[320px] overflow-y-auto overscroll-contain safe-pt safe-pb">
                   <SheetHeader>
                     <SheetTitle>Filters</SheetTitle>
                   </SheetHeader>
@@ -209,7 +209,7 @@ export default function Directory() {
               </Sheet>
 
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-40 h-9 text-sm">
+                <SelectTrigger className="w-40 h-11 min-h-[44px] text-sm">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>

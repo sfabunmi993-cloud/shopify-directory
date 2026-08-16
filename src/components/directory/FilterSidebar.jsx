@@ -57,7 +57,7 @@ export default function FilterSidebar({ filters, onFilterChange, onClearFilters 
       <div className="flex items-center justify-between">
         <h3 className="font-heading text-xl font-bold text-foreground">Filter</h3>
         {hasActiveFilters && (
-          <Button variant="ghost" size="sm" onClick={onClearFilters} className="text-muted-foreground text-xs h-auto py-1">
+          <Button variant="ghost" onClick={onClearFilters} className="text-muted-foreground text-xs h-9 min-h-[44px] px-3">
             <X className="w-3 h-3 mr-1" /> Clear all
           </Button>
         )}
@@ -71,14 +71,14 @@ export default function FilterSidebar({ filters, onFilterChange, onClearFilters 
             placeholder="Min"
             value={filters.minPrice}
             onChange={(e) => onFilterChange('minPrice', e.target.value)}
-            className="h-9"
+            className="h-11 min-h-[44px]"
           />
           <Input
             type="number"
             placeholder="Max"
             value={filters.maxPrice}
             onChange={(e) => onFilterChange('maxPrice', e.target.value)}
-            className="h-9"
+            className="h-11 min-h-[44px]"
           />
         </div>
       </div>
@@ -86,7 +86,7 @@ export default function FilterSidebar({ filters, onFilterChange, onClearFilters 
       <div className="border-t border-border pt-5 space-y-2">
         <Label className="text-sm font-semibold text-foreground">Industry</Label>
         <Select value={filters.industry || 'all'} onValueChange={(v) => onFilterChange('industry', v)}>
-          <SelectTrigger className="h-9">
+          <SelectTrigger className="h-11 min-h-[44px]">
             <SelectValue placeholder="Select an industry" />
           </SelectTrigger>
           <SelectContent>
@@ -100,7 +100,7 @@ export default function FilterSidebar({ filters, onFilterChange, onClearFilters 
       <div className="border-t border-border pt-5 space-y-2">
         <Label className="text-sm font-semibold text-foreground">Service Category</Label>
         <Select value={filters.category} onValueChange={(v) => onFilterChange('category', v)}>
-          <SelectTrigger className="h-9">
+          <SelectTrigger className="h-11 min-h-[44px]">
             <SelectValue placeholder="Select a service" />
           </SelectTrigger>
           <SelectContent>
@@ -114,7 +114,7 @@ export default function FilterSidebar({ filters, onFilterChange, onClearFilters 
       <div className="border-t border-border pt-5 space-y-2">
         <Label className="text-sm font-semibold text-foreground">Location</Label>
         <Select value={filters.location} onValueChange={(v) => onFilterChange('location', v)}>
-          <SelectTrigger className="h-9">
+          <SelectTrigger className="h-11 min-h-[44px]">
             <SelectValue placeholder="Select a location" />
           </SelectTrigger>
           <SelectContent>
@@ -128,7 +128,7 @@ export default function FilterSidebar({ filters, onFilterChange, onClearFilters 
       <div className="border-t border-border pt-5 space-y-2">
         <Label className="text-sm font-semibold text-foreground">Partner Tier</Label>
         <Select value={filters.tier} onValueChange={(v) => onFilterChange('tier', v)}>
-          <SelectTrigger className="h-9">
+          <SelectTrigger className="h-11 min-h-[44px]">
             <SelectValue placeholder="Select a partner tier" />
           </SelectTrigger>
           <SelectContent>
