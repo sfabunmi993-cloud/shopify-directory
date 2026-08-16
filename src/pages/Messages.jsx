@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { format, isToday, isYesterday } from 'date-fns';
 import { toast } from 'sonner';
 import PartnerAvatar from '@/components/directory/PartnerAvatar';
+import PullToRefresh from '@/components/PullToRefresh';
 function formatConvDate(date) {
   if (!date) return '';
   const d = new Date(date);
@@ -47,6 +48,7 @@ export default function Messages() {
   const selectedConvRef = useRef(null);
   const userRef = useRef(null);
   const myPartnerRef = useRef(null);
+  const listRef = useRef(null);
 
   // Keep refs in sync
   useEffect(() => {selectedConvRef.current = selectedConv;}, [selectedConv]);
@@ -229,8 +231,13 @@ export default function Messages() {
 
   }
 
+  const handleRefresh = async () => {
+    await loadConversations(userRef.current, myPartnerRef.current);
+  };
+
   return (
-    <div className="flex flex-col" style={{ height: 'calc(100vh - 64px)' }}>
+    <div className="flex flex-col h-[calc(100dvh-64px-3.5rem)] md:h-[calc(100dvh-64px)]">
+      <PullToRefresh onRefresh={handleRefresh} scrollRef={listRef} />
       <div className="flex flex-1 overflow-hidden">
 
         {/* Sidebar */}
@@ -266,7 +273,7 @@ export default function Messages() {
           </div>
 
           {/* Conversation list */}
-          <div className="flex-1 overflow-y-auto">
+          <div ref={listRef} className="flex-1 overflow-y-auto">
             {filteredConvs.length === 0 ?
             <div className="p-8 text-center mt-4">
                 <MessageSquare className="w-10 h-10 text-muted-foreground/20 mx-auto mb-3" />

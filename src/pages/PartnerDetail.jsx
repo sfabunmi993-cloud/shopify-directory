@@ -124,16 +124,29 @@ export default function PartnerDetail() {
 
   const handleToggleFavorite = async () => {
     if (!user) {toast.error('Please log in to save favorites.');return;}
-    if (isFavorited && favoriteId) {
-      await base44.entities.Favorite.delete(favoriteId);
+    const wasFavorited = isFavorited;
+    const prevFavId = favoriteId;
+
+    // Optimistic: update UI immediately
+    if (wasFavorited) {
       setIsFavorited(false);
       setFavoriteId(null);
-      toast.success('Removed from favorites');
     } else {
-      const fav = await base44.entities.Favorite.create({ user_id: user.id, partner_id: partnerId });
       setIsFavorited(true);
-      setFavoriteId(fav.id);
-      toast.success('Saved to favorites!');
+    }
+
+    try {
+      if (wasFavorited && prevFavId) {
+        await base44.entities.Favorite.delete(prevFavId);
+      } else {
+        const fav = await base44.entities.Favorite.create({ user_id: user.id, partner_id: partnerId });
+        setFavoriteId(fav.id);
+      }
+    } catch (err) {
+      // Rollback on failure
+      setIsFavorited(wasFavorited);
+      setFavoriteId(prevFavId);
+      toast.error('Could not update favorites. Please try again.');
     }
   };
 

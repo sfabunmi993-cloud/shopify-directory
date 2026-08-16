@@ -7,8 +7,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock, Share2, Star, TrendingUp, Upload, ImageIcon, Lock, Bell, Globe } from 'lucide-react';
+import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock, Share2, Star, TrendingUp, Upload, ImageIcon, Lock, Bell, Globe, Trash2, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import InquiriesDashboard from '@/components/profile/InquiriesDashboard';
 import ServiceDescriptionEditor from '@/components/profile/ServiceDescriptionEditor';
 import ProjectsSection from '@/components/profile/ProjectsSection';
@@ -70,6 +71,8 @@ export default function MyProfile() {
   const [form, setForm] = useState({});
   const [passwordForm, setPasswordForm] = useState({ newPassword: '', confirmPassword: '' });
   const [savingPassword, setSavingPassword] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -156,6 +159,19 @@ export default function MyProfile() {
     setForm(updatedPartner);
     toast.success('Profile updated successfully!');
     setSaving(false);
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    try {
+      await base44.functions.invoke('deleteUserAccount', {});
+      toast.success('Your account data has been permanently deleted.');
+      setDeleteOpen(false);
+      base44.auth.logout('/login');
+    } catch (err) {
+      toast.error(err?.message || 'Failed to delete account. Please try again.');
+      setDeleting(false);
+    }
   };
 
   if (loading) {
@@ -653,9 +669,47 @@ export default function MyProfile() {
         </div>
       </div>
 
+      {/* Delete Account */}
+      <div className="bg-white border border-destructive/30 rounded-2xl p-4 sm:p-6 mt-4 sm:mt-6">
+        <h2 className="font-semibold text-base mb-2 flex items-center gap-2 text-destructive">
+          <Trash2 className="w-4 h-4" /> Delete Account
+        </h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          Permanently delete your partner profile, favorites, messages, reviews, and all associated data. This action cannot be undone.
+        </p>
+        <Button
+          variant="outline"
+          className="rounded-full border-destructive/40 text-destructive hover:bg-destructive/10"
+          onClick={() => setDeleteOpen(true)}
+        >
+          <Trash2 className="w-4 h-4 mr-1.5" /> Delete my account
+        </Button>
+      </div>
+
       <BuyReviewModal isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} partner={partner} />
       <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
       <BuyDomainModal partner={partner} isOpen={buyDomainOpen} onClose={() => setBuyDomainOpen(false)} user={user} />
+
+      <Dialog open={deleteOpen} onOpenChange={(o) => !deleting && setDeleteOpen(o)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-destructive">
+              <AlertTriangle className="w-5 h-5" /> Delete account permanently?
+            </DialogTitle>
+            <DialogDescription>
+              This will permanently erase your partner profile, favorites, messages, projects, reviews, payments, and flags. <strong>This action is irreversible</strong> and your data cannot be recovered. You will be signed out immediately.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" className="rounded-full" onClick={() => setDeleteOpen(false)} disabled={deleting}>
+              Cancel
+            </Button>
+            <Button variant="destructive" className="rounded-full" onClick={handleDeleteAccount} disabled={deleting}>
+              {deleting ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> Deleting…</> : <><Trash2 className="w-4 h-4 mr-1.5" /> Yes, delete forever</>}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>);
 
 }

@@ -90,3 +90,51 @@
     @apply bg-background text-foreground font-body;
   }
 }
+
+/* Mobile: disable rubber-banding / chained scroll bounce */
+html,
+body {
+  overscroll-behavior-y: none;
+}
+
+/* Safe-area helpers for notches and gesture indicators */
+.safe-pt {
+  padding-top: env(safe-area-inset-top);
+}
+.safe-pb {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (max-width: 768px) {
+  [role="dialog"],
+  [data-radix-dialog-content] {
+    padding-top: max(env(safe-area-inset-top), 0px);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Prevent accidental native text highlights on double-tap */
+h1, h2, h3, h4, h5, h6,
+button, [role="button"], [role="tab"],
+[data-slot="card"], .no-select, .mobile-tab {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Minimum 44x44px touch targets for interactive controls */
+[role="tab"], [data-radix-collection-item] {
+  min-height: 44px;
+}
+
+/* Expand checkbox hit area to 44px without changing the visual box size */
+[role="checkbox"] {
+  position: relative;
+}
+[role="checkbox"]::before {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  border-radius: 6px;
+}

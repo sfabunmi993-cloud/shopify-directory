@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import FilterSidebar from '@/components/directory/FilterSidebar';
 import PartnerCard from '@/components/directory/PartnerCard';
@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SlidersHorizontal, X, Search } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import PullToRefresh from '@/components/PullToRefresh';
 
 export default function Directory() {
   const [searchParams] = useSearchParams();
@@ -47,11 +48,16 @@ export default function Directory() {
     );
   };
 
+  const queryClient = useQueryClient();
   const { data: partners, isLoading } = useQuery({
     queryKey: ['partners'],
     queryFn: () => base44.entities.Partner.list('-rating', 500),
     initialData: [],
   });
+
+  const handleRefresh = async () => {
+    await queryClient.invalidateQueries({ queryKey: ['partners'] });
+  };
 
   const comparePartners = useMemo(
     () => partners.filter(p => compareIds.includes(p.id)),
@@ -135,6 +141,7 @@ export default function Directory() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
+      <PullToRefresh onRefresh={handleRefresh} />
       {/* Hero */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-8 pb-10">
         <div className="flex flex-col gap-6">

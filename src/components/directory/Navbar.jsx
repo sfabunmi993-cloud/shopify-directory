@@ -23,10 +23,6 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Always enforce light mode
-    document.documentElement.classList.remove('dark');
-    localStorage.setItem('theme', 'light');
-
     base44.auth.isAuthenticated().then(async (authed) => {
       if (authed) {
         const me = await base44.auth.me();
@@ -77,7 +73,7 @@ export default function Navbar() {
 
 
   return (
-    <header className="sticky top-0 z-50 bg-white text-black border-y border-black/20 shadow-sm">
+    <header className="sticky top-0 z-50 bg-white text-black border-y border-black/20 shadow-sm safe-pt">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-12 gap-4">
           {/* Logo */}
@@ -225,7 +221,7 @@ export default function Navbar() {
         <div className="lg:hidden fixed inset-0 z-[60]" onClick={() => setMobileMenuOpen(false)}>
             <div className="absolute inset-0 bg-black/40"></div>
             <div
-            className="absolute right-0 top-0 h-full w-64 max-w-[80vw] bg-white shadow-xl overflow-y-auto px-3 space-y-1 py-3"
+            className="absolute right-0 top-0 h-full w-64 max-w-[80vw] bg-white shadow-xl overflow-y-auto px-3 space-y-1 py-3 safe-pt safe-pb"
             onClick={(e) => e.stopPropagation()}>
                 <div className="flex items-center justify-between px-2 mb-2">
                   <span className="text-sm font-semibold text-black">Menu</span>
