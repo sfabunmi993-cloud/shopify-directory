@@ -299,16 +299,24 @@ export default function PartnerDetail() {
               }
             </div>
 
-            {/* Contact button */}
-            {contactHref ?
-            <Button asChild className="w-full h-11 bg-[#2e4049] hover:bg-[#2e4049]/90 rounded-lg text-white font-medium">
-              <a href={contactHref} target="_blank" rel="noopener noreferrer">Contact</a>
-            </Button>
-            :
-            <Button className="w-full h-11 bg-[#2e4049] hover:bg-[#2e4049]/90 rounded-lg text-white font-medium" onClick={() => setContactOpen(true)}>
-              Contact
-            </Button>
-            }
+            {/* Contact + Message buttons */}
+            <div className="flex gap-2">
+              {contactHref ?
+              <Button asChild className="flex-1 h-11 bg-[#2e4049] hover:bg-[#2e4049]/90 rounded-lg text-white font-medium">
+                <a href={contactHref} target="_blank" rel="noopener noreferrer">Contact</a>
+              </Button>
+              :
+              <Button className="flex-1 h-11 bg-[#2e4049] hover:bg-[#2e4049]/90 rounded-lg text-white font-medium" onClick={() => setContactOpen(true)}>
+                Contact
+              </Button>
+              }
+              <Button
+                onClick={() => setContactOpen(true)}
+                className="flex-1 h-11 bg-primary hover:bg-primary/90 rounded-lg text-white font-medium"
+                title={`Message ${partner.name}`}>
+                <MessageSquare className="w-4 h-4" /> Message
+              </Button>
+            </div>
 
             {/* Secondary actions */}
             {partner.whatsapp_url &&
