@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -92,6 +92,18 @@ export default function MyProfile() {
     };
     load();
   }, [navigate]);
+
+  const [searchParams] = useSearchParams();
+  const [highlightT, setHighlightT] = useState(false);
+  useEffect(() => {
+    if (searchParams.get('focus') !== 'testimonials' || loading) return;
+    const el = document.getElementById('testimonials-section');
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setHighlightT(true);
+    const t = setTimeout(() => setHighlightT(false), 4500);
+    return () => clearTimeout(t);
+  }, [searchParams, loading]);
 
   const set = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
@@ -536,7 +548,9 @@ export default function MyProfile() {
         <hr className="border-border" />
 
         {/* Testimonials */}
-        <div>
+        <div
+          id="testimonials-section"
+          className={`rounded-xl transition-all duration-500 ${highlightT ? 'ring-4 ring-primary/40 bg-primary/5 p-3 -mx-3' : ''}`}>
           <h2 className="font-semibold text-base mb-1">Client Testimonials</h2>
           <p className="text-xs text-muted-foreground mb-4">Add up to 15 testimonials. They scroll automatically sideways on your public profile.</p>
           <TestimonialsEditor
