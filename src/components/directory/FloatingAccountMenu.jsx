@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { partnerProfilePath } from '@/lib/partnerUrl';
 
 export default function FloatingAccountMenu() {
   const [user, setUser] = useState(null);
@@ -76,7 +77,7 @@ export default function FloatingAccountMenu() {
                 <Link to="/my-profile"><User className="w-4 h-4 mr-2" /> My Profile</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to={`/partner/${partnerId}`}><LayoutDashboard className="w-4 h-4 mr-2" /> View Public Profile</Link>
+                <Link to={partnerProfilePath(partnerId)}><LayoutDashboard className="w-4 h-4 mr-2" /> View Public Profile</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link to="/favorites"><Heart className="w-4 h-4 mr-2" /> Saved Partners</Link>

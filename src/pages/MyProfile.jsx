@@ -20,6 +20,7 @@ import PortfolioEditor from '@/components/profile/PortfolioEditor';
 import TestimonialsEditor from '@/components/profile/TestimonialsEditor';
 import AppealForm from '@/components/partner/AppealForm';
 import SupportContactBar from '@/components/profile/SupportContactBar';
+import { partnerProfilePath, partnerProfileUrl } from '@/lib/partnerUrl';
 
 const SERVICE_CATEGORIES = [
 { label: 'Marketing and sales', value: 'marketing_and_sales' },
@@ -229,7 +230,7 @@ export default function MyProfile() {
             size="sm"
             className="rounded-full text-xs"
             onClick={() => {
-              const url = `${window.location.origin}/partner/${partner?.slug || partner?.id}`;
+              const url = partnerProfileUrl(partner?.slug || partner?.id);
               navigator.clipboard.writeText(url);
               toast.success('Profile link copied to clipboard!');
             }}>
@@ -237,7 +238,7 @@ export default function MyProfile() {
             <Share2 className="w-4 h-4 mr-1.5" /> Share Profile
           </Button>
           <Button asChild variant="outline" className="rounded-full text-xs" size="sm">
-            <Link to={`/partner/${partner?.slug || partner?.id}`}><Eye className="w-4 h-4 mr-1" /> <span className="hidden sm:inline">View </span>Profile</Link>
+            <Link to={partnerProfilePath(partner?.slug || partner?.id)}><Eye className="w-4 h-4 mr-1" /> <span className="hidden sm:inline">View </span>Profile</Link>
           </Button>
         </div>
       </div>

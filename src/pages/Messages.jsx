@@ -12,6 +12,7 @@ import { format, isToday, isYesterday } from 'date-fns';
 import { toast } from 'sonner';
 import PartnerAvatar from '@/components/directory/PartnerAvatar';
 import PullToRefresh from '@/components/PullToRefresh';
+import { partnerProfilePath } from '@/lib/partnerUrl';
 function formatConvDate(date) {
   if (!date) return '';
   const d = new Date(date);
@@ -364,7 +365,7 @@ export default function Messages() {
                             <div className="min-w-0">
                               <p className="font-bold text-sm text-foreground truncate">{name}</p>
                           {!isPartnerSide && selectedConv.partner &&
-                        <Link to={`/partner/${selectedConv.partner?.slug || selectedConv.partner?.id}`} className="text-xs text-primary hover:underline">
+                        <Link to={partnerProfilePath(selectedConv.partner?.slug || selectedConv.partner?.id)} className="text-xs text-primary hover:underline">
                               View profile →
                             </Link>
                         }

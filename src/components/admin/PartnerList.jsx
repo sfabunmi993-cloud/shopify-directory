@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Link as LinkIcon, Eye, Edit2, BadgeCheck, Star, Infinity as InfinityIcon, Bell, XCircle, CheckCircle, EyeOff, Trash2, Loader2, ShieldAlert, Globe, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
+import { partnerProfilePath } from '@/lib/partnerUrl';
 
 const STATUS_STYLES = {
   pending: 'bg-amber-50 text-amber-700 border-amber-200',
@@ -112,7 +113,7 @@ export default function PartnerList(props) {
               </div>
               <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto sm:flex-wrap pb-1 sm:pb-0 -mx-1 px-1 [&>*]:shrink-0">
                 <Button asChild variant="ghost" size="icon" className="h-8 w-8">
-                  <Link to={`/partner/${p.id}`}><Eye className="w-4 h-4" /></Link>
+                  <Link to={partnerProfilePath(p.id)}><Eye className="w-4 h-4" /></Link>
                 </Button>
                 <Button size="sm" variant="ghost" className="h-8 w-8 p-0" title="Edit Partner ID" onClick={() => onEditId(p)}>
                   <Edit2 className="w-4 h-4" />

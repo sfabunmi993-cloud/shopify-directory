@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Star, MapPin, DollarSign, Hash, Briefcase, BadgeCheck } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import PartnerAvatar from '@/components/directory/PartnerAvatar';
+import { partnerProfilePath } from '@/lib/partnerUrl';
 
 const CATEGORY_LABELS = {
   marketing_and_sales: 'Marketing & Sales',
@@ -34,7 +35,7 @@ export default function PartnerCard({ partner, compareSelected, onToggleCompare 
 
       
     <Link
-        to={`/partner/${partner.slug || partner.id}`}
+        to={partnerProfilePath(partner.slug || partner.id)}
         className="block">
         
       <div className="flex gap-4">

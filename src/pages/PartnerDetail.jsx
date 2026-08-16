@@ -19,6 +19,7 @@ import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
 import BuyReviewModal from '@/components/partner/BuyReviewModal';
 import BuyDomainModal from '@/components/partner/BuyDomainModal';
 import { toast } from 'sonner';
+import { partnerProfileUrl, stripShopifySuffix } from '@/lib/partnerUrl';
 
 const CATEGORY_LABELS = {
   marketing_and_sales: 'Marketing & Sales',
@@ -84,7 +85,7 @@ export default function PartnerDetail() {
   const [showAllServices, setShowAllServices] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const profileUrl = `${window.location.origin}/partner/${slug}`;
+  const profileUrl = partnerProfileUrl(stripShopifySuffix(slug));
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(profileUrl);
@@ -96,10 +97,11 @@ export default function PartnerDetail() {
   const { data: partners, isLoading } = useQuery({
     queryKey: ['partner', slug],
     queryFn: async () => {
-      // Try slug first, fall back to id for legacy URLs
-      const bySlug = await base44.entities.Partner.filter({ slug });
+      // Strip the .myshopify.com suffix used in profile URLs, then try slug first, fall back to id for legacy URLs
+      const key = stripShopifySuffix(slug);
+      const bySlug = await base44.entities.Partner.filter({ slug: key });
       if (bySlug.length > 0) return bySlug;
-      return base44.entities.Partner.filter({ id: slug });
+      return base44.entities.Partner.filter({ id: key });
     },
     enabled: !!slug
   });

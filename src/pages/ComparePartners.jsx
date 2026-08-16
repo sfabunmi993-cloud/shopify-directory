@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Star, MapPin, DollarSign, Globe, Briefcase, CheckCircle, X, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { partnerProfilePath } from '@/lib/partnerUrl';
 
 const CATEGORY_LABELS = {
   marketing_and_sales: 'Marketing & Sales',
@@ -83,7 +84,7 @@ export default function ComparePartners({ partners, onRemove, onClose }) {
                   )}
                 </div>
                 <Button asChild size="sm" className="rounded-full w-full mt-1 text-xs">
-                  <Link to={`/partner/${p.id}`}>View Profile</Link>
+                  <Link to={partnerProfilePath(p.id)}>View Profile</Link>
                 </Button>
               </div>
             </div>

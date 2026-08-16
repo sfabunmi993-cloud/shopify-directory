@@ -13,6 +13,7 @@ import {
 '@/components/ui/dropdown-menu';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import FloatingAccountMenu from './FloatingAccountMenu';
+import { partnerProfilePath } from '@/lib/partnerUrl';
 
 export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -268,7 +269,7 @@ export default function Navbar() {
                     {hasPartnerProfile ?
               <>
                         <MobileLink to="/my-profile" onClick={() => setMobileMenuOpen(false)}>My Profile</MobileLink>
-                        <MobileLink to={`/partner/${partnerId}`} onClick={() => setMobileMenuOpen(false)}>View Public Profile</MobileLink>
+                        <MobileLink to={partnerProfilePath(partnerId)} onClick={() => setMobileMenuOpen(false)}>View Public Profile</MobileLink>
                       </> :
 
               <MobileLink to="/become-a-partner" onClick={() => setMobileMenuOpen(false)}>Become a Partner</MobileLink>
