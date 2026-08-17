@@ -20,6 +20,7 @@ import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
 import BuyReviewModal from '@/components/partner/BuyReviewModal';
 import BuyDomainModal from '@/components/partner/BuyDomainModal';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 import { partnerProfileUrl, stripShopifySuffix } from '@/lib/partnerUrl';
 
 const CATEGORY_LABELS = {
@@ -580,18 +581,26 @@ export default function PartnerDetail() {
 
           {/* Portfolio */}
           {partner.portfolio?.length > 0 &&
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}>
             <h2 className="font-heading text-xl font-bold text-foreground mb-3">Portfolio</h2>
             <PortfolioScroller portfolio={partner.portfolio} partnerId={partnerId} />
-          </div>
+          </motion.div>
           }
 
           {/* Testimonials */}
           {partner.testimonials?.length > 0 &&
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}>
             <h2 className="font-heading text-xl font-bold text-foreground mb-3">Client Testimonials</h2>
             <TestimonialsScroller testimonials={partner.testimonials} />
-          </div>
+          </motion.div>
           }
 
           {/* Dashboard Screenshot */}
