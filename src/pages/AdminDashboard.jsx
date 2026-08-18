@@ -565,23 +565,6 @@ export default function AdminDashboard() {
     );
   }
 
-  if (accessError) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="max-w-md w-full text-center bg-white border border-border rounded-2xl p-6 shadow-sm">
-          <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
-            <ShieldAlert className="w-6 h-6 text-amber-600" />
-          </div>
-          <h2 className="font-heading text-lg font-bold text-foreground mb-1">Session needs refresh</h2>
-          <p className="text-sm text-muted-foreground mb-5">{accessError}</p>
-          <Button onClick={() => base44.auth.logout('/login')} className="rounded-full">
-            Log out and sign back in
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-6 text-center sm:text-left">
