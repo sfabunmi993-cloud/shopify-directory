@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Users, Flag, Eye, EyeOff, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2, Infinity, Bell, Landmark, ImageIcon } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, ShieldCheck, Users, Flag, Eye, EyeOff, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2, Infinity, Bell, Landmark, ImageIcon } from 'lucide-react';
 import AnnouncementsSection from '@/components/admin/AnnouncementsSection';
 import AdsSection from '@/components/admin/AdsSection';
 import BroadcastUpdateSection from '@/components/admin/BroadcastUpdateSection';
@@ -72,6 +72,9 @@ export default function AdminDashboard() {
   const [manualReviews, setManualReviews] = useState([{ name: '', rating: 5, comment: '' }]);
   const [removeMode, setRemoveMode] = useState(false);
   const [removeCount, setRemoveCount] = useState('5');
+  const [users, setUsers] = useState([]);
+  const [currentUserId, setCurrentUserId] = useState('');
+  const [coAdminLoadingId, setCoAdminLoadingId] = useState(null);
 
   useEffect(() => {
     const init = async () => {
@@ -79,6 +82,7 @@ export default function AdminDashboard() {
       if (!authed) { navigate('/login'); return; }
       const user = await base44.auth.me();
       if (user.role !== 'admin') { navigate('/'); return; }
+      setCurrentUserId(user.id);
       setLoading(true);
       await loadData();
       setLoading(false);
@@ -87,16 +91,18 @@ export default function AdminDashboard() {
   }, [navigate]);
 
   const loadData = async () => {
-    const [allPartners, allFlags, allPayments, allAnnouncements] = await Promise.all([
+    const [allPartners, allFlags, allPayments, allAnnouncements, allUsers] = await Promise.all([
       base44.entities.Partner.list('-created_date', 200),
       base44.entities.Flag.list('-created_date', 200),
       base44.entities.Payment.list('-created_date', 200),
       base44.entities.Announcement.list('-created_date', 50),
+      base44.entities.User.list('-created_date', 500),
     ]);
     setPartners(allPartners);
     setFlags(allFlags);
     setPayments(allPayments);
     setAnnouncements(allAnnouncements);
+    setUsers(allUsers);
   };
 
   const handleApprove = async (partner) => {
@@ -322,6 +328,35 @@ export default function AdminDashboard() {
     toast.success(newVal ? `${partner.name} marked as domain-purchased` : `Domain mark removed for ${partner.name}`);
   };
 
+  const handleToggleCoAdmin = async (partner) => {
+    if (!partner.created_by_id) {
+      toast.error('No owner account linked to this partner.');
+      return;
+    }
+    const owner = users.find(u => u.id === partner.created_by_id);
+    const isCurrentlyAdmin = !!owner && owner.role === 'admin';
+    if (isCurrentlyAdmin && partner.created_by_id === currentUserId) {
+      toast.error("You can't remove your own admin access.");
+      return;
+    }
+    const newRole = isCurrentlyAdmin ? 'user' : 'admin';
+    const label = owner?.full_name || owner?.email || partner.name;
+    const confirmMsg = isCurrentlyAdmin
+      ? `Remove co-admin access from ${label}? They will no longer be able to open the Admin Dashboard.`
+      : `Make ${label} a co-admin? They will gain full access to the Admin Dashboard.`;
+    if (!confirm(confirmMsg)) return;
+    setCoAdminLoadingId(partner.id);
+    try {
+      await base44.entities.User.update(partner.created_by_id, { role: newRole });
+      toast.success(isCurrentlyAdmin ? 'Co-admin access removed.' : `${label} is now a co-admin.`);
+      await loadData();
+    } catch (err) {
+      toast.error(err?.response?.data?.error || 'Failed to update admin access.');
+    } finally {
+      setCoAdminLoadingId(null);
+    }
+  };
+
   const handleApprovePayment = async (payment) => {
     await base44.entities.Payment.update(payment.id, { status: 'approved' });
     // If this is a premium badge purchase, upgrade the partner tier
@@ -440,6 +475,8 @@ export default function AdminDashboard() {
   );
   partners.forEach(p => { if (p.domain_purchased) domainPaidIds.add(p.id); });
 
+  const coAdminUserIds = new Set(users.filter(u => u.role === 'admin').map(u => u.id));
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -544,13 +581,13 @@ export default function AdminDashboard() {
         </TabsList>
 
         <TabsContent value="pending">
-          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} />
+          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} />
         </TabsContent>
         <TabsContent value="approved">
-          <PartnerList partners={approved} onRestrict={setRestrictDialog} onRevert={handleRevertToPending} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove={false} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} />
+          <PartnerList partners={approved} onRestrict={setRestrictDialog} onRevert={handleRevertToPending} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove={false} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} />
         </TabsContent>
         <TabsContent value="restricted">
-          <PartnerList partners={restricted} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} />
+          <PartnerList partners={restricted} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} />
         </TabsContent>
         <TabsContent value="payments">
           <PaymentList payments={payments} onApprove={handleApprovePayment} onReject={handleRejectPayment} />

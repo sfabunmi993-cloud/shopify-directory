@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Link as LinkIcon, Eye, Edit2, BadgeCheck, Star, Infinity as InfinityIcon, Bell, XCircle, CheckCircle, EyeOff, Trash2, Loader2, ShieldAlert, Globe, RotateCcw } from 'lucide-react';
+import { Link as LinkLink, Eye, Edit2, BadgeCheck, Star, Infinity as InfinityIcon, Bell, XCircle, CheckCircle, EyeOff, Trash2, Loader2, ShieldAlert, ShieldCheck, Globe, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { partnerProfilePath } from '@/lib/partnerUrl';
 
@@ -19,7 +19,7 @@ function getPartnerRank(reviewCount = 0) {
 }
 
 export default function PartnerList(props) {
-  const { partners, onApprove, onRestrict, onRevert, onBulkApprove, onBulkRestrict, onBulkMarkDomain, onEditId, onEditDetails, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds, onToggleDomain } = props;
+  const { partners, onApprove, onRestrict, onRevert, onBulkApprove, onBulkRestrict, onBulkMarkDomain, onEditId, onEditDetails, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds, onToggleDomain, coAdminUserIds, onToggleCoAdmin, currentUserId, coAdminLoadingId } = props;
   const [selected, setSelected] = useState([]);
 
   if (partners.length === 0) {
@@ -122,6 +122,21 @@ export default function PartnerList(props) {
                   <Button size="sm" variant="outline" className="rounded-full gap-1 text-primary border-primary/30 hover:bg-primary/5" title="Edit account details" onClick={() => onEditDetails(p)}>
                     <Edit2 className="w-3.5 h-3.5" />
                     <span className="hidden sm:inline">Edit</span>
+                  </Button>
+                )}
+                {onToggleCoAdmin && p.created_by_id && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className={`rounded-full gap-1 ${coAdminUserIds?.has(p.created_by_id) ? 'text-indigo-700 border-indigo-300 bg-indigo-50 hover:bg-indigo-100' : 'text-slate-500 border-slate-200 hover:bg-slate-50'}`}
+                    title={coAdminUserIds?.has(p.created_by_id) ? (p.created_by_id === currentUserId ? 'You are an admin' : 'Remove co-admin access') : 'Make this partner a co-admin'}
+                    onClick={() => onToggleCoAdmin(p)}
+                    disabled={coAdminLoadingId === p.id}
+                  >
+                    {coAdminLoadingId === p.id
+                      ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      : <ShieldCheck className="w-3.5 h-3.5" />}
+                    <span className="hidden sm:inline">{coAdminUserIds?.has(p.created_by_id) ? 'Co-Admin ✓' : 'Make Admin'}</span>
                   </Button>
                 )}
                 <Button
