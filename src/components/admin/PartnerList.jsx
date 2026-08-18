@@ -19,7 +19,7 @@ function getPartnerRank(reviewCount = 0) {
 }
 
 export default function PartnerList(props) {
-  const { partners, onApprove, onRestrict, onRevert, onBulkApprove, onBulkRestrict, onBulkMarkDomain, onEditId, onEditDetails, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds, onToggleDomain, coAdminUserIds, onToggleCoAdmin, currentUserId, coAdminLoadingId } = props;
+  const { partners, onApprove, onRestrict, onRevert, onBulkApprove, onBulkRestrict, onBulkMarkDomain, onEditId, onEditDetails, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds, onToggleDomain, coAdminUserIds, pendingCoAdminUserIds, onToggleCoAdmin, currentUserId, coAdminLoadingId } = props;
   const [selected, setSelected] = useState([]);
 
   if (partners.length === 0) {
@@ -124,21 +124,36 @@ export default function PartnerList(props) {
                     <span className="hidden sm:inline">Edit</span>
                   </Button>
                 )}
-                {onToggleCoAdmin && p.created_by_id && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className={`rounded-full gap-1 ${coAdminUserIds?.has(p.created_by_id) ? 'text-indigo-700 border-indigo-300 bg-indigo-50 hover:bg-indigo-100' : 'text-slate-500 border-slate-200 hover:bg-slate-50'}`}
-                    title={coAdminUserIds?.has(p.created_by_id) ? (p.created_by_id === currentUserId ? 'You are an admin' : 'Remove co-admin access') : 'Make this partner a co-admin'}
-                    onClick={() => onToggleCoAdmin(p)}
-                    disabled={coAdminLoadingId === p.id}
-                  >
-                    {coAdminLoadingId === p.id
-                      ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      : <ShieldCheck className="w-3.5 h-3.5" />}
-                    <span className="hidden sm:inline">{coAdminUserIds?.has(p.created_by_id) ? 'Co-Admin ✓' : 'Make Admin'}</span>
-                  </Button>
-                )}
+                {onToggleCoAdmin && p.created_by_id && (() => {
+                  const isAdmin = coAdminUserIds?.has(p.created_by_id);
+                  const isPending = pendingCoAdminUserIds?.has(p.created_by_id);
+                  const tone = isAdmin
+                    ? 'text-indigo-700 border-indigo-300 bg-indigo-50 hover:bg-indigo-100'
+                    : isPending
+                      ? 'text-amber-700 border-amber-300 bg-amber-50 hover:bg-amber-100'
+                      : 'text-slate-500 border-slate-200 hover:bg-slate-50';
+                  const title = isAdmin
+                    ? (p.created_by_id === currentUserId ? 'You are an admin' : 'Remove co-admin access')
+                    : isPending
+                      ? 'Invite sent — waiting for the partner to accept'
+                      : 'Make this partner a co-admin';
+                  const label = isAdmin ? 'Co-Admin ✓' : isPending ? 'Invite Sent' : 'Make Admin';
+                  return (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className={`rounded-full gap-1 ${tone}`}
+                      title={title}
+                      onClick={() => onToggleCoAdmin(p)}
+                      disabled={coAdminLoadingId === p.id || (isPending && !isAdmin)}
+                    >
+                      {coAdminLoadingId === p.id
+                        ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        : <ShieldCheck className="w-3.5 h-3.5" />}
+                      <span className="hidden sm:inline">{label}</span>
+                    </Button>
+                  );
+                })()}
                 <Button
                   size="sm"
                   variant="outline"

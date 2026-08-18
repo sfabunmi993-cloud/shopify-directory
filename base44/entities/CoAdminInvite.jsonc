@@ -1,0 +1,81 @@
+{
+  "name": "CoAdminInvite",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "ID of the user invited to become a co-admin"
+    },
+    "partner_id": {
+      "type": "string",
+      "description": "ID of the partner entity belonging to the invited user"
+    },
+    "partner_name": {
+      "type": "string",
+      "description": "Name of the partner (for display context)"
+    },
+    "invited_by_id": {
+      "type": "string",
+      "description": "ID of the admin who sent the invite"
+    },
+    "invited_by_name": {
+      "type": "string",
+      "description": "Name of the admin who sent the invite"
+    },
+    "message": {
+      "type": "string",
+      "description": "Optional custom message included with the invite"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted",
+        "declined"
+      ],
+      "default": "pending",
+      "description": "Whether the invite is pending, accepted, or declined"
+    }
+  },
+  "required": [
+    "user_id",
+    "invited_by_id",
+    "status"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -75,6 +75,7 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [currentUserId, setCurrentUserId] = useState('');
   const [coAdminLoadingId, setCoAdminLoadingId] = useState(null);
+  const [coAdminInvites, setCoAdminInvites] = useState([]);
 
   useEffect(() => {
     const init = async () => {
@@ -91,18 +92,20 @@ export default function AdminDashboard() {
   }, [navigate]);
 
   const loadData = async () => {
-    const [allPartners, allFlags, allPayments, allAnnouncements, allUsers] = await Promise.all([
+    const [allPartners, allFlags, allPayments, allAnnouncements, allUsers, allInvites] = await Promise.all([
       base44.entities.Partner.list('-created_date', 200),
       base44.entities.Flag.list('-created_date', 200),
       base44.entities.Payment.list('-created_date', 200),
       base44.entities.Announcement.list('-created_date', 50),
       base44.entities.User.list('-created_date', 500),
+      base44.entities.CoAdminInvite.list('-created_date', 200),
     ]);
     setPartners(allPartners);
     setFlags(allFlags);
     setPayments(allPayments);
     setAnnouncements(allAnnouncements);
     setUsers(allUsers);
+    setCoAdminInvites(allInvites);
   };
 
   const handleApprove = async (partner) => {
@@ -335,23 +338,61 @@ export default function AdminDashboard() {
     }
     const owner = users.find(u => u.id === partner.created_by_id);
     const isCurrentlyAdmin = !!owner && owner.role === 'admin';
-    if (isCurrentlyAdmin && partner.created_by_id === currentUserId) {
-      toast.error("You can't remove your own admin access.");
+    const label = owner?.full_name || owner?.email || partner.name;
+
+    // Demote: remove co-admin access immediately
+    if (isCurrentlyAdmin) {
+      if (partner.created_by_id === currentUserId) {
+        toast.error("You can't remove your own admin access.");
+        return;
+      }
+      if (!confirm(`Remove co-admin access from ${label}? They will no longer be able to open the Admin Dashboard.`)) return;
+      setCoAdminLoadingId(partner.id);
+      try {
+        await base44.entities.User.update(partner.created_by_id, { role: 'user' });
+        toast.success('Co-admin access removed.');
+        await loadData();
+      } catch (err) {
+        toast.error(err?.response?.data?.error || 'Failed to update admin access.');
+      } finally {
+        setCoAdminLoadingId(null);
+      }
       return;
     }
-    const newRole = isCurrentlyAdmin ? 'user' : 'admin';
-    const label = owner?.full_name || owner?.email || partner.name;
-    const confirmMsg = isCurrentlyAdmin
-      ? `Remove co-admin access from ${label}? They will no longer be able to open the Admin Dashboard.`
-      : `Make ${label} a co-admin? They will gain full access to the Admin Dashboard.`;
-    if (!confirm(confirmMsg)) return;
+
+    // Promote: send an invite the partner must accept
+    const existingPending = coAdminInvites.find(i => i.user_id === partner.created_by_id && i.status === 'pending');
+    if (existingPending) {
+      toast.info(`${label} already has a pending co-admin invite. They can accept it from their profile.`);
+      return;
+    }
+    if (!confirm(`Send a co-admin invite to ${label}? They will be notified by email and can accept it from their profile.`)) return;
     setCoAdminLoadingId(partner.id);
     try {
-      await base44.entities.User.update(partner.created_by_id, { role: newRole });
-      toast.success(isCurrentlyAdmin ? 'Co-admin access removed.' : `${label} is now a co-admin.`);
+      const adminName = users.find(u => u.id === currentUserId)?.full_name || 'Admin';
+      await base44.entities.CoAdminInvite.create({
+        user_id: partner.created_by_id,
+        partner_id: partner.id,
+        partner_name: partner.name,
+        invited_by_id: currentUserId,
+        invited_by_name: adminName,
+        status: 'pending',
+      });
+      if (owner?.email) {
+        try {
+          await base44.integrations.Core.SendEmail({
+            to: owner.email,
+            subject: 'You have been invited to become a Co-Admin',
+            body: `Hi ${label},\n\nYou have been invited by ${adminName} to become a co-admin of the Shopify Partner Base platform.\n\nCo-admins gain full access to the Admin Dashboard to help manage partners, payments, and platform settings.\n\nPlease log in to your profile to accept or decline this invitation.\n\nBest regards,\nShopify Partner Base Team`,
+          });
+        } catch (err) {
+          console.error('Failed to send co-admin invite email:', err);
+        }
+      }
+      toast.success(`Co-admin invite sent to ${label}. They will be notified to accept it.`);
       await loadData();
     } catch (err) {
-      toast.error(err?.response?.data?.error || 'Failed to update admin access.');
+      toast.error(err?.response?.data?.error || 'Failed to send co-admin invite.');
     } finally {
       setCoAdminLoadingId(null);
     }
@@ -476,6 +517,7 @@ export default function AdminDashboard() {
   partners.forEach(p => { if (p.domain_purchased) domainPaidIds.add(p.id); });
 
   const coAdminUserIds = new Set(users.filter(u => u.role === 'admin').map(u => u.id));
+  const pendingCoAdminUserIds = new Set(coAdminInvites.filter(i => i.status === 'pending').map(i => i.user_id));
 
   if (loading) {
     return (
@@ -581,13 +623,13 @@ export default function AdminDashboard() {
         </TabsList>
 
         <TabsContent value="pending">
-          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} />
+          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} pendingCoAdminUserIds={pendingCoAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} />
         </TabsContent>
         <TabsContent value="approved">
-          <PartnerList partners={approved} onRestrict={setRestrictDialog} onRevert={handleRevertToPending} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove={false} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} />
+          <PartnerList partners={approved} onRestrict={setRestrictDialog} onRevert={handleRevertToPending} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove={false} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} pendingCoAdminUserIds={pendingCoAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} />
         </TabsContent>
         <TabsContent value="restricted">
-          <PartnerList partners={restricted} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} />
+          <PartnerList partners={restricted} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} pendingCoAdminUserIds={pendingCoAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} />
         </TabsContent>
         <TabsContent value="payments">
           <PaymentList payments={payments} onApprove={handleApprovePayment} onReject={handleRejectPayment} />

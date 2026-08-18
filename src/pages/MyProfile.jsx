@@ -20,6 +20,7 @@ import PortfolioEditor from '@/components/profile/PortfolioEditor';
 import TestimonialsEditor from '@/components/profile/TestimonialsEditor';
 import AppealForm from '@/components/partner/AppealForm';
 import SupportContactBar from '@/components/profile/SupportContactBar';
+import CoAdminInviteBanner from '@/components/profile/CoAdminInviteBanner';
 import { partnerProfilePath, partnerProfileUrl } from '@/lib/partnerUrl';
 
 const SERVICE_CATEGORIES = [
@@ -256,6 +257,8 @@ export default function MyProfile() {
       </div>
 
       <SupportContactBar />
+
+      <CoAdminInviteBanner />
 
       {/* Rank Banner */}
       {partner && (() => {
