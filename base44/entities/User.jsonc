@@ -1,4 +1,6 @@
 {
+  "name": "User",
+  "type": "object",
   "properties": {
     "role": {
       "type": "string",
@@ -7,11 +9,19 @@
         "admin",
         "user"
       ]
+    },
+    "co_admin_role": {
+      "type": "string",
+      "description": "Permission scope for co-admins (set when they accept a co-admin invite). Undefined for the original platform admin means full access.",
+      "enum": [
+        "payment_notifications",
+        "partners_moderator",
+        "marketing_admin",
+        "full_admin"
+      ]
     }
   },
   "required": [
     "role"
-  ],
-  "name": "User",
-  "type": "object"
+  ]
 }

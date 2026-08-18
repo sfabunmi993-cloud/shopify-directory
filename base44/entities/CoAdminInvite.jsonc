@@ -26,6 +26,17 @@
       "type": "string",
       "description": "Optional custom message included with the invite"
     },
+    "co_admin_role": {
+      "type": "string",
+      "enum": [
+        "payment_notifications",
+        "partners_moderator",
+        "marketing_admin",
+        "full_admin"
+      ],
+      "default": "full_admin",
+      "description": "Permission scope granted to the co-admin on acceptance"
+    },
     "status": {
       "type": "string",
       "enum": [

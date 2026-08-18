@@ -15,8 +15,11 @@ export default async function (req) {
     if (invite.user_id !== user.id) return Response.json({ error: 'This invite belongs to another user' }, { status: 403 });
     if (invite.status !== 'pending') return Response.json({ error: `Invite already ${invite.status}` }, { status: 400 });
 
-    // Promote the user to admin
-    await sr.User.update(invite.user_id, { role: 'admin' });
+    // Promote the user to admin and persist their permission scope
+    await sr.User.update(invite.user_id, {
+      role: 'admin',
+      co_admin_role: invite.co_admin_role || 'full_admin',
+    });
     // Mark invite accepted
     await sr.CoAdminInvite.update(invite.id, { status: 'accepted' });
 

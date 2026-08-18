@@ -12,6 +12,7 @@ import AdsSection from '@/components/admin/AdsSection';
 import BroadcastUpdateSection from '@/components/admin/BroadcastUpdateSection';
 import PartnerList from '@/components/admin/PartnerList';
 import EditPartnerDialog from '@/components/admin/EditPartnerDialog';
+import CoAdminRoleDialog, { getAccessibleTabs, CO_ADMIN_ROLES } from '@/components/admin/CoAdminRoleDialog';
 import { DEFAULT_PRICING } from '@/hooks/usePricing';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -77,6 +78,9 @@ export default function AdminDashboard() {
   const [coAdminLoadingId, setCoAdminLoadingId] = useState(null);
   const [coAdminInvites, setCoAdminInvites] = useState([]);
   const [accessError, setAccessError] = useState(null);
+  const [coAdminRoleTarget, setCoAdminRoleTarget] = useState(null);
+  const [sendingCoAdminInvite, setSendingCoAdminInvite] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     const init = async () => {
@@ -85,6 +89,7 @@ export default function AdminDashboard() {
       const user = await base44.auth.me();
       if (user.role !== 'admin') { navigate('/'); return; }
       setCurrentUserId(user.id);
+      setCurrentUser(user);
       setLoading(true);
       try {
         await loadData();
@@ -374,16 +379,25 @@ export default function AdminDashboard() {
       return;
     }
 
-    // Promote: send an invite the partner must accept
+    // Promote: open the role selector; the invite is sent from handleSendCoAdminInvite
     const existingPending = coAdminInvites.find(i => i.user_id === partner.created_by_id && i.status === 'pending');
     if (existingPending) {
       toast.info(`${label} already has a pending co-admin invite. They can accept it from their profile.`);
       return;
     }
-    if (!confirm(`Send a co-admin invite to ${label}? They will be notified by email and can accept it from their profile.`)) return;
+    setCoAdminRoleTarget(partner);
+  };
+
+  const handleSendCoAdminInvite = async (role) => {
+    const partner = coAdminRoleTarget;
+    if (!partner) return;
+    const owner = users.find(u => u.id === partner.created_by_id);
+    const label = owner?.full_name || owner?.email || partner.name;
+    setSendingCoAdminInvite(true);
     setCoAdminLoadingId(partner.id);
     try {
       const adminName = users.find(u => u.id === currentUserId)?.full_name || 'Admin';
+      const roleLabel = CO_ADMIN_ROLES.find(r => r.value === role)?.label || 'Co-Admin';
       await base44.entities.CoAdminInvite.create({
         user_id: partner.created_by_id,
         partner_id: partner.id,
@@ -391,23 +405,26 @@ export default function AdminDashboard() {
         invited_by_id: currentUserId,
         invited_by_name: adminName,
         status: 'pending',
+        co_admin_role: role,
       });
       if (owner?.email) {
         try {
           await base44.integrations.Core.SendEmail({
             to: owner.email,
-            subject: 'You have been invited to become a Co-Admin',
-            body: `Hi ${label},\n\nYou have been invited by ${adminName} to become a co-admin of the Shopify Partner Base platform.\n\nCo-admins gain full access to the Admin Dashboard to help manage partners, payments, and platform settings.\n\nPlease log in to your profile to accept or decline this invitation.\n\nBest regards,\nShopify Partner Base Team`,
+            subject: `You have been invited to become a Co-Admin (${roleLabel})`,
+            body: `Hi ${label},\n\nYou have been invited by ${adminName} to become a co-admin of the Shopify Partner Base platform with the role: ${roleLabel}.\n\nPlease log in to your profile to accept or decline this invitation.\n\nBest regards,\nShopify Partner Base Team`,
           });
         } catch (err) {
           console.error('Failed to send co-admin invite email:', err);
         }
       }
       toast.success(`Co-admin invite sent to ${label}. They will be notified to accept it.`);
+      setCoAdminRoleTarget(null);
       await loadData();
     } catch (err) {
       toast.error(err?.response?.data?.error || 'Failed to send co-admin invite.');
     } finally {
+      setSendingCoAdminInvite(false);
       setCoAdminLoadingId(null);
     }
   };
@@ -532,6 +549,13 @@ export default function AdminDashboard() {
 
   const coAdminUserIds = new Set(users.filter(u => u.role === 'admin').map(u => u.id));
   const pendingCoAdminUserIds = new Set(coAdminInvites.filter(i => i.status === 'pending').map(i => i.user_id));
+  const accessibleTabs = getAccessibleTabs(currentUser);
+  const coAdminRoleByUser = Object.fromEntries(
+    users.filter(u => u.role === 'admin' && u.co_admin_role).map(u => [u.id, u.co_admin_role])
+  );
+  const pendingCoAdminRoleByUser = Object.fromEntries(
+    coAdminInvites.filter(i => i.status === 'pending' && i.co_admin_role).map(i => [i.user_id, i.co_admin_role])
+  );
 
   if (loading) {
     return (
@@ -614,53 +638,72 @@ export default function AdminDashboard() {
         />
       </div>
 
-      <Tabs defaultValue="pending">
+      <Tabs defaultValue={accessibleTabs[0] || 'pending'}>
         <TabsList className="mb-6 w-full flex overflow-x-auto sm:flex-wrap justify-start sm:justify-center">
-          <TabsTrigger value="pending">
-            Pending <Badge variant="secondary" className="ml-1.5">{pending.length}</Badge>
-          </TabsTrigger>
-          <TabsTrigger value="approved">
-            Approved <Badge variant="secondary" className="ml-1.5">{approved.length}</Badge>
-          </TabsTrigger>
-          <TabsTrigger value="restricted">
-            Restricted <Badge variant="secondary" className="ml-1.5">{restricted.length}</Badge>
-          </TabsTrigger>
-          <TabsTrigger value="payments">
-            Payments <Badge variant="secondary" className="ml-1.5">{pendingPayments.length}</Badge>
-          </TabsTrigger>
-          <TabsTrigger value="flags">
-            Flags <Badge variant="secondary" className="ml-1.5">{pendingFlags.length}</Badge>
-          </TabsTrigger>
-          <TabsTrigger value="pricing">
-            Pricing
-          </TabsTrigger>
-          <TabsTrigger value="email-blast">
-            <Mail className="w-4 h-4 mr-1.5" />
-            Email Blast
-          </TabsTrigger>
-         
-          <TabsTrigger value="announcements">
-            <Megaphone className="w-4 h-4 mr-1.5" />
-            Announcements <Badge variant="secondary" className="ml-1.5">{announcements.length}</Badge>
-          </TabsTrigger>
-          <TabsTrigger value="broadcast">
-            <Send className="w-4 h-4 mr-1.5" />
-            Broadcast Update
-          </TabsTrigger>
-          <TabsTrigger value="ads">
-            <Megaphone className="w-4 h-4 mr-1.5" />
-            Ad Promos
-          </TabsTrigger>
+          {accessibleTabs.includes('pending') && (
+            <TabsTrigger value="pending">
+              Pending <Badge variant="secondary" className="ml-1.5">{pending.length}</Badge>
+            </TabsTrigger>
+          )}
+          {accessibleTabs.includes('approved') && (
+            <TabsTrigger value="approved">
+              Approved <Badge variant="secondary" className="ml-1.5">{approved.length}</Badge>
+            </TabsTrigger>
+          )}
+          {accessibleTabs.includes('restricted') && (
+            <TabsTrigger value="restricted">
+              Restricted <Badge variant="secondary" className="ml-1.5">{restricted.length}</Badge>
+            </TabsTrigger>
+          )}
+          {accessibleTabs.includes('payments') && (
+            <TabsTrigger value="payments">
+              Payments <Badge variant="secondary" className="ml-1.5">{pendingPayments.length}</Badge>
+            </TabsTrigger>
+          )}
+          {accessibleTabs.includes('flags') && (
+            <TabsTrigger value="flags">
+              Flags <Badge variant="secondary" className="ml-1.5">{pendingFlags.length}</Badge>
+            </TabsTrigger>
+          )}
+          {accessibleTabs.includes('pricing') && (
+            <TabsTrigger value="pricing">
+              Pricing
+            </TabsTrigger>
+          )}
+          {accessibleTabs.includes('email-blast') && (
+            <TabsTrigger value="email-blast">
+              <Mail className="w-4 h-4 mr-1.5" />
+              Email Blast
+            </TabsTrigger>
+          )}
+          {accessibleTabs.includes('announcements') && (
+            <TabsTrigger value="announcements">
+              <Megaphone className="w-4 h-4 mr-1.5" />
+              Announcements <Badge variant="secondary" className="ml-1.5">{announcements.length}</Badge>
+            </TabsTrigger>
+          )}
+          {accessibleTabs.includes('broadcast') && (
+            <TabsTrigger value="broadcast">
+              <Send className="w-4 h-4 mr-1.5" />
+              Broadcast Update
+            </TabsTrigger>
+          )}
+          {accessibleTabs.includes('ads') && (
+            <TabsTrigger value="ads">
+              <Megaphone className="w-4 h-4 mr-1.5" />
+              Ad Promos
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="pending">
-          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} pendingCoAdminUserIds={pendingCoAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} />
+          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} pendingCoAdminUserIds={pendingCoAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} coAdminRoleByUser={coAdminRoleByUser} pendingCoAdminRoleByUser={pendingCoAdminRoleByUser} />
         </TabsContent>
         <TabsContent value="approved">
-          <PartnerList partners={approved} onRestrict={setRestrictDialog} onRevert={handleRevertToPending} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove={false} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} pendingCoAdminUserIds={pendingCoAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} />
+          <PartnerList partners={approved} onRestrict={setRestrictDialog} onRevert={handleRevertToPending} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove={false} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} pendingCoAdminUserIds={pendingCoAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} coAdminRoleByUser={coAdminRoleByUser} pendingCoAdminRoleByUser={pendingCoAdminRoleByUser} />
         </TabsContent>
         <TabsContent value="restricted">
-          <PartnerList partners={restricted} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} pendingCoAdminUserIds={pendingCoAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} />
+          <PartnerList partners={restricted} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} pendingCoAdminUserIds={pendingCoAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} coAdminRoleByUser={coAdminRoleByUser} pendingCoAdminRoleByUser={pendingCoAdminRoleByUser} />
         </TabsContent>
         <TabsContent value="payments">
           <PaymentList payments={payments} onApprove={handleApprovePayment} onReject={handleRejectPayment} />
@@ -1127,6 +1170,15 @@ export default function AdminDashboard() {
         open={!!editPartnerDialog}
         onClose={() => setEditPartnerDialog(null)}
         onSaved={loadData}
+      />
+
+      {/* Co-admin role selector */}
+      <CoAdminRoleDialog
+        open={!!coAdminRoleTarget}
+        partner={coAdminRoleTarget}
+        onClose={() => setCoAdminRoleTarget(null)}
+        onConfirm={handleSendCoAdminInvite}
+        sending={sendingCoAdminInvite}
       />
 
       {/* Restrict Dialog */}

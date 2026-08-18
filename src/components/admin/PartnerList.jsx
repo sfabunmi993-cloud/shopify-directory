@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Link as LinkLink, Eye, Edit2, BadgeCheck, Star, Infinity as InfinityIcon, Bell, XCircle, CheckCircle, EyeOff, Trash2, Loader2, ShieldAlert, ShieldCheck, Globe, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { partnerProfilePath } from '@/lib/partnerUrl';
+import { CO_ADMIN_ROLES } from '@/components/admin/CoAdminRoleDialog';
+
+const CO_ADMIN_ROLE_LABELS = Object.fromEntries(CO_ADMIN_ROLES.map(r => [r.value, r.label]));
 
 const STATUS_STYLES = {
   pending: 'bg-amber-50 text-amber-700 border-amber-200',
@@ -19,7 +22,7 @@ function getPartnerRank(reviewCount = 0) {
 }
 
 export default function PartnerList(props) {
-  const { partners, onApprove, onRestrict, onRevert, onBulkApprove, onBulkRestrict, onBulkMarkDomain, onEditId, onEditDetails, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds, onToggleDomain, coAdminUserIds, pendingCoAdminUserIds, onToggleCoAdmin, currentUserId, coAdminLoadingId } = props;
+  const { partners, onApprove, onRestrict, onRevert, onBulkApprove, onBulkRestrict, onBulkMarkDomain, onEditId, onEditDetails, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds, onToggleDomain, coAdminUserIds, pendingCoAdminUserIds, onToggleCoAdmin, currentUserId, coAdminLoadingId, coAdminRoleByUser, pendingCoAdminRoleByUser } = props;
   const [selected, setSelected] = useState([]);
 
   if (partners.length === 0) {
@@ -127,17 +130,27 @@ export default function PartnerList(props) {
                 {onToggleCoAdmin && p.created_by_id && (() => {
                   const isAdmin = coAdminUserIds?.has(p.created_by_id);
                   const isPending = pendingCoAdminUserIds?.has(p.created_by_id);
+                  const roleKey = isAdmin
+                    ? coAdminRoleByUser?.[p.created_by_id]
+                    : isPending
+                      ? pendingCoAdminRoleByUser?.[p.created_by_id]
+                      : null;
+                  const roleLabel = roleKey ? CO_ADMIN_ROLE_LABELS[roleKey] : null;
                   const tone = isAdmin
                     ? 'text-indigo-700 border-indigo-300 bg-indigo-50 hover:bg-indigo-100'
                     : isPending
                       ? 'text-amber-700 border-amber-300 bg-amber-50 hover:bg-amber-100'
                       : 'text-slate-500 border-slate-200 hover:bg-slate-50';
                   const title = isAdmin
-                    ? (p.created_by_id === currentUserId ? 'You are an admin' : 'Remove co-admin access')
+                    ? (p.created_by_id === currentUserId ? 'You are an admin' : `${roleLabel || 'Co-admin'} — click to remove access`)
                     : isPending
-                      ? 'Invite sent — waiting for the partner to accept'
+                      ? `Invite sent (${roleLabel || 'Co-admin'}) — waiting for the partner to accept`
                       : 'Make this partner a co-admin';
-                  const label = isAdmin ? 'Co-Admin ✓' : isPending ? 'Invite Sent' : 'Make Admin';
+                  const label = isAdmin
+                    ? (roleLabel || 'Co-Admin ✓')
+                    : isPending
+                      ? 'Invite Sent'
+                      : 'Make Admin';
                   return (
                     <Button
                       size="sm"
