@@ -36,13 +36,9 @@ export const CO_ADMIN_ROLES = [
 ];
 
 export function getAccessibleTabs(user) {
+  // All admins (including co-admins of any role) see the full dashboard
   if (!user || user.role !== 'admin') return [];
-  // The original platform admin has no co_admin_role → full access
-  if (!user.co_admin_role || user.co_admin_role === 'full_admin') {
-    return CO_ADMIN_ROLES[CO_ADMIN_ROLES.length - 1].tabs;
-  }
-  const role = CO_ADMIN_ROLES.find(r => r.value === user.co_admin_role);
-  return role ? role.tabs : [];
+  return CO_ADMIN_ROLES[CO_ADMIN_ROLES.length - 1].tabs;
 }
 
 export default function CoAdminRoleDialog({ open, partner, onClose, onConfirm, sending }) {
