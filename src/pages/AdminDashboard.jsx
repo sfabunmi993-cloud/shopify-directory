@@ -97,11 +97,14 @@ export default function AdminDashboard() {
       } catch (err) {
         // A 403 here usually means the user's session token predates a role
         // change (e.g. freshly promoted co-admin). Their JWT still says
-        // 'user', so admin-only entity reads fail. Prompt re-login.
+        // 'user', so admin-only entity reads fail. Force a fresh login so
+        // the dashboard actually populates with full admin data.
         const status = err?.status || err?.response?.status;
         if (status === 403) {
-          setAccessError('Your session needs to be refreshed to use the admin dashboard. Please log out and sign back in.');
           setLoading(false);
+          // Clear the stale token and send them to login, returning here after.
+          base44.auth.logout();
+          base44.auth.redirectToLogin('/admin');
           return;
         }
         throw err;
