@@ -225,7 +225,7 @@ export default function PartnerDetail() {
       {partner.status === 'pending' &&
       <div className="mb-4 bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3 text-amber-600 dark:text-amber-400 text-sm">
           <ShieldAlert className="w-4 h-4 shrink-0 hidden sm:block" />
-          <span className="text-center sm:text-left flex-1">This profile is pending admin approval and is not yet visible in the directory. To make it visible you need to purchase a domain name in few days or your account will be deleted.</span>
+          <span className="text-center sm:text-left flex-1">This profile is pending admin approval and is not yet visible in the directory. Purchase a domain name within 2 days — if the domain is not purchased, your account will be deleted by admin after 2 days.</span>
           {user && partner.created_by_id === user.id && !partner.domain_purchased &&
           <Button
             onClick={() => setBuyDomainOpen(true)}
