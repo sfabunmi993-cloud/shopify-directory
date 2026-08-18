@@ -88,7 +88,22 @@ export default function AdminDashboard() {
       const authed = await base44.auth.isAuthenticated();
       if (!authed) { navigate('/login'); return; }
       const user = await base44.auth.me();
-      if (user.role !== 'admin') { navigate('/'); return; }
+      if (user.role !== 'admin') {
+        // The DB role may already be 'admin' (e.g. a co-admin who just accepted
+        // an invite) while the JWT still carries the old 'user' role. Detect an
+        // accepted co-admin invite and force a fresh login so they land here
+        // with a valid admin token and see the full dashboard.
+        try {
+          const accepted = await base44.entities.CoAdminInvite.filter({ user_id: user.id, status: 'accepted' });
+          if (accepted.length > 0) {
+            base44.auth.logout();
+            base44.auth.redirectToLogin('/admin');
+            return;
+          }
+        } catch (_) { /* fall through to normal redirect */ }
+        navigate('/');
+        return;
+      }
       setCurrentUserId(user.id);
       setCurrentUser(user);
       setLoading(true);
