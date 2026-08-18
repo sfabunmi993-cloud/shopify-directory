@@ -31,7 +31,7 @@ export const CO_ADMIN_ROLES = [
     label: 'Full Admin',
     icon: Mail,
     description: 'Full access to everything, including Pricing settings.',
-    tabs: ['pending', 'approved', 'restricted', 'payments', 'flags', 'pricing', 'email-blast', 'announcements', 'broadcast', 'ads'],
+    tabs: ['pending', 'approved', 'restricted', 'payments', 'flags', 'pricing', 'email-blast', 'announcements', 'broadcast', 'ads', 'users'],
   },
 ];
 

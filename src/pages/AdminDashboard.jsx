@@ -10,6 +10,7 @@ import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, Shie
 import AnnouncementsSection from '@/components/admin/AnnouncementsSection';
 import AdsSection from '@/components/admin/AdsSection';
 import BroadcastUpdateSection from '@/components/admin/BroadcastUpdateSection';
+import UsersSection from '@/components/admin/UsersSection';
 import PartnerList from '@/components/admin/PartnerList';
 import EditPartnerDialog from '@/components/admin/EditPartnerDialog';
 import CoAdminRoleDialog, { getAccessibleTabs, CO_ADMIN_ROLES } from '@/components/admin/CoAdminRoleDialog';
@@ -677,6 +678,12 @@ export default function AdminDashboard() {
               Ad Promos
             </TabsTrigger>
           )}
+          {accessibleTabs.includes('users') && (
+            <TabsTrigger value="users">
+              <Users className="w-4 h-4 mr-1.5" />
+              Users <Badge variant="secondary" className="ml-1.5">{users.length}</Badge>
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="pending">
@@ -731,6 +738,14 @@ export default function AdminDashboard() {
         </TabsContent>
         <TabsContent value="broadcast">
           <BroadcastUpdateSection />
+        </TabsContent>
+        <TabsContent value="users">
+          <UsersSection
+            users={users}
+            coAdminInvites={coAdminInvites}
+            currentUserId={currentUser?.id}
+            onRoleChanged={loadData}
+          />
         </TabsContent>
       </Tabs>
 
