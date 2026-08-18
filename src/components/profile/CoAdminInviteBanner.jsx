@@ -32,8 +32,10 @@ export default function CoAdminInviteBanner() {
     setActing(true);
     try {
       await base44.functions.invoke('acceptCoAdminInvite', { invite_id: invite.id });
-      toast.success('You are now a co-admin! Reloading…');
-      setTimeout(() => window.location.reload(), 1200);
+      toast.success('Co-admin role granted! Signing you out to refresh your session…');
+      // The role change only takes effect after a fresh login (JWT is stateless),
+      // so log the user out — they'll log back in with their new admin role.
+      setTimeout(() => base44.auth.logout('/login'), 1500);
     } catch (err) {
       toast.error(err?.response?.data?.error || 'Failed to accept invite.');
       setActing(false);

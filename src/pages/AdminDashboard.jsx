@@ -76,6 +76,7 @@ export default function AdminDashboard() {
   const [currentUserId, setCurrentUserId] = useState('');
   const [coAdminLoadingId, setCoAdminLoadingId] = useState(null);
   const [coAdminInvites, setCoAdminInvites] = useState([]);
+  const [accessError, setAccessError] = useState(null);
 
   useEffect(() => {
     const init = async () => {
@@ -85,7 +86,20 @@ export default function AdminDashboard() {
       if (user.role !== 'admin') { navigate('/'); return; }
       setCurrentUserId(user.id);
       setLoading(true);
-      await loadData();
+      try {
+        await loadData();
+      } catch (err) {
+        // A 403 here usually means the user's session token predates a role
+        // change (e.g. freshly promoted co-admin). Their JWT still says
+        // 'user', so admin-only entity reads fail. Prompt re-login.
+        const status = err?.status || err?.response?.status;
+        if (status === 403) {
+          setAccessError('Your session needs to be refreshed to use the admin dashboard. Please log out and sign back in.');
+          setLoading(false);
+          return;
+        }
+        throw err;
+      }
       setLoading(false);
     };
     init();
@@ -523,6 +537,23 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (accessError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="max-w-md w-full text-center bg-white border border-border rounded-2xl p-6 shadow-sm">
+          <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
+            <ShieldAlert className="w-6 h-6 text-amber-600" />
+          </div>
+          <h2 className="font-heading text-lg font-bold text-foreground mb-1">Session needs refresh</h2>
+          <p className="text-sm text-muted-foreground mb-5">{accessError}</p>
+          <Button onClick={() => base44.auth.logout('/login')} className="rounded-full">
+            Log out and sign back in
+          </Button>
+        </div>
       </div>
     );
   }
