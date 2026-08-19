@@ -3,7 +3,8 @@ import { base44 } from '@/api/base44Client';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, Search, ShieldCheck, UserCog } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Loader2, Search, ShieldCheck, UserCog, Pencil } from 'lucide-react';
 import moment from 'moment';
 import { CO_ADMIN_ROLES } from '@/components/admin/CoAdminRoleDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -11,7 +12,7 @@ import { toast } from 'sonner';
 
 const ROLE_LABELS = Object.fromEntries(CO_ADMIN_ROLES.map(r => [r.value, r.label]));
 
-export default function UsersSection({ users, coAdminInvites, currentUserId, onRoleChanged }) {
+export default function UsersSection({ users, coAdminInvites, currentUserId, onRoleChanged, partnersByUserId = {} }) {
   const [search, setSearch] = useState('');
   const [savingId, setSavingId] = useState(null);
 
@@ -91,6 +92,14 @@ export default function UsersSection({ users, coAdminInvites, currentUserId, onR
                         {u.full_name || 'Unnamed user'}
                       </div>
                       <div className="text-xs text-muted-foreground">{u.email}</div>
+                      {partnersByUserId[u.id] && (
+                        <Link
+                          to={`/my-profile?actAs=${partnersByUserId[u.id].id}`}
+                          className="inline-flex items-center gap-1 mt-1 text-xs text-indigo-600 hover:text-indigo-800"
+                        >
+                          <Pencil className="w-3 h-3" /> Act as user
+                        </Link>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <Badge variant={u.role === 'admin' ? 'default' : 'secondary'}>

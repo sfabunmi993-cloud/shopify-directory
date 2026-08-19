@@ -763,6 +763,7 @@ export default function AdminDashboard() {
             coAdminInvites={coAdminInvites}
             currentUserId={currentUser?.id}
             onRoleChanged={loadData}
+            partnersByUserId={Object.fromEntries(partners.map(p => [p.created_by_id, p]).filter(([, p]) => p))}
           />
         </TabsContent>
       </Tabs>

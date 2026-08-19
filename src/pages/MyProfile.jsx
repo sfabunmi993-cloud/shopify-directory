@@ -76,11 +76,27 @@ export default function MyProfile() {
   const [savingPassword, setSavingPassword] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [actingAs, setActingAs] = useState(null);
 
   useEffect(() => {
     const load = async () => {
       const user = await base44.auth.me();
       setUser(user);
+      // Admin "act as" mode: edit another user's partner profile on their behalf.
+      const params = new URLSearchParams(window.location.search);
+      const actAsId = params.get('actAs');
+      if (actAsId && user.role === 'admin') {
+        try {
+          const p = await base44.entities.Partner.get(actAsId);
+          if (p) {
+            setPartner(p);
+            setForm({ ...p });
+            setActingAs(p.name || 'this user');
+            setLoading(false);
+            return;
+          }
+        } catch (_) { /* fall through to the admin's own profile */ }
+      }
       const partners = await base44.entities.Partner.filter({ created_by_id: user.id });
       if (partners.length > 0) {
         const p = partners[0];
@@ -199,6 +215,18 @@ export default function MyProfile() {
 
   return (
     <div className="max-w-3xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
+      {actingAs && (
+        <div className="mb-4 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-sm">
+            <ShieldCheck className="w-5 h-5 text-indigo-600 shrink-0" />
+            <span className="font-semibold text-indigo-900">Acting as {actingAs}</span>
+            <span className="text-indigo-700 hidden sm:inline">— edits save to this partner's profile.</span>
+          </div>
+          <Button size="sm" variant="outline" className="rounded-full border-indigo-200 text-indigo-700 hover:bg-indigo-100" onClick={() => navigate('/admin')}>
+            <X className="w-4 h-4 mr-1" /> Exit
+          </Button>
+        </div>
+      )}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
           <div className="flex flex-wrap items-center gap-1.5">
@@ -688,6 +716,7 @@ export default function MyProfile() {
       </div>
 
       {/* Settings */}
+      {!actingAs && (
       <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 mt-4 sm:mt-6">
         <h2 className="font-semibold text-base mb-4 flex items-center gap-2">
           <Lock className="w-4 h-4 text-muted-foreground" /> Account Settings
@@ -740,8 +769,10 @@ export default function MyProfile() {
           </Button>
         </div>
       </div>
+      )}
 
       {/* Delete Account */}
+      {!actingAs && (
       <div className="bg-white border border-destructive/30 rounded-2xl p-4 sm:p-6 mt-4 sm:mt-6">
         <h2 className="font-semibold text-base mb-2 flex items-center gap-2 text-destructive">
           <Trash2 className="w-4 h-4" /> Delete Account
@@ -757,6 +788,7 @@ export default function MyProfile() {
           <Trash2 className="w-4 h-4 mr-1.5" /> Delete my account
         </Button>
       </div>
+      )}
 
       <BuyReviewModal isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} partner={partner} />
       <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
