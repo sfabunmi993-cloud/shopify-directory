@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, Search, ShieldCheck, UserCog } from 'lucide-react';
+import moment from 'moment';
 import { CO_ADMIN_ROLES } from '@/components/admin/CoAdminRoleDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
@@ -73,6 +74,7 @@ export default function UsersSection({ users, coAdminInvites, currentUserId, onR
                 <th className="px-4 py-3 font-medium">User</th>
                 <th className="px-4 py-3 font-medium">Role</th>
                 <th className="px-4 py-3 font-medium">Co-admin role</th>
+                <th className="px-4 py-3 font-medium">Last seen</th>
                 <th className="px-4 py-3 font-medium text-right">Assign role</th>
               </tr>
             </thead>
@@ -100,6 +102,18 @@ export default function UsersSection({ users, coAdminInvites, currentUserId, onR
                         <span className="text-xs font-medium text-foreground">
                           {ROLE_LABELS[currentRole] || currentRole}
                           {isPending && <span className="text-amber-600"> · invite sent</span>}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {u.updated_date ? (
+                        <span
+                          className="text-xs text-muted-foreground"
+                          title={moment(u.updated_date).format('lll')}
+                        >
+                          {moment(u.updated_date).fromNow()}
                         </span>
                       ) : (
                         <span className="text-xs text-muted-foreground">—</span>
@@ -133,7 +147,7 @@ export default function UsersSection({ users, coAdminInvites, currentUserId, onR
               })}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">No users found.</td>
+                  <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">No users found.</td>
                 </tr>
               )}
             </tbody>
