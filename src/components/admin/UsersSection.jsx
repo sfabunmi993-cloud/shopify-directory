@@ -93,12 +93,11 @@ export default function UsersSection({ users, coAdminInvites, currentUserId, onR
                       </div>
                       <div className="text-xs text-muted-foreground">{u.email}</div>
                       {partnersByUserId[u.id] && (
-                        <Link
-                          to={`/my-profile?actAs=${partnersByUserId[u.id].id}`}
-                          className="inline-flex items-center gap-1 mt-1 text-xs text-indigo-600 hover:text-indigo-800"
-                        >
-                          <Pencil className="w-3 h-3" /> Act as user
-                        </Link>
+                        <Button asChild size="sm" variant="outline" className="mt-1.5 h-7 rounded-full text-xs border-indigo-200 text-indigo-700 hover:bg-indigo-50">
+                          <Link to={`/my-profile?actAs=${partnersByUserId[u.id].id}`}>
+                            <Pencil className="w-3 h-3" /> Act as user
+                          </Link>
+                        </Button>
                       )}
                     </td>
                     <td className="px-4 py-3">
