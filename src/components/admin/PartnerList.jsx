@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Link as LinkLink, Eye, Edit2, BadgeCheck, Star, Infinity as InfinityIcon, Bell, XCircle, CheckCircle, EyeOff, Trash2, Loader2, ShieldAlert, ShieldCheck, Globe, RotateCcw } from 'lucide-react';
+import { Link as LinkLink, Eye, Edit2, BadgeCheck, Star, Infinity as InfinityIcon, Bell, XCircle, CheckCircle, EyeOff, Trash2, Loader2, ShieldAlert, ShieldCheck, Globe, RotateCcw, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
 import { partnerProfilePath } from '@/lib/partnerUrl';
 import { CO_ADMIN_ROLES } from '@/components/admin/CoAdminRoleDialog';
@@ -127,6 +127,12 @@ export default function PartnerList(props) {
                     <span className="hidden sm:inline">Edit</span>
                   </Button>
                 )}
+                <Button asChild size="sm" variant="outline" className="rounded-full gap-1 text-indigo-700 border-indigo-300 bg-indigo-50 hover:bg-indigo-100" title="Edit this partner's full profile on their behalf">
+                  <Link to={`/my-profile?actAs=${p.id}`}>
+                    <UserRound className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Act as user</span>
+                  </Link>
+                </Button>
                 {onToggleCoAdmin && p.created_by_id && (() => {
                   const isAdmin = coAdminUserIds?.has(p.created_by_id);
                   const isPending = pendingCoAdminUserIds?.has(p.created_by_id);
