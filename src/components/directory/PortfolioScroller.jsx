@@ -1,9 +1,10 @@
-import React from 'react';
-import { Globe } from 'lucide-react';
+import React, { useState } from 'react';
+import { Globe, Pause, Play } from 'lucide-react';
 import PortfolioItemReview from '@/components/directory/PortfolioItemReview';
 
 export default function PortfolioScroller({ portfolio = [], partnerId }) {
   const items = (portfolio || []).filter((p) => p && p.url);
+  const [paused, setPaused] = useState(false);
   if (!items.length) return null;
 
   // Duplicate for a seamless loop
@@ -20,7 +21,16 @@ export default function PortfolioScroller({ portfolio = [], partnerId }) {
       <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 z-10 bg-gradient-to-r from-background to-transparent" />
       <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 z-10 bg-gradient-to-l from-background to-transparent" />
 
-      <div className="flex gap-4 animate-testimonials-marquee w-max hover:[animation-play-state:paused] absolute top-0 left-0">
+      <button
+        onClick={() => setPaused((p) => !p)}
+        className="absolute top-2 right-2 z-20 bg-white/90 border border-border rounded-full p-1.5 shadow-sm hover:bg-white"
+        title={paused ? 'Play animation' : 'Pause animation'}
+        aria-label={paused ? 'Play animation' : 'Pause animation'}
+      >
+        {paused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
+      </button>
+
+      <div className={`flex gap-4 animate-testimonials-marquee w-max absolute top-0 left-0 ${paused ? '[animation-play-state:paused]' : 'hover:[animation-play-state:paused]'}`}>
         {loop.map((item, idx) => (
           <div
             key={idx}

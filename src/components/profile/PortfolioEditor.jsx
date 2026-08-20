@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, Upload, X, Image as ImageIcon, Video, Plus, Globe, AlertCircle, Search } from 'lucide-react';
+import { Loader2, Upload, X, Image as ImageIcon, Video, Plus, Globe, AlertCircle, Search, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { compressVideo } from '@/lib/videoCompress';
 
-const MAX_ITEMS = 3;
+const MAX_ITEMS = 20;
 
 function getDomain(url) {
   try {
@@ -29,6 +29,41 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
   const [drafts, setDrafts] = useState({});
   const [detecting, setDetecting] = useState({});
   const [detectedNames, setDetectedNames] = useState({});
+  const [generating, setGenerating] = useState({});
+
+  const generateCaption = async (index) => {
+    const item = items[index];
+    if (!item) return;
+    setGenerating((prev) => ({ ...prev, [index]: true }));
+    try {
+      let res;
+      if (item.type === 'image') {
+        res = await base44.integrations.Core.InvokeLLM({
+          prompt: `Look at this portfolio image${item.store_url ? ` from ${item.store_url}` : ''}${item.store_name ? ` (${item.store_name})` : ''}. Write a short, professional caption (max 15 words) describing the work/design shown, suitable for a Shopify partner's portfolio. Return just the caption text.`,
+          file_urls: [item.url],
+          response_json_schema: { type: 'object', properties: { caption: { type: 'string' } } },
+        });
+      } else {
+        res = await base44.integrations.Core.InvokeLLM({
+          prompt: `Write a short, professional caption (max 15 words) for a portfolio showcase video${item.store_url ? ` from ${item.store_url}` : ''}${item.store_name ? ` (${item.store_name})` : ''}. Base it on the store/brand and what such a showcase video typically highlights. Return just the caption text.`,
+          add_context_from_internet: true,
+          model: 'gemini_3_flash',
+          response_json_schema: { type: 'object', properties: { caption: { type: 'string' } } },
+        });
+      }
+      const caption = (res?.caption || '').trim();
+      if (caption) {
+        updateDraft(index, 'caption', caption);
+        toast.success('Caption generated!');
+      } else {
+        toast.info('Could not generate a caption.');
+      }
+    } catch (err) {
+      toast.error('Failed to generate caption.');
+    } finally {
+      setGenerating((prev) => ({ ...prev, [index]: false }));
+    }
+  };
 
   const items = Array.isArray(portfolio) ? portfolio : [];
 
@@ -199,7 +234,18 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
                   </div>
                 )}
                 <div>
-                  <label className="text-[10px] font-medium text-muted-foreground">Caption</label>
+                  <label className="text-[10px] font-medium text-muted-foreground flex items-center justify-between">
+                    <span>Caption</span>
+                    <button
+                      type="button"
+                      onClick={() => generateCaption(i)}
+                      disabled={!!generating[i]}
+                      className="text-[10px] text-primary hover:underline flex items-center gap-0.5 disabled:opacity-50"
+                    >
+                      {generating[i] ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                      {generating[i] ? 'Generating...' : 'Generate'}
+                    </button>
+                  </label>
                   <Input
                     placeholder="Describe this work..."
                     value={getValue(i, 'caption')}
@@ -239,7 +285,7 @@ export default function PortfolioEditor({ portfolio = [], partnerId, onChange })
 
       <p className="text-xs text-muted-foreground flex items-center gap-1">
         <Upload className="w-3 h-3" />
-        You can upload up to {MAX_ITEMS} images or videos. {items.length}/{MAX_ITEMS} used. Store URL is optional and auto-detects the store homepage.
+        You can upload up to {MAX_ITEMS} images or videos. {items.length}/{MAX_ITEMS} used. Use "Generate" to auto-create a caption from the image or store.
       </p>
     </div>
   );
