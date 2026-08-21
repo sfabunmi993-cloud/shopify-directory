@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Input } from "@/components/ui/input";
@@ -51,6 +51,16 @@ export default function Register() {
   const [showOtp, setShowOtp] = useState(false);
   const [otpCode, setOtpCode] = useState("");
   const [humanChecked, setHumanChecked] = useState(false);
+  const [signupAvailable, setSignupAvailable] = useState(null); // null = checking
+
+  useEffect(() => {
+    base44.entities.AppSettings.filter({ key: 'signup_enabled' })
+      .then(records => {
+        const disabled = records.length > 0 && records[0].value?.enabled === false;
+        setSignupAvailable(!disabled);
+      })
+      .catch(() => setSignupAvailable(true));
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -100,6 +110,32 @@ export default function Register() {
   const handleApple = () => base44.auth.loginWithProvider("apple", "/");
   const handleFacebook = () => base44.auth.loginWithProvider("facebook", "/");
   const handleUnsupported = () => toast("This sign-in option isn't available yet");
+
+  if (signupAvailable === null) {
+    return (
+      <div className="min-h-screen bg-[#0b0c0d] flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-white" />
+      </div>
+    );
+  }
+
+  if (!signupAvailable) {
+    return (
+      <div className="min-h-screen bg-[#0b0c0d] flex flex-col items-center justify-center px-4 py-10">
+        <img src={SHOPIFY_LOGO} alt="Shopify" className="w-8 h-8 mb-6" />
+        <div className="w-full max-w-[440px] bg-white rounded-2xl px-8 py-10 shadow-xl text-center">
+          <h1 className="text-[24px] font-bold text-[#212326] leading-tight">Sign-ups are currently unavailable</h1>
+          <p className="text-[15px] text-[#6d7175] mt-2 mb-8">New account registration is temporarily disabled. Please check back later or contact support.</p>
+          <Link to="/login" className="block w-full h-11 leading-[44px] rounded-lg bg-[#006fbb] hover:bg-[#005a99] text-white text-[15px] font-medium transition-colors">
+            Go to Log in
+          </Link>
+        </div>
+        <button onClick={() => { window.location.href = '/'; }} className="text-[15px] text-white/70 mt-6 hover:underline">
+          Back to home
+        </button>
+      </div>
+    );
+  }
 
   if (showOtp) {
     return (

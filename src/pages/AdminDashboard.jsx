@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, ShieldCheck, Users, Flag, Eye, EyeOff, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2, Infinity, Bell, Landmark, ImageIcon } from 'lucide-react';
 import AnnouncementsSection from '@/components/admin/AnnouncementsSection';
 import AdsSection from '@/components/admin/AdsSection';
+import SignupControlSection from '@/components/admin/SignupControlSection';
 import BroadcastUpdateSection from '@/components/admin/BroadcastUpdateSection';
 import UsersSection from '@/components/admin/UsersSection';
 import AnalyticsSection from '@/components/admin/AnalyticsSection';
@@ -725,6 +726,7 @@ export default function AdminDashboard() {
           <FlagList flags={pendingFlags} partners={partners} onDismiss={handleDismissFlag} onReviewed={handleMarkFlagReviewed} />
         </TabsContent>
         <TabsContent value="pricing">
+          <SignupControlSection />
           <PricingSettings />
         </TabsContent>
         <TabsContent value="email-blast">
