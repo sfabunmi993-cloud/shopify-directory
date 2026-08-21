@@ -11,6 +11,7 @@ import AnnouncementsSection from '@/components/admin/AnnouncementsSection';
 import AdsSection from '@/components/admin/AdsSection';
 import BroadcastUpdateSection from '@/components/admin/BroadcastUpdateSection';
 import UsersSection from '@/components/admin/UsersSection';
+import AnalyticsSection from '@/components/admin/AnalyticsSection';
 import PartnerList from '@/components/admin/PartnerList';
 import EditPartnerDialog from '@/components/admin/EditPartnerDialog';
 import CoAdminRoleDialog, { getAccessibleTabs, CO_ADMIN_ROLES } from '@/components/admin/CoAdminRoleDialog';
@@ -59,8 +60,6 @@ export default function AdminDashboard() {
   const [pastedEmails, setPastedEmails] = useState('');
   const [userSearch, setUserSearch] = useState('');
   const [userCategoryFilter, setUserCategoryFilter] = useState('all');
-  const [analyticsData, setAnalyticsData] = useState(null);
-  const [analyticsLoading, setAnalyticsLoading] = useState(false);
   const [announcements, setAnnouncements] = useState([]);
   const [announcementDialog, setAnnouncementDialog] = useState(false);
   const [announcementTitle, setAnnouncementTitle] = useState('');
@@ -702,6 +701,12 @@ export default function AdminDashboard() {
               Users <Badge variant="secondary" className="ml-1.5">{users.length}</Badge>
             </TabsTrigger>
           )}
+          {accessibleTabs.includes('analytics') && (
+            <TabsTrigger value="analytics">
+              <BarChart3 className="w-4 h-4 mr-1.5" />
+              Analytics
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="pending">
@@ -728,19 +733,12 @@ export default function AdminDashboard() {
           />
         </TabsContent>
         <TabsContent value="analytics">
-          <PartnerAnalytics
-            analyticsData={analyticsData}
-            loading={analyticsLoading}
-            onRefresh={async () => {
-              setAnalyticsLoading(true);
-              try {
-                const res = await base44.functions.invoke('getPartnerAnalytics', {});
-                setAnalyticsData(res.data.data);
-              } catch (err) {
-                toast.error(err.response?.data?.error || 'Failed to load analytics');
-              }
-              setAnalyticsLoading(false);
-            }}
+          <AnalyticsSection
+            partners={partners}
+            payments={payments}
+            users={users}
+            flags={flags}
+            onRefresh={loadData}
           />
         </TabsContent>
         <TabsContent value="ads">
@@ -1302,85 +1300,6 @@ function EmailBlastSection({ onOpenDialog }) {
           <Send className="w-4 h-4 mr-2" />
           Compose Email Blast
         </Button>
-      </div>
-    </div>
-  );
-}
-
-function PartnerAnalytics({ analyticsData, loading, onRefresh }) {
-  useEffect(() => {
-    if (!analyticsData) {
-      onRefresh();
-    }
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
-
-  if (!analyticsData || analyticsData.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-        <p className="text-muted-foreground">No visitor data available yet.</p>
-        <p className="text-sm text-muted-foreground mt-1">Make sure your Google Analytics is tracking partner page views.</p>
-      </div>
-    );
-  }
-
-  const maxReviews = Math.max(...analyticsData.map(p => p.total_users || 0), 1);
-
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="font-heading text-xl font-bold text-foreground">Partner Activity Overview</h3>
-          <p className="text-sm text-muted-foreground mt-1">Profile clicks per approved partner</p>
-        </div>
-        <Button onClick={onRefresh} variant="outline" size="sm">
-          <TrendingUp className="w-4 h-4 mr-1.5" />
-          Refresh
-        </Button>
-      </div>
-
-      <div className="bg-white border border-border rounded-xl divide-y divide-border">
-        {[...analyticsData]
-          .sort((a, b) => (b.total_users || 0) - (a.total_users || 0))
-          .map((partner, index) => {
-            const reviews = partner.total_users || 0;
-            const pct = Math.round((reviews / maxReviews) * 100);
-            return (
-              <div key={partner.partner_id} className="px-4 py-3 flex items-center gap-4">
-                <span className="w-5 text-xs text-muted-foreground font-mono shrink-0">{index + 1}</span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{partner.partner_name}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-primary rounded-full transition-all"
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                    <span className="text-xs text-muted-foreground shrink-0 w-8 text-right">{pct}%</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 shrink-0">
-                  <div className="text-right">
-                    <p className="text-sm font-bold text-foreground">{reviews.toLocaleString()}</p>
-                    <p className="text-xs text-muted-foreground">clicks</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-bold text-amber-600">★ {partner.rating?.toFixed(1) || '—'}</p>
-                    <p className="text-xs text-muted-foreground">rating</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
       </div>
     </div>
   );
