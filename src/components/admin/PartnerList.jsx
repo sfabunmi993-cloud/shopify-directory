@@ -88,14 +88,14 @@ export default function PartnerList(props) {
         const isSelected = selected.includes(p.id);
         return (
           <div key={p.id} className={`bg-white border rounded-xl p-4 transition-colors ${isSelected ? 'border-primary/40 bg-primary/5' : 'border-border'}`}>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex flex-col gap-3">
               <input
                 type="checkbox"
                 checked={isSelected}
                 onChange={() => toggleSelect(p.id)}
-                className="rounded border-border shrink-0 self-start sm:self-center mt-1 sm:mt-0"
+                className="rounded border-border shrink-0 self-start mt-1"
               />
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 self-start sm:self-center">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 self-start">
                 {p.logo_url
                   ? <img src={p.logo_url} className="w-10 h-10 rounded-lg object-cover" alt={p.name} />
                   : <span className="font-bold text-primary">{p.name?.charAt(0)}</span>
@@ -114,7 +114,7 @@ export default function PartnerList(props) {
                   <p className="text-xs text-red-600 mt-1">Reason: {p.restriction_reason}</p>
                 )}
               </div>
-              <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto sm:flex-wrap pb-1 sm:pb-0 -mx-1 px-1 [&>*]:shrink-0">
+              <div className="flex items-center gap-2 overflow-x-auto w-full pb-1 -mx-1 px-1 [&>*]:shrink-0">
                 <Button asChild variant="ghost" size="icon" className="h-8 w-8">
                   <Link to={partnerProfilePath(p.id)}><Eye className="w-4 h-4" /></Link>
                 </Button>
