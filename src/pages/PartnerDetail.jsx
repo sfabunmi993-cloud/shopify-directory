@@ -250,7 +250,7 @@ export default function PartnerDetail() {
           {(() => {
             const tierLabel = partner.partner_tier === 'premium' ? 'PLATINUM' : partner.partner_tier === 'plus' ? 'PLUS' : '';
             return tierLabel ?
-            <div className="absolute top-3 right-3 inline-flex items-center gap-1 bg-black text-white text-[10px] font-semibold tracking-wide rounded py-1">
+            <div className="absolute top-3 right-3 inline-flex items-center gap-1 bg-black text-white text-[10px] font-semibold tracking-wide rounded my-1 py-3">
                 <span className="w-3.5 h-3.5 bg-white text-black rounded-sm flex items-center justify-center text-[10px] font-bold leading-none">S</span>
                 SHOPIFY {tierLabel} PARTNER
               </div> :
