@@ -390,12 +390,12 @@ export default function MyProfile() {
             <Calendar className="w-5 h-5 text-indigo-600" />
           </div>
           <div>
-            <p className="font-semibold text-foreground">Upgrade to a Domain Plan</p>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">You're approved to connect an external domain. Subscribe to a monthly or yearly plan to unlock domain connection.</p>
+            <p className="font-semibold text-foreground">Upgrade to the Monthly Domain Plan</p>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">You're approved to connect an external domain. Subscribe to the monthly plan to unlock domain connection for 30 days.</p>
           </div>
         </div>
         <Button className="rounded-full shrink-0" onClick={() => setBuyDomainPlanOpen(true)}>
-          <Calendar className="w-4 h-4 mr-1.5" /> Buy plan
+          <Calendar className="w-4 h-4 mr-1.5" /> Buy monthly plan
         </Button>
       </div>
       }
@@ -847,7 +847,13 @@ export default function MyProfile() {
 
       <BuyReviewModal isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} partner={partner} />
       <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
-      <BuyDomainModal partner={partner} isOpen={buyDomainOpen} onClose={() => setBuyDomainOpen(false)} user={user} />
+      <BuyDomainModal partner={partner} isOpen={buyDomainOpen} onClose={async () => {
+        setBuyDomainOpen(false);
+        try {
+          const p = await base44.entities.Partner.get(partner.id);
+          if (p) { setPartner(p); setForm(p); }
+        } catch (_) { /* ignore */ }
+      }} user={user} />
       <BuyDomainPlanModal
         partner={partner}
         isOpen={buyDomainPlanOpen}

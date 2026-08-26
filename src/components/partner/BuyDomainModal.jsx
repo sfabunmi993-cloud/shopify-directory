@@ -14,10 +14,14 @@ const DEFAULT_BANK_NAME = 'Opay';
 
 export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
   const { pricing } = usePricing();
-  const DOMAIN_PRICE = pricing.domain_purchase || 10000;
+  const PLANS = [
+    { id: 'monthly', label: 'Monthly Plan', price: pricing.domain_plan_monthly || 10000, days: 30, blurb: 'Domain setup, profile approval, and a custom domain on your profile for 30 days.' },
+    { id: 'yearly', label: 'Yearly Plan', price: pricing.domain_plan_yearly || 12000, days: 365, blurb: 'Domain setup, profile approval, and a custom domain on your profile for 365 days — best value.' },
+  ];
   const ACCOUNT_NAME = pricing.bank_account_name || DEFAULT_ACCOUNT_NAME;
   const ACCOUNT_NUMBER = pricing.bank_account_number || DEFAULT_ACCOUNT_NUMBER;
   const BANK_NAME = pricing.bank_name || DEFAULT_BANK_NAME;
+  const [selectedPlan, setSelectedPlan] = useState('monthly');
   const [transactionRef, setTransactionRef] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -25,8 +29,10 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
   const [screenshot, setScreenshot] = useState(null); // { file, previewUrl, uploadedUrl }
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
+  const plan = PLANS.find((p) => p.id === selectedPlan) || PLANS[0];
 
   const handleClose = () => {
+    setSelectedPlan('monthly');
     setTransactionRef('');
     setSubmitted(false);
     setScreenshot(null);
@@ -72,8 +78,8 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
       user_email: user?.email,
       partner_id: partner?.id,
       partner_name: partner?.name,
-      amount: DOMAIN_PRICE,
-      description: `Domain Purchase - ${partner?.name}`,
+      amount: plan.price,
+      description: `Domain Purchase - ${partner?.name} (${plan.id === 'yearly' ? 'Yearly' : 'Monthly'})`,
       status: 'pending',
       admin_note: adminNote || undefined
     });
@@ -97,23 +103,42 @@ export default function BuyDomainModal({ partner, isOpen, onClose, user }) {
             </div>
             <h3 className="font-semibold text-lg mb-1">Payment Submitted!</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Your domain purchase request has been received. An admin will review and activate your domain shortly.
+              Your {plan.label.toLowerCase()} request has been received. Your domain will be activated and your profile approved shortly.
             </p>
             <Button className="rounded-full w-full" onClick={handleClose}>Done</Button>
           </div> :
 
         <div className="space-y-4">
-            <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-1">Domain Package</p>
-              <p className="text-sm text-muted-foreground">Custom domain setup and configuration for your partner profile.</p>
+            <div className="space-y-2">
+              {PLANS.map((p) => {
+                const active = p.id === selectedPlan;
+                return (
+                  <button key={p.id} type="button" onClick={() => setSelectedPlan(p.id)}
+                    className={`w-full text-left rounded-xl border p-3 sm:p-4 transition-all ${active ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'border-border hover:border-primary/40'}`}>
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="font-semibold text-sm flex items-center gap-2">
+                          {p.label}
+                          {p.id === 'yearly' && <span className="text-[10px] font-bold uppercase tracking-wide text-emerald-600 bg-emerald-100 px-1.5 py-0.5 rounded">Best value</span>}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{p.blurb}</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="font-bold text-foreground text-lg">₦{p.price.toLocaleString()}</p>
+                        <p className="text-[11px] text-muted-foreground">{p.days} days</p>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
 
             <div className="bg-white border border-border rounded-xl p-3 sm:p-4 space-y-3">
               <p className="text-xs font-semibold uppercase text-muted-foreground tracking-wide">Payment Details</p>
               <div className="space-y-2.5">
                 <div className="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-1 pb-2.5 border-b border-border">
-                  <span className="text-sm text-muted-foreground">Amount</span>
-                  <span className="font-bold text-foreground text-lg">₦{DOMAIN_PRICE.toLocaleString()}</span>
+                  <span className="text-sm text-muted-foreground">Amount ({plan.days} days)</span>
+                  <span className="font-bold text-foreground text-lg">₦{plan.price.toLocaleString()}</span>
                 </div>
                 <div className="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-1">
                   <span className="text-sm text-muted-foreground">Bank</span>
