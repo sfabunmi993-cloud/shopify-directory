@@ -261,6 +261,15 @@
       "type": "string",
       "description": "External domain the partner connected to their profile (e.g. my-agency.com)"
     },
+    "domain_plan_active": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this partner has an active monthly domain plan (unlocks external domain connection)"
+    },
+    "domain_plan_expires": {
+      "type": "string",
+      "description": "ISO date when the partner's monthly domain plan expires"
+    },
     "status": {
       "type": "string",
       "enum": [

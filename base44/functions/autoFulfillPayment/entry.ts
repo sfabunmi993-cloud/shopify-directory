@@ -54,6 +54,12 @@ Deno.serve(async (req) => {
           review_count: allReviews.length,
         });
       }
+    } else if (description.includes('domain plan') && partnerId) {
+      const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+      await base44.asServiceRole.entities.Partner.update(partnerId, {
+        domain_plan_active: true,
+        domain_plan_expires: expires,
+      });
     } else if (description.includes('domain purchase') && partnerId) {
       await base44.asServiceRole.entities.Partner.update(partnerId, {
         domain_purchased: true,

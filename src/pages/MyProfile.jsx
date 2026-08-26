@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock, Share2, Star, TrendingUp, Upload, ImageIcon, Lock, Bell, Globe, Trash2, AlertTriangle } from 'lucide-react';
+import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock, Share2, Star, TrendingUp, Upload, ImageIcon, Lock, Bell, Globe, Trash2, AlertTriangle, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import InquiriesDashboard from '@/components/profile/InquiriesDashboard';
@@ -16,6 +16,7 @@ import ProjectsSection from '@/components/profile/ProjectsSection';
 import BuyReviewModal from '@/components/partner/BuyReviewModal';
 import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
 import BuyDomainModal from '@/components/partner/BuyDomainModal';
+import BuyDomainPlanModal from '@/components/partner/BuyDomainPlanModal';
 import PortfolioEditor from '@/components/profile/PortfolioEditor';
 import TestimonialsEditor from '@/components/profile/TestimonialsEditor';
 import AppealForm from '@/components/partner/AppealForm';
@@ -67,6 +68,7 @@ export default function MyProfile() {
   const [buyReviewOpen, setBuyReviewOpen] = useState(false);
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [buyDomainOpen, setBuyDomainOpen] = useState(false);
+  const [buyDomainPlanOpen, setBuyDomainPlanOpen] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingScreenshot, setUploadingScreenshot] = useState(false);
   const [newService, setNewService] = useState('');
@@ -205,6 +207,8 @@ export default function MyProfile() {
       setDeleting(false);
     }
   };
+
+  const domainPlanActive = partner?.domain_plan_active && (!partner?.domain_plan_expires || new Date(partner.domain_plan_expires) > new Date());
 
   if (loading) {
     return (
@@ -582,12 +586,24 @@ export default function MyProfile() {
         <div>
           <h2 className="font-semibold text-base mb-1">External domain</h2>
           {partner?.can_connect_domain ? (
-            <>
-              <p className="text-xs text-muted-foreground mb-4">Connect a domain you own to your profile. Enter it without https:// (e.g. my-agency.com). It will show on your public profile.</p>
-              <div className="flex gap-2 max-w-md">
-                <Input placeholder="my-agency.com" value={form.connected_domain || ''} onChange={(e) => set('connected_domain', e.target.value)} />
+            domainPlanActive ? (
+              <>
+                <p className="text-xs text-muted-foreground mb-3">Connect a domain you own to your profile. Enter it without https:// (e.g. my-agency.com). It will show on your public profile.</p>
+                {partner?.domain_plan_expires &&
+                  <p className="text-xs text-emerald-600 mb-4">Monthly plan active until {new Date(partner.domain_plan_expires).toLocaleDateString()}.</p>
+                }
+                <div className="flex gap-2 max-w-md">
+                  <Input placeholder="my-agency.com" value={form.connected_domain || ''} onChange={(e) => set('connected_domain', e.target.value)} />
+                </div>
+              </>
+            ) : (
+              <div className="space-y-3">
+                <p className="text-xs text-muted-foreground">You need an active monthly plan to connect an external domain. Purchase below — your plan is activated automatically after payment.</p>
+                <Button type="button" className="rounded-full" onClick={() => setBuyDomainPlanOpen(true)}>
+                  <Calendar className="w-4 h-4 mr-1.5" /> Buy monthly plan
+                </Button>
               </div>
-            </>
+            )
           ) : (
             <p className="text-xs text-muted-foreground">External domain connection is not enabled for your account. Contact admin to request access.</p>
           )}
@@ -816,6 +832,17 @@ export default function MyProfile() {
       <BuyReviewModal isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} partner={partner} />
       <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
       <BuyDomainModal partner={partner} isOpen={buyDomainOpen} onClose={() => setBuyDomainOpen(false)} user={user} />
+      <BuyDomainPlanModal
+        partner={partner}
+        isOpen={buyDomainPlanOpen}
+        onClose={async () => {
+          setBuyDomainPlanOpen(false);
+          try {
+            const p = await base44.entities.Partner.get(partner.id);
+            if (p) { setPartner(p); setForm(p); }
+          } catch (_) { /* ignore */ }
+        }}
+        user={user} />
 
       <Dialog open={deleteOpen} onOpenChange={(o) => !deleting && setDeleteOpen(o)}>
         <DialogContent className="max-w-md">
