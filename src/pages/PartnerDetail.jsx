@@ -248,11 +248,11 @@ export default function PartnerDetail() {
 
           {/* Partner tier badge */}
           {(() => {
-            const tierLabel = partner.partner_tier === 'premium' ? 'PLATINUM' : partner.partner_tier === 'plus' ? 'PLUS' : '';
+            const tierLabel = partner.partner_tier === 'premium' ? 'Premier' : partner.partner_tier === 'plus' ? 'Plus' : '';
             return tierLabel ?
-            <div className="absolute top-3 right-3 inline-flex items-center gap-1 bg-black text-white text-[10px] font-semibold tracking-wide rounded py-1">
-                <span className="w-3.5 h-3.5 bg-white text-black rounded-sm flex items-center justify-center text-[10px] font-bold leading-none">S</span>
-                SHOPIFY {tierLabel} PARTNER
+            <div className="absolute top-3 right-3 inline-flex items-center gap-1 bg-black text-white text-[9px] font-medium tracking-wide rounded px-1.5 py-0.5">
+                <span className="w-3 h-3 bg-white text-black rounded-sm flex items-center justify-center text-[8px] font-bold leading-none">S</span>
+                Shopify {tierLabel} Partner
               </div> :
             null;
           })()}
