@@ -55,7 +55,8 @@ Deno.serve(async (req) => {
         });
       }
     } else if (description.includes('domain plan') && partnerId) {
-      const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+      const days = description.includes('yearly') ? 365 : 30;
+      const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
       await base44.asServiceRole.entities.Partner.update(partnerId, {
         domain_plan_active: true,
         domain_plan_expires: expires,

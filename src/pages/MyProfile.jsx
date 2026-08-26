@@ -390,12 +390,12 @@ export default function MyProfile() {
             <Calendar className="w-5 h-5 text-indigo-600" />
           </div>
           <div>
-            <p className="font-semibold text-foreground">Upgrade to the Monthly Domain Plan</p>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">You're approved to connect an external domain. Subscribe to the monthly plan to unlock domain connection for 30 days.</p>
+            <p className="font-semibold text-foreground">Upgrade to a Domain Plan</p>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">You're approved to connect an external domain. Subscribe to a monthly or yearly plan to unlock domain connection.</p>
           </div>
         </div>
         <Button className="rounded-full shrink-0" onClick={() => setBuyDomainPlanOpen(true)}>
-          <Calendar className="w-4 h-4 mr-1.5" /> Buy monthly plan
+          <Calendar className="w-4 h-4 mr-1.5" /> Buy plan
         </Button>
       </div>
       }

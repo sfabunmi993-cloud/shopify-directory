@@ -8,6 +8,8 @@ export const DEFAULT_PRICING = {
   reviews_20: 26000,
   domain_purchase: 10000,
   domain_plan: 5000,
+  domain_plan_monthly: 10000,
+  domain_plan_yearly: 12000,
   bank_account_name: 'RONKE FABUNMI',
   bank_account_number: '7031665045',
   bank_name: 'Opay',
