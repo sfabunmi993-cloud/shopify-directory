@@ -80,6 +80,7 @@ export default function MyProfile() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [actingAs, setActingAs] = useState(null);
+  const [highlightDomain, setHighlightDomain] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -601,7 +602,9 @@ export default function MyProfile() {
         <hr className="border-border" />
 
         {/* External domain */}
-        <div>
+        <div
+          id="connect-domain-section"
+          className={`rounded-xl transition-all duration-500 ${highlightDomain ? 'ring-4 ring-indigo-300/60 bg-indigo-50/40 p-3 -mx-3' : ''}`}>
           <h2 className="font-semibold text-base mb-1">External domain</h2>
           {partner?.can_connect_domain ? (
             domainPlanActive ? (
@@ -853,6 +856,13 @@ export default function MyProfile() {
           try {
             const p = await base44.entities.Partner.get(partner.id);
             if (p) { setPartner(p); setForm(p); }
+            if (p?.domain_plan_active) {
+              setTimeout(() => {
+                document.getElementById('connect-domain-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setHighlightDomain(true);
+                setTimeout(() => setHighlightDomain(false), 4000);
+              }, 250);
+            }
           } catch (_) { /* ignore */ }
         }}
         user={user} />

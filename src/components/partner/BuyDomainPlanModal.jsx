@@ -21,6 +21,7 @@ export default function BuyDomainPlanModal({ partner, isOpen, onClose, user }) {
   const [transactionRef, setTransactionRef] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [activated, setActivated] = useState(false);
   const [copied, setCopied] = useState('');
   const [screenshot, setScreenshot] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -29,6 +30,7 @@ export default function BuyDomainPlanModal({ partner, isOpen, onClose, user }) {
   const handleClose = () => {
     setTransactionRef('');
     setSubmitted(false);
+    setActivated(false);
     setScreenshot(null);
     onClose();
   };
@@ -79,6 +81,16 @@ export default function BuyDomainPlanModal({ partner, isOpen, onClose, user }) {
     });
     setSubmitting(false);
     setSubmitted(true);
+    // Poll until the plan is auto-activated, then reveal the connect-domain CTA.
+    (async () => {
+      for (let i = 0; i < 12; i++) {
+        await new Promise((r) => setTimeout(r, 1000));
+        try {
+          const p = await base44.entities.Partner.get(partner.id);
+          if (p?.domain_plan_active) { setActivated(true); return; }
+        } catch (_) { /* keep polling */ }
+      }
+    })();
   };
 
   return (
@@ -95,11 +107,13 @@ export default function BuyDomainPlanModal({ partner, isOpen, onClose, user }) {
             <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
               <Check className="w-7 h-7 text-emerald-600" />
             </div>
-            <h3 className="font-semibold text-lg mb-1">Payment Submitted!</h3>
+            <h3 className="font-semibold text-lg mb-1">{activated ? 'Plan Activated!' : 'Payment Submitted!'}</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Your monthly domain plan request has been received. Your plan will be activated shortly and you can then connect your external domain.
+              {activated
+                ? 'Your monthly plan is active. You can now connect your external domain.'
+                : 'Your monthly domain plan request has been received. Your plan will be activated shortly and you can then connect your external domain.'}
             </p>
-            <Button className="rounded-full w-full" onClick={handleClose}>Done</Button>
+            <Button className="rounded-full w-full" onClick={handleClose}>{activated ? 'Connect domain →' : 'Done'}</Button>
           </div> :
 
         <div className="space-y-4">
