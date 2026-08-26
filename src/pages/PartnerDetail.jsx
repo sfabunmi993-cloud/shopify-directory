@@ -219,12 +219,12 @@ export default function PartnerDetail() {
           <ShieldAlert className="w-4 h-4 shrink-0 hidden sm:block" />
           <span className="text-center sm:text-left flex-1">This profile is pending admin approval and is not yet visible in the directory. Purchase a domain name within 2 days — if the domain is not purchased, your account will be deleted by admin after 2 days.</span>
           {user && partner.created_by_id === user.id && !partner.domain_purchased &&
-          <Button
-            onClick={() => setBuyDomainOpen(true)}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full h-9 px-4 shrink-0">
+        <Button
+          onClick={() => setBuyDomainOpen(true)}
+          className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full h-9 px-4 shrink-0">
             <Globe className="w-4 h-4" /> Buy Domain
           </Button>
-          }
+        }
         </div>}
 
       {partner.admin_banner && user && (user.id === partner.created_by_id || user.role === 'admin') &&
@@ -249,12 +249,12 @@ export default function PartnerDetail() {
           {/* Partner tier badge */}
           {(() => {
             const tierLabel = partner.partner_tier === 'premium' ? 'PLATINUM' : partner.partner_tier === 'plus' ? 'PLUS' : '';
-            return tierLabel ? (
-              <div className="absolute top-3 right-3 inline-flex items-center gap-1 bg-black text-white text-[10px] font-semibold tracking-wide px-2 py-1 rounded">
+            return tierLabel ?
+            <div className="absolute top-3 right-3 inline-flex items-center gap-1 bg-black text-white text-[10px] font-semibold tracking-wide rounded py-1">
                 <span className="w-3.5 h-3.5 bg-white text-black rounded-sm flex items-center justify-center text-[10px] font-bold leading-none">S</span>
                 SHOPIFY {tierLabel} PARTNER
-              </div>
-            ) : null;
+              </div> :
+            null;
           })()}
 
           <div className="pt-16 px-5 pb-5 space-y-4">
@@ -300,8 +300,8 @@ export default function PartnerDetail() {
             {contactHref ?
             <Button asChild className="w-full h-11 bg-[#202B33] hover:bg-[#202B33]/90 rounded-lg text-white font-medium">
               <a href={contactHref} target="_blank" rel="noopener noreferrer">Contact</a>
-            </Button>
-            :
+            </Button> :
+
             <Button className="w-full h-11 bg-[#202B33] hover:bg-[#202B33]/90 rounded-lg text-white font-medium" onClick={() => setContactOpen(true)}>
               Contact
             </Button>
@@ -536,29 +536,29 @@ export default function PartnerDetail() {
               <h2 className="font-heading text-xl font-bold text-foreground mb-2">Specialized services</h2>
               <div className="border border-border rounded-xl overflow-hidden bg-card divide-y divide-border">
                 {specializedServices.map((service) => {
-                  const isOpen = expandedService === service;
-                  return (
-                    <div key={service}>
+                const isOpen = expandedService === service;
+                return (
+                  <div key={service}>
                       <button
-                        type="button"
-                        onClick={() => setExpandedService(isOpen ? null : service)}
-                        className="w-full flex items-center justify-between gap-2 px-4 py-3 text-left">
+                      type="button"
+                      onClick={() => setExpandedService(isOpen ? null : service)}
+                      className="w-full flex items-center justify-between gap-2 px-4 py-3 text-left">
                         <span className="text-sm font-medium text-[#202B33]">{service}</span>
                         <span className="w-6 h-6 rounded-full bg-[#202B33] text-white flex items-center justify-center shrink-0">
                           {isOpen ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                         </span>
                       </button>
                       {isOpen &&
-                        <div className="px-4 pb-4">
+                    <div className="px-4 pb-4">
                           {partner.starting_price > 0 &&
-                          <p className="text-xs text-muted-foreground mb-1">Starting at ${partner.starting_price}</p>
-                          }
+                      <p className="text-xs text-muted-foreground mb-1">Starting at ${partner.starting_price}</p>
+                      }
                           <p className="text-sm text-[#454545] leading-relaxed">{partner.service_descriptions?.[service]}</p>
                         </div>
-                      }
-                    </div>
-                  );
-                })}
+                    }
+                    </div>);
+
+              })}
               </div>
             </div>
           }
