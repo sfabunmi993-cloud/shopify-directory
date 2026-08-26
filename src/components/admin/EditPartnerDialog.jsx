@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { base44 } from '@/api/base44Client';
 import { Loader2, Save } from 'lucide-react';
 import { toast } from 'sonner';
@@ -60,6 +61,7 @@ export default function EditPartnerDialog({ partner, open, onClose, onSaved }) {
         years_as_partner: partner.years_as_partner != null ? String(partner.years_as_partner) : '',
         completed_projects: partner.completed_projects != null ? String(partner.completed_projects) : '',
         partner_number: partner.partner_number || '',
+        can_connect_domain: !!partner.can_connect_domain,
       });
       setServicesText((partner.services || []).join(', '));
     }
@@ -195,6 +197,14 @@ export default function EditPartnerDialog({ partner, open, onClose, onSaved }) {
               <Label>WhatsApp URL</Label>
               <Input type="url" value={form.whatsapp_url || ''} onChange={e => set('whatsapp_url', e.target.value)} />
             </div>
+          </div>
+
+          <div className="flex items-center justify-between gap-4 rounded-lg border border-border p-3">
+            <div>
+              <p className="text-sm font-medium">Allow external domain connection</p>
+              <p className="text-xs text-muted-foreground">Lets this partner connect a custom domain to their profile.</p>
+            </div>
+            <Switch checked={form.can_connect_domain || false} onCheckedChange={(v) => set('can_connect_domain', v)} />
           </div>
         </div>
         <DialogFooter>

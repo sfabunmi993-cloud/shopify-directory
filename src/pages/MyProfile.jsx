@@ -578,6 +578,23 @@ export default function MyProfile() {
 
         <hr className="border-border" />
 
+        {/* External domain */}
+        <div>
+          <h2 className="font-semibold text-base mb-1">External domain</h2>
+          {partner?.can_connect_domain ? (
+            <>
+              <p className="text-xs text-muted-foreground mb-4">Connect a domain you own to your profile. Enter it without https:// (e.g. my-agency.com). It will show on your public profile.</p>
+              <div className="flex gap-2 max-w-md">
+                <Input placeholder="my-agency.com" value={form.connected_domain || ''} onChange={(e) => set('connected_domain', e.target.value)} />
+              </div>
+            </>
+          ) : (
+            <p className="text-xs text-muted-foreground">External domain connection is not enabled for your account. Contact admin to request access.</p>
+          )}
+        </div>
+
+        <hr className="border-border" />
+
         {/* Portfolio */}
         <div>
           <h2 className="font-semibold text-base mb-1">Portfolio</h2>

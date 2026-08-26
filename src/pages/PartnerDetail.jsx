@@ -409,6 +409,16 @@ export default function PartnerDetail() {
               </div>
               }
 
+              {partner.connected_domain &&
+              <div>
+                <p className="text-sm font-semibold text-foreground">Custom domain</p>
+                <a href={partner.connected_domain.startsWith('http') ? partner.connected_domain : `https://${partner.connected_domain}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[#212121] mt-0.5 hover:underline break-all">
+                  <Globe className="w-4 h-4 shrink-0" style={{ color: '#717171' }} />
+                  {partner.connected_domain.replace(/^https?:\/\//, '')}
+                </a>
+              </div>
+              }
+
               {[partner.instagram_url, partner.twitter_url, partner.linkedin_url, partner.facebook_url, partner.tiktok_url, partner.youtube_url].some(Boolean) &&
               <div>
                 <p className="text-sm font-semibold text-foreground mb-2">Social links</p>

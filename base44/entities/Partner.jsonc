@@ -252,6 +252,15 @@
       "default": false,
       "description": "Whether this partner has purchased a custom domain (manually marked or via payment)"
     },
+    "can_connect_domain": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether admin has enabled external domain connection for this partner"
+    },
+    "connected_domain": {
+      "type": "string",
+      "description": "External domain the partner connected to their profile (e.g. my-agency.com)"
+    },
     "status": {
       "type": "string",
       "enum": [
