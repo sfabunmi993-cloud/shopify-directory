@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Star, MapPin, Globe, Mail, ArrowLeft, Award, Heart, Flag, MessageSquare, Hash, ShieldAlert, ChevronDown, ChevronUp, CheckCircle, Share2, Copy, Check, Send, Briefcase, BadgeCheck, Bell, User } from 'lucide-react';
+import { Star, MapPin, Globe, Mail, ArrowLeft, Award, Heart, Flag, MessageSquare, Hash, ShieldAlert, ChevronDown, ChevronUp, CheckCircle, Share2, Copy, Check, Send, Briefcase, BadgeCheck, Bell, User, Plus, Minus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
@@ -57,19 +57,7 @@ function getPartnerRank(reviewCount = 0) {
   return { label: 'Standard Partner', color: 'bg-muted text-muted-foreground border-border', medal: '🥉' };
 }
 
-function ServiceRow({ service, description }) {
-  return (
-    <div className="py-3 border-b border-border last:border-0">
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-sm font-medium text-foreground">{service}</span>
-        <CheckCircle className="w-4 h-4 text-primary shrink-0" />
-      </div>
-      {description &&
-      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{description}</p>
-      }
-    </div>);
-
-}
+// ServiceRow removed — specialized services now render as inline accordions below.
 
 export default function PartnerDetail() {
   const { slug } = useParams();
@@ -85,6 +73,7 @@ export default function PartnerDetail() {
   const [buyReviewOpen, setBuyReviewOpen] = useState(false);
   const [buyDomainOpen, setBuyDomainOpen] = useState(false);
   const [showAllServices, setShowAllServices] = useState(false);
+  const [expandedService, setExpandedService] = useState(null);
   const [copied, setCopied] = useState(false);
 
   const profileUrl = partnerProfileUrl(stripShopifySuffix(slug));
@@ -207,7 +196,10 @@ export default function PartnerDetail() {
 
   const tierConfig = TIER_CONFIG[partner.partner_tier] || TIER_CONFIG.standard;
   const rankConfig = getPartnerRank(partner.review_count);
-  const visibleServices = showAllServices ? partner.services : partner.services?.slice(0, 5);
+  const allServices = partner.services || [];
+  const specializedServices = allServices.filter((s) => partner.service_descriptions?.[s]);
+  const otherServices = allServices.filter((s) => !partner.service_descriptions?.[s]);
+  const visibleOtherServices = showAllServices ? otherServices : otherServices.slice(0, 6);
 
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   const contactHref = partner.email ?
@@ -425,7 +417,7 @@ export default function PartnerDetail() {
 
               {partner.country &&
               <div>
-                <p className="text-sm font-semibold text-foreground">Supported locations</p>
+                <p className="text-sm font-semibold text-foreground">Supported Countries</p>
                 <p className="text-[#212121] mt-0.5">{partner.country}</p>
               </div>
               }
@@ -507,23 +499,16 @@ export default function PartnerDetail() {
         </div>
 
         {/* RIGHT MAIN CONTENT */}
-        <div className="space-y-6">
+        <div className="space-y-6 px-5 md:border-l md:border-[#E0E0E0]">
 
           {/* About */}
-          <div className="px-5">
+          <div>
             <h2 className="font-heading text-xl font-bold text-foreground mb-4">About</h2>
 
             {partner.description &&
             <div className="mb-4">
                 <h3 className="font-semibold mb-1 text-foreground">Business description</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm">{partner.description}</p>
-              </div>
-            }
-
-            {partner.full_description &&
-            <div className="mb-4">
-                <h3 className="font-semibold mb-1 text-foreground">{rankConfig.label}</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm whitespace-pre-line">{partner.full_description}</p>
               </div>
             }
 
@@ -537,45 +522,70 @@ export default function PartnerDetail() {
             }
           </div>
 
-          {/* Services */}
-          {partner.services?.length > 0 &&
+          {/* Premier Partner (tier) */}
+          {partner.full_description &&
+          <div>
+              <h2 className="font-heading text-xl font-bold text-foreground mb-2">{rankConfig.label}</h2>
+              <p className="text-[#454545] leading-relaxed text-sm whitespace-pre-line">{partner.full_description}</p>
+            </div>
+          }
+
+          {/* Specialized services */}
+          {specializedServices.length > 0 &&
           <div>
               <h2 className="font-heading text-xl font-bold text-foreground mb-2">Specialized services</h2>
-              <div className="border border-border rounded-xl overflow-hidden bg-card">
-                {visibleServices.map((service, i) =>
-              <ServiceRow key={i} service={service} description={partner.service_descriptions?.[service]} />
-              )}
+              <div className="border border-border rounded-xl overflow-hidden bg-card divide-y divide-border">
+                {specializedServices.map((service) => {
+                  const isOpen = expandedService === service;
+                  return (
+                    <div key={service}>
+                      <button
+                        type="button"
+                        onClick={() => setExpandedService(isOpen ? null : service)}
+                        className="w-full flex items-center justify-between gap-2 px-4 py-3 text-left">
+                        <span className="text-sm font-medium text-[#202B33]">{service}</span>
+                        <span className="w-6 h-6 rounded-full bg-[#202B33] text-white flex items-center justify-center shrink-0">
+                          {isOpen ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                        </span>
+                      </button>
+                      {isOpen &&
+                        <div className="px-4 pb-4">
+                          {partner.starting_price > 0 &&
+                          <p className="text-xs text-muted-foreground mb-1">Starting at ${partner.starting_price}</p>
+                          }
+                          <p className="text-sm text-[#454545] leading-relaxed">{partner.service_descriptions?.[service]}</p>
+                        </div>
+                      }
+                    </div>
+                  );
+                })}
               </div>
-              {partner.services.length > 5 &&
+            </div>
+          }
+
+          {/* Other services */}
+          {otherServices.length > 0 &&
+          <div>
+              <h2 className="font-heading text-xl font-bold text-foreground mb-2">Other services</h2>
+              <p className="text-sm text-[#454545] leading-relaxed">{visibleOtherServices.join(', ')}</p>
+              {otherServices.length > 6 &&
             <button
               onClick={() => setShowAllServices((v) => !v)}
               className="mt-2 flex items-center gap-1 text-sm text-primary hover:underline">
-              
                   {showAllServices ?
-              <><ChevronUp className="w-4 h-4" /> Show fewer services</> :
-
-              <><ChevronDown className="w-4 h-4" /> Show all {partner.services.length} services</>
+              <><ChevronUp className="w-4 h-4" /> Fewer services</> :
+              <><ChevronDown className="w-4 h-4" /> More services</>
               }
                 </button>
             }
             </div>
           }
 
-          {/* Category & Industry */}
-          {(partner.service_category || partner.industry) &&
+          {/* Industries */}
+          {partner.industry &&
           <div>
-              {partner.service_category &&
-            <div className="mb-3">
-                  <h2 className="font-heading text-xl font-bold text-foreground mb-1">Category</h2>
-                  <p className="text-sm text-muted-foreground">{CATEGORY_LABELS[partner.service_category] || partner.service_category}</p>
-                </div>
-            }
-              {partner.industry &&
-            <div>
-                  <h2 className="font-heading text-xl font-bold text-foreground mb-1">Industries</h2>
-                  <p className="text-sm text-muted-foreground">{INDUSTRY_LABELS[partner.industry] || partner.industry}</p>
-                </div>
-            }
+              <h2 className="font-heading text-xl font-bold text-foreground mb-1">Industries</h2>
+              <p className="text-sm text-[#454545]">{INDUSTRY_LABELS[partner.industry] || partner.industry}</p>
             </div>
           }
 
@@ -586,7 +596,7 @@ export default function PartnerDetail() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.5, ease: 'easeOut' }}>
-            <h2 className="font-heading text-xl font-bold text-foreground mb-3">Portfolio</h2>
+            <h2 className="font-heading text-xl font-bold text-foreground mb-3">Featured work</h2>
             <PortfolioScroller portfolio={partner.portfolio} partnerId={partnerId} />
           </motion.div>
           }
