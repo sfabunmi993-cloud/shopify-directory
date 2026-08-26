@@ -289,7 +289,7 @@ export default function PartnerDetail() {
               {partner.rating > 0 &&
               <>
                 <span className="flex items-center gap-1">
-                  <Star className="w-4 h-4" style={{ fill: '#FFC107', color: '#FFC107' }} />
+                  <Star className="w-4 h-4" style={{ fill: '#FFB81C', color: '#FFB81C' }} />
                   <span className="font-semibold text-foreground">{partner.rating}</span>
                   <span className="text-muted-foreground">({partner.review_count || 0})</span>
                 </span>
@@ -298,7 +298,7 @@ export default function PartnerDetail() {
               }
               {partner.years_as_partner > 0 &&
               <span className="flex items-center gap-1">
-                <User className="w-4 h-4" style={{ color: '#637381' }} />
+                <User className="w-4 h-4" style={{ color: '#717171' }} />
                 Partner since {new Date().getFullYear() - partner.years_as_partner}
               </span>
               }
@@ -306,11 +306,11 @@ export default function PartnerDetail() {
 
             {/* Contact button */}
             {contactHref ?
-            <Button asChild className="w-full h-11 bg-[#2e4049] hover:bg-[#2e4049]/90 rounded-lg text-white font-medium">
+            <Button asChild className="w-full h-11 bg-[#202B33] hover:bg-[#202B33]/90 rounded-lg text-white font-medium">
               <a href={contactHref} target="_blank" rel="noopener noreferrer">Contact</a>
             </Button>
             :
-            <Button className="w-full h-11 bg-[#2e4049] hover:bg-[#2e4049]/90 rounded-lg text-white font-medium" onClick={() => setContactOpen(true)}>
+            <Button className="w-full h-11 bg-[#202B33] hover:bg-[#202B33]/90 rounded-lg text-white font-medium" onClick={() => setContactOpen(true)}>
               Contact
             </Button>
             }
@@ -399,13 +399,13 @@ export default function PartnerDetail() {
                 <div className="mt-1 flex flex-col gap-y-2">
                   {partner.website_url &&
                   <a href={partner.website_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[#212121] hover:underline break-all">
-                    <Globe className="w-4 h-4 shrink-0" style={{ color: '#637381' }} />
+                    <Globe className="w-4 h-4 shrink-0" style={{ color: '#717171' }} />
                     {partner.website_url.replace(/^https?:\/\//, '')}
                   </a>
                   }
                   {partner.email &&
                   <a href={`mailto:${partner.email}`} className="flex items-center gap-2 text-[#212121] hover:underline break-all">
-                    <Mail className="w-4 h-4 shrink-0" style={{ color: '#637381' }} />
+                    <Mail className="w-4 h-4 shrink-0" style={{ color: '#717171' }} />
                     {partner.email}
                   </a>
                   }
@@ -417,7 +417,7 @@ export default function PartnerDetail() {
               <div>
                 <p className="text-sm font-semibold text-foreground">Primary location</p>
                 <p className="text-[#212121] mt-0.5 flex items-center gap-1.5">
-                  <MapPin className="w-4 h-4 shrink-0" style={{ color: '#637381' }} />
+                  <MapPin className="w-4 h-4 shrink-0" style={{ color: '#717171' }} />
                   {partner.location}
                 </p>
               </div>
@@ -441,7 +441,7 @@ export default function PartnerDetail() {
               <div>
                 <p className="text-sm font-semibold text-foreground">Projects completed</p>
                 <p className="text-[#212121] mt-0.5 flex items-center gap-1.5">
-                  <CheckCircle className="w-4 h-4" style={{ color: '#637381' }} />
+                  <CheckCircle className="w-4 h-4" style={{ color: '#717171' }} />
                   {partner.completed_projects}+
                 </p>
               </div>

@@ -20,6 +20,7 @@ import PortfolioEditor from '@/components/profile/PortfolioEditor';
 import TestimonialsEditor from '@/components/profile/TestimonialsEditor';
 import AppealForm from '@/components/partner/AppealForm';
 import SupportContactBar from '@/components/profile/SupportContactBar';
+import ProfilePreviewSidebar from '@/components/profile/ProfilePreviewSidebar';
 import CoAdminInviteBanner from '@/components/profile/CoAdminInviteBanner';
 import { partnerProfilePath, partnerProfileUrl } from '@/lib/partnerUrl';
 
@@ -214,7 +215,7 @@ export default function MyProfile() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
       {actingAs && (
         <div className="mb-4 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-sm">
@@ -376,6 +377,9 @@ export default function MyProfile() {
 
       
 
+      <div className="grid md:grid-cols-[300px_1fr] gap-4 sm:gap-8 items-start mt-2">
+        <ProfilePreviewSidebar partner={partner} />
+        <div className="space-y-4 sm:space-y-6">
       <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 space-y-6">
         {/* Basic */}
         <div>
@@ -789,6 +793,8 @@ export default function MyProfile() {
         </Button>
       </div>
       )}
+        </div>
+      </div>
 
       <BuyReviewModal isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} partner={partner} />
       <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
