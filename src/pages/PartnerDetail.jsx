@@ -612,9 +612,9 @@ export default function PartnerDetail() {
           {/* Dashboard Screenshot */}
           {partner.dashboard_screenshot_url &&
           <div>
-              <h2 className="font-heading text-xl font-bold text-foreground mb-3 hidden">Shopify Partner Dashboard</h2>
+              
               <div className="rounded-xl overflow-hidden border border-border">
-                <img src={partner.dashboard_screenshot_url} alt="Shopify Partner Dashboard" className="w-full object-cover hidden" />
+                
               </div>
             </div>
           }
