@@ -1339,6 +1339,8 @@ function PricingSettings() {
     { key: 'reviews_10', label: '10 Reviews Package', prefix: '₦', suffix: 'NGN' },
     { key: 'reviews_20', label: '20 Reviews Package', prefix: '₦', suffix: 'NGN' },
     { key: 'domain_purchase', label: 'Domain Purchase', prefix: '₦', suffix: 'NGN' },
+    { key: 'domain_plan_monthly', label: 'Domain Plan (Monthly)', prefix: '₦', suffix: 'NGN' },
+    { key: 'domain_plan_yearly', label: 'Domain Plan (Yearly)', prefix: '₦', suffix: 'NGN' },
   ];
 
   const bankFields = [
@@ -1351,7 +1353,7 @@ function PricingSettings() {
     <div className="max-w-md space-y-5">
       <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
         <p className="font-semibold flex items-center gap-1.5 mb-1"><DollarSign className="w-4 h-4" /> Pricing Settings</p>
-        <p>Changes here instantly update the prices shown to partners in the Buy Reviews and Premium Badge modals.</p>
+        <p>Changes here instantly update the prices shown to partners in the Buy Reviews, Premium Badge, and Buy Domain modals.</p>
       </div>
       <div className="bg-white border border-border rounded-xl p-5 space-y-4">
         {fields.map(f => (
