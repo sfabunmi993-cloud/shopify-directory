@@ -381,6 +381,24 @@ export default function MyProfile() {
 
       
 
+      {/* Upgrade Plan banner */}
+      {partner?.can_connect_domain && !domainPlanActive &&
+      <div className="mb-4 rounded-2xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="flex items-start gap-3 flex-1">
+          <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
+            <Calendar className="w-5 h-5 text-indigo-600" />
+          </div>
+          <div>
+            <p className="font-semibold text-foreground">Upgrade to the Monthly Domain Plan</p>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">You're approved to connect an external domain. Subscribe to the monthly plan to unlock domain connection for 30 days.</p>
+          </div>
+        </div>
+        <Button className="rounded-full shrink-0" onClick={() => setBuyDomainPlanOpen(true)}>
+          <Calendar className="w-4 h-4 mr-1.5" /> Buy monthly plan
+        </Button>
+      </div>
+      }
+
       <div className="grid md:grid-cols-[300px_1fr] gap-4 sm:gap-8 items-start mt-2">
         <ProfilePreviewSidebar partner={partner} />
         <div className="space-y-4 sm:space-y-6">
@@ -597,12 +615,7 @@ export default function MyProfile() {
                 </div>
               </>
             ) : (
-              <div className="space-y-3">
-                <p className="text-xs text-muted-foreground">You need an active monthly plan to connect an external domain. Purchase below — your plan is activated automatically after payment.</p>
-                <Button type="button" className="rounded-full" onClick={() => setBuyDomainPlanOpen(true)}>
-                  <Calendar className="w-4 h-4 mr-1.5" /> Buy monthly plan
-                </Button>
-              </div>
+              <p className="text-xs text-muted-foreground">Subscribe to the monthly plan above to unlock external domain connection for your profile.</p>
             )
           ) : (
             <p className="text-xs text-muted-foreground">External domain connection is not enabled for your account. Contact admin to request access.</p>
