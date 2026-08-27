@@ -20,6 +20,7 @@ import BuyDomainPlanModal from '@/components/partner/BuyDomainPlanModal';
 import PortfolioEditor from '@/components/profile/PortfolioEditor';
 import TestimonialsEditor from '@/components/profile/TestimonialsEditor';
 import GenerateTestimonialsModal from '@/components/partner/GenerateTestimonialsModal';
+import GenerateProfileImageButton from '@/components/partner/GenerateProfileImageButton';
 import AppealForm from '@/components/partner/AppealForm';
 import SupportContactBar from '@/components/profile/SupportContactBar';
 import ProfilePreviewSidebar from '@/components/profile/ProfilePreviewSidebar';
@@ -428,6 +429,13 @@ export default function MyProfile() {
                     {uploadingLogo ? 'Uploading...' : 'Change image'}
                   </div>
                 </label>
+                <GenerateProfileImageButton
+                  partner={partner}
+                  onGenerated={(url) => {
+                    set('logo_url', url);
+                    setPartner((prev) => ({ ...prev, logo_url: url }));
+                  }}
+                />
               </div>
             </div>
 
