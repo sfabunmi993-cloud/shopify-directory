@@ -11,13 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem } from
-'@/components/ui/select';
+import MobileSelect from '@/components/ui/mobile-select';
 import { Loader2, Send, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -179,25 +173,25 @@ export default function ContactModal({ partner, isOpen, onClose, mode = 'inquiry
             {/* Country */}
             <div className="space-y-1.5">
               <Label>Country <span className="text-destructive">*</span></Label>
-              <Select value={form.country} onValueChange={(v) => set('country', v)}>
-                <SelectTrigger><SelectValue placeholder="Select country" /></SelectTrigger>
-                <SelectContent>
-                  {COUNTRIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <MobileSelect
+                value={form.country}
+                onValueChange={(v) => set('country', v)}
+                placeholder="Select country"
+                label="Country"
+                options={COUNTRIES.map((c) => ({ label: c, value: c }))}
+              />
             </div>
 
             {/* Service */}
             <div className="space-y-1.5">
               <Label>Select a service offered by {partner.name} <span className="text-destructive">*</span></Label>
-              <Select value={form.service} onValueChange={(v) => set('service', v)}>
-                <SelectTrigger><SelectValue placeholder="Select service" /></SelectTrigger>
-                <SelectContent>
-                  {partnerServices.length > 0 ?
-                partnerServices.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>) :
-                <SelectItem value="general" disabled>No services listed</SelectItem>}
-                </SelectContent>
-              </Select>
+              <MobileSelect
+                value={form.service}
+                onValueChange={(v) => set('service', v)}
+                placeholder={partnerServices.length > 0 ? 'Select service' : 'No services listed'}
+                label="Select a service"
+                options={partnerServices.map((s) => ({ label: s, value: s }))}
+              />
             </div>
 
             {/* Budget */}

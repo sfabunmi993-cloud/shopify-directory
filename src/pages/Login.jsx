@@ -62,24 +62,24 @@ export default function Login() {
   const handleUnsupported = () => toast("This sign-in option isn't available yet");
 
   return (
-    <div className="min-h-screen bg-[#0b0c0d] flex flex-col items-center justify-center px-4 py-10">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-10">
       <img
         src={SHOPIFY_LOGO}
         alt="Shopify"
         className="w-14 h-14 mb-8 drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
       />
 
-      <div className="w-full max-w-[440px] bg-white rounded-2xl px-8 py-10 shadow-xl">
-        <h1 className="text-[28px] font-bold text-[#212326] leading-tight">Log in</h1>
-        <p className="text-[15px] text-[#6d7175] mt-1 mb-8">Continue to Shopify</p>
+      <div className="w-full max-w-[440px] bg-card rounded-2xl px-8 py-10 shadow-xl">
+        <h1 className="text-[28px] font-bold text-foreground leading-tight">Log in</h1>
+        <p className="text-[15px] text-muted-foreground mt-1 mb-8">Continue to Shopify</p>
 
         {error && (
-          <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-sm">{error}</div>
+          <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">{error}</div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-[13px] font-medium text-[#212326]">
+            <Label htmlFor="email" className="text-[13px] font-medium text-foreground">
               Email
             </Label>
             <Input
@@ -90,14 +90,14 @@ export default function Login() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="h-11 rounded-lg border-[#c9ccd1] focus:border-[#006fbb] focus:ring-[#006fbb] text-[15px]"
+              className="h-11 rounded-lg border-input focus:border-[#006fbb] focus:ring-[#006fbb] text-[15px]"
               required
             />
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="text-[13px] font-medium text-[#212326]">
+              <Label htmlFor="password" className="text-[13px] font-medium text-foreground">
                 Password
               </Label>
               <Link to="/forgot-password" className="text-[13px] text-[#006fbb] hover:underline">
@@ -111,7 +111,7 @@ export default function Login() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="h-11 rounded-lg border-[#c9ccd1] focus:border-[#006fbb] focus:ring-[#006fbb] text-[15px]"
+              className="h-11 rounded-lg border-input focus:border-[#006fbb] focus:ring-[#006fbb] text-[15px]"
               required
             />
           </div>
@@ -122,7 +122,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading || !email || !captchaOk}
-            className="w-full h-11 rounded-lg bg-[#e8e8e8] text-white text-[15px] font-medium disabled:opacity-100 enabled:bg-[#006fbb] enabled:hover:bg-[#005a99] transition-colors"
+            className="w-full h-11 rounded-lg bg-muted text-muted-foreground text-[15px] font-medium disabled:opacity-100 enabled:bg-[#006fbb] enabled:text-white enabled:hover:bg-[#005a99] transition-colors"
           >
             {loading ? (
               <span className="inline-flex items-center justify-center gap-2">
@@ -137,19 +137,19 @@ export default function Login() {
         {/* Divider */}
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-[#e1e3e5]" />
+            <div className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-white px-3 text-[13px] text-[#6d7175]">or</span>
+            <span className="bg-card px-3 text-[13px] text-muted-foreground">or</span>
           </div>
         </div>
 
         <button
           type="button"
           onClick={handleUnsupported}
-          className="w-full h-11 rounded-lg bg-[#f6f6f7] hover:bg-[#ececee] text-[#212326] text-[15px] font-medium inline-flex items-center justify-center gap-2 transition-colors"
+          className="w-full h-11 rounded-lg bg-secondary hover:bg-secondary/80 text-foreground text-[15px] font-medium inline-flex items-center justify-center gap-2 transition-colors"
         >
-          <span className="w-5 h-5 rounded-full bg-[#212326] text-white inline-flex items-center justify-center text-[10px]">
+          <span className="w-5 h-5 rounded-full bg-foreground text-background inline-flex items-center justify-center text-[10px]">
             <ShieldCheck className="w-3 h-3" />
           </span>
           Sign in with passkey
@@ -161,7 +161,7 @@ export default function Login() {
             type="button"
             onClick={handleGoogle}
             aria-label="Continue with Google"
-            className="w-11 h-11 rounded-lg border border-[#c9ccd1] hover:bg-[#f6f6f7] inline-flex items-center justify-center transition-colors"
+            className="w-11 h-11 rounded-lg border border-input hover:bg-secondary inline-flex items-center justify-center transition-colors"
           >
             <GoogleIcon className="w-5 h-5" />
           </button>
@@ -169,7 +169,7 @@ export default function Login() {
             type="button"
             onClick={handleApple}
             aria-label="Continue with Apple"
-            className="w-11 h-11 rounded-lg bg-[#212326] hover:opacity-90 text-white inline-flex items-center justify-center transition-opacity"
+            className="w-11 h-11 rounded-lg bg-foreground hover:opacity-90 text-background inline-flex items-center justify-center transition-opacity"
           >
             <AppleIcon className="w-5 h-5" />
           </button>
@@ -192,7 +192,7 @@ export default function Login() {
         </div>
       </div>
 
-      <p className="text-[15px] text-white mt-8">
+      <p className="text-[15px] text-foreground mt-8">
         New to Shopify?{" "}
         <Link to="/register" className="text-[#006fbb] font-medium hover:underline">
           Get started →
