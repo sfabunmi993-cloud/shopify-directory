@@ -21,6 +21,13 @@ import AdDetail from '@/pages/AdDetail';
 import ServiceDetail from '@/pages/ServiceDetail';
 import SupportChat from '@/components/SupportChat';
 import SplashScreen from '@/components/SplashScreen';
+import { isNativeApp } from '@/lib/nativeApp';
+
+const LoadingScreen = () => (isNativeApp() ? <SplashScreen /> : (
+  <div className="fixed inset-0 flex items-center justify-center">
+    <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
+  </div>
+));
 
 // Code-split main views for faster WebView cold-start and lower initial bundle.
 const Home = lazy(() => import('@/pages/Home'));
@@ -37,7 +44,7 @@ const AuthenticatedApp = () => {
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
-    return <SplashScreen />;
+    return <LoadingScreen />;
   }
 
   // Handle authentication errors
@@ -53,7 +60,7 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <Suspense fallback={<SplashScreen />}>
+    <Suspense fallback={<LoadingScreen />}>
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
