@@ -231,6 +231,7 @@ export default function PartnerOnboarding() {
       <div className="w-full max-w-2xl">
         {/* Header */}
         <div className="text-center mb-8">
+          <img src="https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/602604d47_image.png" alt="Shopify Partner Base" className="w-16 h-16 rounded-2xl object-contain mx-auto mb-4 shadow-sm" />
           <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm font-medium mb-4">
             <Sparkles className="w-4 h-4" /> Partner Application
           </div>
