@@ -305,7 +305,7 @@ export default function PartnerDetail() {
             {/* Contact button */}
             {contactHref ?
             <Button asChild className="w-full h-11 bg-primary hover:bg-primary/90 rounded-lg text-primary-foreground font-medium">
-              <a href={contactHref} target="_blank" rel="noopener noreferrer" className="bg-gray-950 rounded-[32px]">Contact</a>
+              <a href={contactHref} target="_blank" rel="noopener noreferrer" className="rounded-[32px] bg-[#242428]">Contact</a>
             </Button> :
 
             <Button className="w-full h-11 bg-primary hover:bg-primary/90 rounded-lg text-primary-foreground font-medium" onClick={() => setContactOpen(true)}>
