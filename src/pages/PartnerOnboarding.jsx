@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import MobileSelect from '@/components/ui/mobile-select';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, X, Plus, Loader2, ArrowRight, ArrowLeft, Sparkles, Tag, Wand2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -289,14 +289,13 @@ export default function PartnerOnboarding() {
 
               <div className="space-y-1.5">
                 <Label>Primary service category <span className="text-destructive">*</span></Label>
-                <Select value={aiService} onValueChange={setAiService}>
-                  <SelectTrigger><SelectValue placeholder="Choose a category" /></SelectTrigger>
-                  <SelectContent>
-                    {SERVICE_CATEGORIES.map(c => (
-                      <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <MobileSelect
+                  options={SERVICE_CATEGORIES}
+                  value={aiService}
+                  onValueChange={setAiService}
+                  placeholder="Choose a category"
+                  label="Primary service category"
+                />
               </div>
 
               <Button className="w-full rounded-full" disabled={!aiName.trim() || !aiService || aiGenerating} onClick={handleAiGenerate}>
@@ -328,26 +327,24 @@ export default function PartnerOnboarding() {
 
               <div className="space-y-1.5">
                 <Label>Primary service category <span className="text-destructive">*</span></Label>
-                <Select value={form.service_category} onValueChange={v => { set('service_category', v); set('services', []); }}>
-                  <SelectTrigger><SelectValue placeholder="Choose a category" /></SelectTrigger>
-                  <SelectContent>
-                    {SERVICE_CATEGORIES.map(c => (
-                      <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <MobileSelect
+                  options={SERVICE_CATEGORIES}
+                  value={form.service_category}
+                  onValueChange={v => { set('service_category', v); set('services', []); }}
+                  placeholder="Choose a category"
+                  label="Primary service category"
+                />
               </div>
 
               <div className="space-y-1.5">
                 <Label>Industry specialization</Label>
-                <Select value={form.industry} onValueChange={v => set('industry', v)}>
-                  <SelectTrigger><SelectValue placeholder="Select your industry" /></SelectTrigger>
-                  <SelectContent>
-                    {INDUSTRIES.map(i => (
-                      <SelectItem key={i.value} value={i.value}>{i.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <MobileSelect
+                  options={INDUSTRIES}
+                  value={form.industry}
+                  onValueChange={v => set('industry', v)}
+                  placeholder="Select your industry"
+                  label="Industry specialization"
+                />
               </div>
 
               <Button className="w-full rounded-full" disabled={!canProceedStep0} onClick={() => setStep(1)}>
@@ -426,12 +423,13 @@ export default function PartnerOnboarding() {
                 </div>
                 <div className="space-y-1.5">
                   <Label>Country</Label>
-                  <Select value={form.country} onValueChange={v => set('country', v)}>
-                    <SelectTrigger><SelectValue placeholder="Select country" /></SelectTrigger>
-                    <SelectContent>
-                      {COUNTRIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
+                  <MobileSelect
+                    options={COUNTRIES.map(c => ({ label: c, value: c }))}
+                    value={form.country}
+                    onValueChange={v => set('country', v)}
+                    placeholder="Select country"
+                    label="Country"
+                  />
                 </div>
               </div>
 

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
+import MobileSelect from '@/components/ui/mobile-select';
 
 const SERVICE_CATEGORIES = [
   { label: 'All Services', value: 'all' },
@@ -23,7 +23,7 @@ const INDUSTRIES = [
   { label: 'Retail', value: 'retail' },
   { label: 'Education', value: 'education' },
   { label: 'Manufacturing', value: 'manufacturing' },
-  { label: 'Real Estate', value: 'real_estate' },
+  { label: 'Real estate', value: 'real_estate' },
   { label: 'Hospitality', value: 'hospitality' },
   { label: 'Creative', value: 'creative' },
   { label: 'Other', value: 'other' },
@@ -85,58 +85,46 @@ export default function FilterSidebar({ filters, onFilterChange, onClearFilters 
 
       <div className="border-t border-border pt-5 space-y-2">
         <Label className="text-sm font-semibold text-foreground">Industry</Label>
-        <Select value={filters.industry || 'all'} onValueChange={(v) => onFilterChange('industry', v)}>
-          <SelectTrigger className="h-11 min-h-[44px]">
-            <SelectValue placeholder="Select an industry" />
-          </SelectTrigger>
-          <SelectContent>
-            {INDUSTRIES.map((ind) => (
-              <SelectItem key={ind.value} value={ind.value}>{ind.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <MobileSelect
+          options={INDUSTRIES}
+          value={filters.industry || 'all'}
+          onValueChange={(v) => onFilterChange('industry', v)}
+          placeholder="Select an industry"
+          label="Industry"
+        />
       </div>
 
       <div className="border-t border-border pt-5 space-y-2">
         <Label className="text-sm font-semibold text-foreground">Service Category</Label>
-        <Select value={filters.category} onValueChange={(v) => onFilterChange('category', v)}>
-          <SelectTrigger className="h-11 min-h-[44px]">
-            <SelectValue placeholder="Select a service" />
-          </SelectTrigger>
-          <SelectContent>
-            {SERVICE_CATEGORIES.map((c) => (
-              <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <MobileSelect
+          options={SERVICE_CATEGORIES}
+          value={filters.category}
+          onValueChange={(v) => onFilterChange('category', v)}
+          placeholder="Select a service"
+          label="Service Category"
+        />
       </div>
 
       <div className="border-t border-border pt-5 space-y-2">
         <Label className="text-sm font-semibold text-foreground">Location</Label>
-        <Select value={filters.location} onValueChange={(v) => onFilterChange('location', v)}>
-          <SelectTrigger className="h-11 min-h-[44px]">
-            <SelectValue placeholder="Select a location" />
-          </SelectTrigger>
-          <SelectContent>
-            {LOCATIONS.map((l) => (
-              <SelectItem key={l.value} value={l.value}>{l.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <MobileSelect
+          options={LOCATIONS}
+          value={filters.location}
+          onValueChange={(v) => onFilterChange('location', v)}
+          placeholder="Select a location"
+          label="Location"
+        />
       </div>
 
       <div className="border-t border-border pt-5 space-y-2">
         <Label className="text-sm font-semibold text-foreground">Partner Tier</Label>
-        <Select value={filters.tier} onValueChange={(v) => onFilterChange('tier', v)}>
-          <SelectTrigger className="h-11 min-h-[44px]">
-            <SelectValue placeholder="Select a partner tier" />
-          </SelectTrigger>
-          <SelectContent>
-            {TIERS.map((t) => (
-              <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <MobileSelect
+          options={TIERS}
+          value={filters.tier}
+          onValueChange={(v) => onFilterChange('tier', v)}
+          placeholder="Select a partner tier"
+          label="Partner Tier"
+        />
       </div>
     </div>
   );

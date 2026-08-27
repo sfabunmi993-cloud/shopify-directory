@@ -5,7 +5,7 @@ import App from '@/App.jsx'
 import '@/index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange forcedTheme="light">
+  <ThemeProvider attribute="class" defaultTheme="light" enableSystem={true} disableTransitionOnChange>
     <App />
   </ThemeProvider>
 )
