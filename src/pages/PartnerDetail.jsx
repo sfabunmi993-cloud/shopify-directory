@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Star, MapPin, Globe, Mail, ArrowLeft, Award, Heart, Flag, MessageSquare, Hash, ShieldAlert, ChevronDown, ChevronUp, CheckCircle, Share2, Copy, Check, Send, Briefcase, BadgeCheck, Bell, User, Plus, Minus } from 'lucide-react';
+import { Star, MapPin, Globe, Mail, ArrowLeft, Award, Heart, Flag, MessageSquare, Hash, ShieldAlert, ChevronDown, ChevronUp, CheckCircle, Share2, Copy, Check, Send, Briefcase, BadgeCheck, Bell, User, Plus, Minus, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
@@ -19,6 +19,7 @@ import FlagModal from '@/components/partner/FlagModal';
 import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
 import BuyReviewModal from '@/components/partner/BuyReviewModal';
 import BuyDomainModal from '@/components/partner/BuyDomainModal';
+import GenerateTestimonialsModal from '@/components/partner/GenerateTestimonialsModal';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { partnerProfileUrl, stripShopifySuffix } from '@/lib/partnerUrl';
@@ -72,6 +73,7 @@ export default function PartnerDetail() {
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [buyReviewOpen, setBuyReviewOpen] = useState(false);
   const [buyDomainOpen, setBuyDomainOpen] = useState(false);
+  const [genTestimonialsOpen, setGenTestimonialsOpen] = useState(false);
   const [showAllServices, setShowAllServices] = useState(false);
   const [expandedService, setExpandedService] = useState(null);
   const [copied, setCopied] = useState(false);
@@ -501,6 +503,16 @@ export default function PartnerDetail() {
               </button>
               }
             </div>
+
+            {user?.role === 'admin' &&
+            <div className="space-y-2 pt-4 border-t border-border">
+              <button
+                onClick={() => setGenTestimonialsOpen(true)}
+                className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20 rounded-full">
+                <Sparkles className="w-4 h-4" /> Generate Testimonials
+              </button>
+            </div>
+            }
           </div>
         </div>
 
@@ -649,6 +661,7 @@ export default function PartnerDetail() {
           <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
           <BuyReviewModal partner={partner} isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} />
           <BuyDomainModal partner={partner} isOpen={buyDomainOpen} onClose={() => setBuyDomainOpen(false)} user={user} />
+          <GenerateTestimonialsModal partner={partner} isOpen={genTestimonialsOpen} onClose={() => setGenTestimonialsOpen(false)} onGenerated={handleReviewAdded} />
         </>
       }
 
