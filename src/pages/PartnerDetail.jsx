@@ -253,7 +253,7 @@ export default function PartnerDetail() {
             const tierLabel = partner.partner_tier === 'premium' ? 'PREMIER' : partner.partner_tier === 'plus' ? 'PLUS' : '';
             return tierLabel ?
             <div className="absolute top-3 right-3 inline-flex items-center gap-1.5">
-                <span className="w-7 h-7 bg-foreground rounded flex items-center justify-center text-background text-xs font-bold leading-none">S</span>
+                <img src="https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg" alt="Shopify" className="w-7 h-7 rounded object-contain bg-white p-0.5" />
                 <span className="flex flex-col leading-none gap-0.5">
                   <span className="text-[9px] font-bold tracking-wide text-foreground">SHOPIFY</span>
                   <span className="text-[9px] font-bold tracking-wide text-foreground">{tierLabel}</span>
