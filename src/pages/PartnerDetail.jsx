@@ -240,10 +240,10 @@ export default function PartnerDetail() {
       <div className="grid md:grid-cols-[300px_1fr] gap-4 sm:gap-8 items-start">
 
         {/* LEFT SIDEBAR CARD */}
-        <div className="relative bg-white border border-[#E0E0E0] rounded-xl shadow-sm mt-10">
+        <div className="relative bg-card border border-border rounded-xl shadow-sm mt-10">
           {/* Avatar overlapping top edge */}
           <div className="absolute left-5 -top-10">
-            <PartnerAvatar partner={partner} size="lg" shape="rounded-full" className="border-2 border-white shadow-md" />
+            <PartnerAvatar partner={partner} size="lg" shape="rounded-full" className="border-2 border-background shadow-md" />
           </div>
 
           {/* Partner tier badge */}
@@ -251,11 +251,11 @@ export default function PartnerDetail() {
             const tierLabel = partner.partner_tier === 'premium' ? 'PREMIER' : partner.partner_tier === 'plus' ? 'PLUS' : '';
             return tierLabel ?
             <div className="absolute top-3 right-3 inline-flex items-center gap-1.5">
-                <span className="w-7 h-7 bg-black rounded flex items-center justify-center text-white text-xs font-bold leading-none">S</span>
+                <span className="w-7 h-7 bg-foreground rounded flex items-center justify-center text-background text-xs font-bold leading-none">S</span>
                 <span className="flex flex-col leading-none gap-0.5">
-                  <span className="text-[9px] font-bold tracking-wide text-[#202B33]">SHOPIFY</span>
-                  <span className="text-[9px] font-bold tracking-wide text-[#202B33]">{tierLabel}</span>
-                  <span className="text-[9px] font-bold tracking-wide text-[#637381]">PARTNER</span>
+                  <span className="text-[9px] font-bold tracking-wide text-foreground">SHOPIFY</span>
+                  <span className="text-[9px] font-bold tracking-wide text-foreground">{tierLabel}</span>
+                  <span className="text-[9px] font-bold tracking-wide text-muted-foreground">PARTNER</span>
                 </span>
               </div> :
             null;
@@ -302,11 +302,11 @@ export default function PartnerDetail() {
 
             {/* Contact button */}
             {contactHref ?
-            <Button asChild className="w-full h-11 bg-[#202B33] hover:bg-[#202B33]/90 rounded-lg text-white font-medium">
+            <Button asChild className="w-full h-11 bg-primary hover:bg-primary/90 rounded-lg text-primary-foreground font-medium">
               <a href={contactHref} target="_blank" rel="noopener noreferrer">Contact</a>
-            </Button> :
+            </Button> : 
 
-            <Button className="w-full h-11 bg-[#202B33] hover:bg-[#202B33]/90 rounded-lg text-white font-medium" onClick={() => setContactOpen(true)}>
+            <Button className="w-full h-11 bg-primary hover:bg-primary/90 rounded-lg text-primary-foreground font-medium" onClick={() => setContactOpen(true)}>
               Contact
             </Button>
             }
@@ -378,14 +378,14 @@ export default function PartnerDetail() {
               </button>
             </div>
 
-            <hr className="border-[#DFE3E8]" />
+            <hr className="border-border" />
 
             {/* Info details */}
             <div className="space-y-4 text-sm">
               {partner.starting_price > 0 &&
               <div>
                 <p className="text-sm font-semibold text-foreground">Price range for selected services</p>
-                <p className="text-[#212121] mt-0.5">Starting from ${partner.starting_price}</p>
+                <p className="text-foreground mt-0.5">Starting from ${partner.starting_price}</p>
               </div>
               }
 
@@ -394,13 +394,13 @@ export default function PartnerDetail() {
                 <p className="text-sm font-semibold text-foreground">Contact information</p>
                 <div className="mt-1 flex flex-col gap-y-2">
                   {partner.website_url &&
-                  <a href={partner.website_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[#212121] hover:underline break-all">
+                  <a href={partner.website_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-foreground hover:underline break-all">
                     <Globe className="w-4 h-4 shrink-0" style={{ color: '#717171' }} />
                     {partner.website_url.replace(/^https?:\/\//, '')}
                   </a>
                   }
                   {partner.email &&
-                  <a href={`mailto:${partner.email}`} className="flex items-center gap-2 text-[#212121] hover:underline break-all">
+                  <a href={`mailto:${partner.email}`} className="flex items-center gap-2 text-foreground hover:underline break-all">
                     <Mail className="w-4 h-4 shrink-0" style={{ color: '#717171' }} />
                     {partner.email}
                   </a>
@@ -412,7 +412,7 @@ export default function PartnerDetail() {
               {partner.connected_domain &&
               <div>
                 <p className="text-sm font-semibold text-foreground">Custom domain</p>
-                <a href={partner.connected_domain.startsWith('http') ? partner.connected_domain : `https://${partner.connected_domain}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[#212121] mt-0.5 hover:underline break-all">
+                <a href={partner.connected_domain.startsWith('http') ? partner.connected_domain : `https://${partner.connected_domain}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-foreground mt-0.5 hover:underline break-all">
                   <Globe className="w-4 h-4 shrink-0" style={{ color: '#717171' }} />
                   {partner.connected_domain.replace(/^https?:\/\//, '')}
                 </a>
@@ -424,32 +424,32 @@ export default function PartnerDetail() {
                 <p className="text-sm font-semibold text-foreground mb-2">Social links</p>
                 <div className="flex flex-wrap gap-2">
                   {partner.instagram_url &&
-                  <a href={partner.instagram_url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-[#202B33] flex items-center justify-center text-white hover:opacity-90 transition-opacity" title="Instagram">
+                  <a href={partner.instagram_url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-foreground flex items-center justify-center text-background hover:opacity-90 transition-opacity" title="Instagram">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 01-1.38-.9 3.7 3.7 0 01-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.31-1.46.72-2.13 1.38C1.35 2.68.94 3.35.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13.67.66 1.34 1.07 2.13 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.86 5.86 0 002.13-1.38c.66-.67 1.07-1.34 1.38-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.86 5.86 0 00-1.38-2.13A5.86 5.86 0 0019.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0z" /><path d="M12 5.84A6.16 6.16 0 105.84 12 6.16 6.16 0 0012 5.84M12 16a4 4 0 110-8 4 4 0 010 8M18.41 7.03a1.44 1.44 0 11-1.44-1.44 1.44 1.44 0 011.44 1.44" /></svg>
                   </a>
                   }
                   {partner.twitter_url &&
-                  <a href={partner.twitter_url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-[#202B33] flex items-center justify-center text-white hover:opacity-90 transition-opacity" title="Twitter / X">
+                  <a href={partner.twitter_url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-foreground flex items-center justify-center text-background hover:opacity-90 transition-opacity" title="Twitter / X">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.63 5.905-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
                   </a>
                   }
                   {partner.linkedin_url &&
-                  <a href={partner.linkedin_url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-[#202B33] flex items-center justify-center text-white hover:opacity-90 transition-opacity" title="LinkedIn">
+                  <a href={partner.linkedin_url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-foreground flex items-center justify-center text-background hover:opacity-90 transition-opacity" title="LinkedIn">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 11-.01-4.12 2.06 2.06 0 01.01 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.8 0 0 .77 0 1.72v20.56C0 23.23.8 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z" /></svg>
                   </a>
                   }
                   {partner.facebook_url &&
-                  <a href={partner.facebook_url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-[#202B33] flex items-center justify-center text-white hover:opacity-90 transition-opacity" title="Facebook">
+                  <a href={partner.facebook_url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-foreground flex items-center justify-center text-background hover:opacity-90 transition-opacity" title="Facebook">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z" /></svg>
                   </a>
                   }
                   {partner.tiktok_url &&
-                  <a href={partner.tiktok_url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-[#202B33] flex items-center justify-center text-white hover:opacity-90 transition-opacity" title="TikTok">
+                  <a href={partner.tiktok_url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-foreground flex items-center justify-center text-background hover:opacity-90 transition-opacity" title="TikTok">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.55c.3 0 .6.05.88.13V9.4a6.33 6.33 0 00-.88-.05A6.34 6.34 0 005 15.69a6.34 6.34 0 0010.83 4.5V8.59a8.16 8.16 0 004.83 1.54V6.69h-1.07z" /></svg>
                   </a>
                   }
                   {partner.youtube_url &&
-                  <a href={partner.youtube_url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-[#202B33] flex items-center justify-center text-white hover:opacity-90 transition-opacity" title="YouTube">
+                  <a href={partner.youtube_url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-foreground flex items-center justify-center text-background hover:opacity-90 transition-opacity" title="YouTube">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.5 6.2a3.02 3.02 0 00-2.13-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.37.51A3.02 3.02 0 00.5 6.2C0 8.07 0 12 0 12s0 3.93.5 5.8a3.02 3.02 0 002.13 2.14c1.87.51 9.37.51 9.37.51s7.5 0 9.37-.51a3.02 3.02 0 002.13-2.14C24 15.93 24 12 24 12s0-3.93-.5-5.8zM9.6 15.6V8.4l6.27 3.6-6.27 3.6z" /></svg>
                   </a>
                   }
@@ -460,7 +460,7 @@ export default function PartnerDetail() {
               {partner.location &&
               <div>
                 <p className="text-sm font-semibold text-foreground">Primary location</p>
-                <p className="text-[#212121] mt-0.5 flex items-center gap-1.5">
+                <p className="text-foreground mt-0.5 flex items-center gap-1.5">
                   <MapPin className="w-4 h-4 shrink-0" style={{ color: '#717171' }} />
                   {partner.location}
                 </p>
@@ -470,14 +470,14 @@ export default function PartnerDetail() {
               {partner.country &&
               <div>
                 <p className="text-sm font-semibold text-foreground">Supported Countries</p>
-                <p className="text-[#212121] mt-0.5">{partner.country}</p>
+                <p className="text-foreground mt-0.5">{partner.country}</p>
               </div>
               }
 
               {partner.languages?.length > 0 &&
               <div>
                 <p className="text-sm font-semibold text-foreground">Languages</p>
-                <p className="text-[#212121] mt-0.5">{partner.languages.join(', ')}</p>
+                <p className="text-foreground mt-0.5">{partner.languages.join(', ')}</p>
               </div>
               }
 
@@ -485,7 +485,7 @@ export default function PartnerDetail() {
             </div>
 
             {/* Owner-only actions */}
-            <div className="space-y-2 pt-4 border-t border-[#DFE3E8]">
+            <div className="space-y-2 pt-4 border-t border-border">
               {user && partner.created_by_id === user.id &&
               <button
                 onClick={() => setBuyReviewOpen(true)}
@@ -505,7 +505,7 @@ export default function PartnerDetail() {
         </div>
 
         {/* RIGHT MAIN CONTENT */}
-        <div className="space-y-6 px-5 md:border-l md:border-[#E0E0E0]">
+        <div className="space-y-6 px-5 md:border-l md:border-border">
 
           {/* About */}
           <div>
@@ -532,7 +532,7 @@ export default function PartnerDetail() {
           {partner.full_description &&
           <div>
               <h2 className="font-heading text-xl font-bold text-foreground mb-2">{rankConfig.label}</h2>
-              <p className="text-[#454545] leading-relaxed text-sm whitespace-pre-line">{partner.full_description}</p>
+              <p className="text-muted-foreground leading-relaxed text-sm whitespace-pre-line">{partner.full_description}</p>
             </div>
           }
 
@@ -549,8 +549,8 @@ export default function PartnerDetail() {
                       type="button"
                       onClick={() => setExpandedService(isOpen ? null : service)}
                       className="w-full flex items-center justify-between gap-2 px-4 py-3 text-left">
-                        <span className="text-sm font-medium text-[#202B33]">{service}</span>
-                        <span className="w-6 h-6 rounded-full bg-[#202B33] text-white flex items-center justify-center shrink-0">
+                        <span className="text-sm font-medium text-foreground">{service}</span>
+                        <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center shrink-0">
                           {isOpen ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                         </span>
                       </button>
@@ -559,7 +559,7 @@ export default function PartnerDetail() {
                           {partner.starting_price > 0 &&
                       <p className="text-xs text-muted-foreground mb-1">Starting at ${partner.starting_price}</p>
                       }
-                          <p className="text-sm text-[#454545] leading-relaxed">{partner.service_descriptions?.[service]}</p>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{partner.service_descriptions?.[service]}</p>
                         </div>
                     }
                     </div>);
@@ -573,7 +573,7 @@ export default function PartnerDetail() {
           {otherServices.length > 0 &&
           <div>
               <h2 className="font-heading text-xl font-bold text-foreground mb-2">Other services</h2>
-              <p className="text-sm text-[#454545] leading-relaxed">{visibleOtherServices.join(', ')}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{visibleOtherServices.join(', ')}</p>
               {otherServices.length > 6 &&
             <button
               onClick={() => setShowAllServices((v) => !v)}
@@ -591,7 +591,7 @@ export default function PartnerDetail() {
           {partner.industry &&
           <div>
               <h2 className="font-heading text-xl font-bold text-foreground mb-1">Industries</h2>
-              <p className="text-sm text-[#454545]">{INDUSTRY_LABELS[partner.industry] || partner.industry}</p>
+              <p className="text-sm text-muted-foreground">{INDUSTRY_LABELS[partner.industry] || partner.industry}</p>
             </div>
           }
 
@@ -656,7 +656,7 @@ export default function PartnerDetail() {
       {user &&
       <button
         onClick={() => navigate('/messages')}
-        className="fixed bottom-6 right-6 z-50 bg-primary text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-primary/90 transition-all hover:scale-105 hidden"
+        className="fixed bottom-6 right-6 z-50 bg-primary text-primary-foreground rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-primary/90 transition-all hover:scale-105 hidden"
         title="Open messages">
         
           <MessageSquare className="w-6 h-6" />

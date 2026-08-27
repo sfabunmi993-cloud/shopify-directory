@@ -81,7 +81,7 @@ export default function MobileBottomNav() {
               key={to}
               href={to}
               onClick={(e) => handleClick(e, to)}
-              className={`flex flex-col items-center justify-center gap-0.5 min-h-[44px] py-1.5 text-[10px] font-medium no-select ${
+              className={`flex flex-col items-center justify-center gap-0.5 min-h-[44px] py-1.5 text-sm font-medium no-select ${
                 active ? 'text-primary' : 'text-muted-foreground'
               }`}
             >

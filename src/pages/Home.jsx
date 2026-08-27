@@ -23,7 +23,7 @@ export default function Home() {
     <div className="bg-background">
       {/* HERO */}
       <section className="bg-gradient-to-b from-primary/5 to-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20 lg:pt-24 lg:pb-28 bg-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20 lg:pt-24 lg:pb-28 bg-muted">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <span className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wide uppercase text-primary bg-primary/10 px-3 py-1 rounded-full">
@@ -134,7 +134,7 @@ export default function Home() {
 
       {/* PARTNER TIERS */}
       <section
-        className="py-16 lg:py-24 bg-[#F4F7F6]"
+        className="py-16 lg:py-24 bg-muted"
         style={{
           backgroundImage:
           'linear-gradient(to right, rgba(180,200,255,0.25) 1px, transparent 1px), linear-gradient(to bottom, rgba(180,200,255,0.25) 1px, transparent 1px)',
@@ -143,29 +143,29 @@ export default function Home() {
         
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#666666]">Partner tiers</p>
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-[#111111] mt-3">Find the right fit</h2>
-            <p className="text-[#444444] mt-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Partner tiers</p>
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground mt-3">Find the right fit</h2>
+            <p className="text-muted-foreground mt-3">
               Partners are tiered based on multiple factors, including their history of experience and proven success on Shopify.
             </p>
           </div>
-          <div className="rounded-2xl bg-white border border-[#DDDDDD] overflow-hidden">
+          <div className="rounded-2xl bg-card border border-border overflow-hidden">
             {TIERS.map((t, i) => {
               const Icon = t.icon;
               return (
                 <div
                   key={t.label}
-                  className={`flex items-center justify-between gap-4 px-5 sm:px-8 py-5 ${i > 0 ? 'border-t border-[#EEEEEE]' : ''}`}>
+                  className={`flex items-center justify-between gap-4 px-5 sm:px-8 py-5 ${i > 0 ? 'border-t border-border' : ''}`}>
                   
                   <div className="flex items-center gap-4 min-w-0">
                     <div className="w-11 h-11 rounded-lg bg-[#C8F08F] flex items-center justify-center shrink-0">
                       <Icon className="w-5 h-5 text-[#151c1a]" strokeWidth={2} />
                     </div>
-                    <h3 className="font-heading text-lg font-semibold text-black truncate">{t.label}</h3>
+                    <h3 className="font-heading text-lg font-semibold text-foreground truncate">{t.label}</h3>
                   </div>
                   <Link
                     to="/directory"
-                    className="inline-flex items-center gap-1 text-sm font-medium text-black underline underline-offset-2 shrink-0">
+                    className="inline-flex items-center gap-1 text-sm font-medium text-foreground underline underline-offset-2 shrink-0">
                     
                     Browse <ArrowRight className="w-4 h-4" />
                   </Link>
