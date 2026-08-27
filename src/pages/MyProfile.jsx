@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock, Share2, Star, TrendingUp, Upload, ImageIcon, Lock, Bell, Globe, Trash2, AlertTriangle, Calendar } from 'lucide-react';
+import { Loader2, Save, Eye, X, Plus, CheckCircle, Camera, Hash, ShieldAlert, ShieldCheck, Clock, Share2, Star, TrendingUp, Upload, ImageIcon, Lock, Bell, Globe, Trash2, AlertTriangle, Calendar, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import InquiriesDashboard from '@/components/profile/InquiriesDashboard';
@@ -19,6 +19,7 @@ import BuyDomainModal from '@/components/partner/BuyDomainModal';
 import BuyDomainPlanModal from '@/components/partner/BuyDomainPlanModal';
 import PortfolioEditor from '@/components/profile/PortfolioEditor';
 import TestimonialsEditor from '@/components/profile/TestimonialsEditor';
+import GenerateTestimonialsModal from '@/components/partner/GenerateTestimonialsModal';
 import AppealForm from '@/components/partner/AppealForm';
 import SupportContactBar from '@/components/profile/SupportContactBar';
 import ProfilePreviewSidebar from '@/components/profile/ProfilePreviewSidebar';
@@ -81,6 +82,7 @@ export default function MyProfile() {
   const [deleting, setDeleting] = useState(false);
   const [actingAs, setActingAs] = useState(null);
   const [highlightDomain, setHighlightDomain] = useState(false);
+  const [genTestimonialsOpen, setGenTestimonialsOpen] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -644,7 +646,18 @@ export default function MyProfile() {
         <div
           id="testimonials-section"
           className={`rounded-xl transition-all duration-500 ${highlightT ? 'ring-4 ring-primary/40 bg-primary/5 p-3 -mx-3' : ''}`}>
-          <h2 className="font-semibold text-base mb-1">Client Testimonials</h2>
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="font-semibold text-base mb-1">Client Testimonials</h2>
+            {user?.role === 'admin' && (
+              <button
+                type="button"
+                onClick={() => setGenTestimonialsOpen(true)}
+                title="Generate testimonials (admin)"
+                className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+                <Sparkles className="w-4 h-4" />
+              </button>
+            )}
+          </div>
           <p className="text-xs text-muted-foreground mb-4">Add up to 15 testimonials. They scroll automatically sideways on your public profile.</p>
           <TestimonialsEditor
             testimonials={form.testimonials || []}
@@ -845,6 +858,17 @@ export default function MyProfile() {
         </div>
       </div>
 
+      <GenerateTestimonialsModal
+        partner={partner}
+        isOpen={genTestimonialsOpen}
+        onClose={() => setGenTestimonialsOpen(false)}
+        onGenerated={async () => {
+          try {
+            const p = await base44.entities.Partner.get(partner.id);
+            if (p) { setPartner(p); setForm(p); }
+          } catch (_) { /* ignore */ }
+        }}
+      />
       <BuyReviewModal isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} partner={partner} />
       <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
       <BuyDomainModal partner={partner} isOpen={buyDomainOpen} onClose={async () => {
