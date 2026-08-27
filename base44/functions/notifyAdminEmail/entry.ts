@@ -68,6 +68,18 @@ Please review and approve or reject this payment from the Admin Dashboard.
 
     await Promise.all(emailPromises);
 
+    // Mirror every admin email to a mobile push so admins are notified on-device too.
+    const pushPromises = admins.map((admin) =>
+      base44.asServiceRole.integrations.Core.SendPushNotification({
+        user_id: admin.id,
+        title: subject,
+        content: body.slice(0, 180),
+        action_label: 'Open dashboard',
+        action_url: '/admin',
+      }).catch(() => null)
+    );
+    await Promise.all(pushPromises);
+
     return Response.json({ success: true, notified: admins.length });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
