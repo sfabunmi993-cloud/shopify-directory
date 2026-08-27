@@ -46,6 +46,11 @@
       ],
       "default": "pending",
       "description": "Whether the invite is pending, accepted, or declined"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description for this co-admin invite (up to 1000 characters)",
+      "maxLength": 1000
     }
   },
   "required": [
