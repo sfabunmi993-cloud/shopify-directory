@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, LayoutGrid, MessageSquare, Heart, User } from 'lucide-react';
 
@@ -27,18 +27,45 @@ export default function MobileBottomNav() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Only show the bottom nav inside the native mobile app; hide in all browsers
-  if (!isNativeApp()) return null;
+  // Per-tab sub-route history stacks so switching tabs restores the previous
+  // view instead of clearing the stack.
+  const tabHistoryRef = useRef(new Map());
+  // Remembers the last active tab so non-tab sub-routes (e.g. /partner/:slug)
+  // stay associated with the tab they were reached from.
+  const lastTabRef = useRef('/');
 
   const isActive = (tab) => {
     if (tab.exact) return location.pathname === '/';
     return location.pathname === tab.to || location.pathname.startsWith(tab.to + '/');
   };
 
+  const activeTab = TABS.find((t) => isActive(t));
+  const currentBase = activeTab ? activeTab.to : lastTabRef.current;
+
+  useEffect(() => {
+    if (activeTab) lastTabRef.current = activeTab.to;
+  }, [activeTab?.to]);
+
+  // Only show the bottom nav inside the native mobile app; hide in all browsers
+  if (!isNativeApp()) return null;
+
   const handleClick = (e, to) => {
     e.preventDefault();
-    // Clicking the active tab resets its navigation history to root
-    navigate(to, { replace: location.pathname === to });
+
+    // Tapping the already-active tab jumps to its root while preserving the
+    // history stack (back returns to the deeper view).
+    if (currentBase === to) {
+      if (location.pathname !== to) navigate(to);
+      return;
+    }
+
+    // Leaving the current tab: remember the exact sub-route we were on.
+    tabHistoryRef.current.set(currentBase, location.pathname);
+
+    // Restoring the target tab's last sub-route if we have one; otherwise root.
+    const saved = tabHistoryRef.current.get(to);
+    const target = saved && saved !== location.pathname ? saved : to;
+    if (target !== location.pathname) navigate(target);
   };
 
   return (

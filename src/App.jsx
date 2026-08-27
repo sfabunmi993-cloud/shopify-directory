@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -11,21 +12,23 @@ import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
-import Home from '@/pages/Home';
-import Directory from '@/pages/Directory';
-import PartnerDetail from '@/pages/PartnerDetail';
 import DirectoryLayout from '@/components/directory/Layout';
 import PartnerOnboarding from '@/pages/PartnerOnboarding';
-import MyProfile from '@/pages/MyProfile';
-import AdminDashboard from '@/pages/AdminDashboard';
-import Favorites from '@/pages/Favorites';
-import Messages from '@/pages/Messages.jsx';
 import PrivateMessages from '@/pages/PrivateMessages.jsx';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
 import AdDetail from '@/pages/AdDetail';
 import ServiceDetail from '@/pages/ServiceDetail';
 import SupportChat from '@/components/SupportChat';
+
+// Code-split main views for faster WebView cold-start and lower initial bundle.
+const Home = lazy(() => import('@/pages/Home'));
+const Directory = lazy(() => import('@/pages/Directory'));
+const PartnerDetail = lazy(() => import('@/pages/PartnerDetail'));
+const MyProfile = lazy(() => import('@/pages/MyProfile'));
+const Messages = lazy(() => import('@/pages/Messages.jsx'));
+const Favorites = lazy(() => import('@/pages/Favorites'));
+const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));
 
 
 const AuthenticatedApp = () => {
@@ -53,6 +56,11 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
+    <Suspense fallback={
+      <div className="fixed inset-0 flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
+      </div>
+    }>
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -76,6 +84,7 @@ const AuthenticatedApp = () => {
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
+    </Suspense>
   );
 };
 

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
+import AnimatedOutlet from './AnimatedOutlet';
 import MobileBottomNav from './MobileBottomNav';
 import AdPopup from '@/components/AdPopup';
 import AnnouncementBanner from '@/components/AnnouncementBanner';
@@ -16,7 +17,7 @@ export default function DirectoryLayout() {
       <AdPopup />
       <ExpertFeaturePopup />
       <div className={isMessages ? 'flex-1 overflow-hidden' : 'pb-16 md:pb-0'}>
-        <Outlet />
+        <AnimatedOutlet className={isMessages ? 'h-full' : undefined} />
       </div>
       <MobileBottomNav />
     </div>
