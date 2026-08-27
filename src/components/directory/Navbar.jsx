@@ -13,6 +13,7 @@ import {
 '@/components/ui/dropdown-menu';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import FloatingAccountMenu from './FloatingAccountMenu';
+import NotificationsBell from './NotificationsBell';
 import { partnerProfilePath } from '@/lib/partnerUrl';
 
 export default function Navbar() {
@@ -174,6 +175,9 @@ export default function Navbar() {
             <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex text-foreground hover:bg-accent">
               <Link to="/contact">Contact us</Link>
             </Button>
+
+            {/* Notifications bell (when logged in) */}
+            <NotificationsBell />
 
             {/* Account menu (when logged in) */}
             <FloatingAccountMenu />

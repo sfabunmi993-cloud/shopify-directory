@@ -19,6 +19,16 @@ export default async function(req) {
     const title = 'Payment received ✅';
     const content = `We received your ${description}${amount}. It's now pending admin approval — you'll be notified once it's approved.`;
 
+    // Persist an in-app notification so it also displays inside the app (bell + panel).
+    await base44.asServiceRole.entities.Notification.create({
+      user_id: userId,
+      title,
+      content,
+      type: 'payment',
+      action_url: '/my-profile',
+      is_read: false,
+    }).catch(() => null);
+
     try {
       await base44.asServiceRole.integrations.Core.SendPushNotification({
         user_id: userId,

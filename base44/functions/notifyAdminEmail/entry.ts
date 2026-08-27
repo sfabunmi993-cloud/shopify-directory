@@ -80,6 +80,19 @@ Please review and approve or reject this payment from the Admin Dashboard.
     );
     await Promise.all(pushPromises);
 
+    // Persist in-app notifications so admins also see them inside the app.
+    const notifPromises = admins.map((admin) =>
+      base44.asServiceRole.entities.Notification.create({
+        user_id: admin.id,
+        title: subject,
+        content: body.slice(0, 500),
+        type: 'admin',
+        action_url: '/admin',
+        is_read: false,
+      }).catch(() => null)
+    );
+    await Promise.all(notifPromises);
+
     return Response.json({ success: true, notified: admins.length });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
