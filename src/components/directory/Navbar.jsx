@@ -80,9 +80,10 @@ export default function Navbar() {
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-12 gap-4">
           {/* Logo */}
-          <a href="https://www.shopify.com/ng/partners" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 shrink-0">
-            <img src="https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg" alt="Shopify" className="h-7" />
-          </a>
+          <Link to="/" className="flex items-center gap-2 shrink-0">
+            <img src="https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/602604d47_image.png" alt="Shopify Partner Base" className="h-8 w-8 rounded-lg object-contain" />
+            <span className="text-sm font-semibold whitespace-nowrap">Shopify Partner Base</span>
+          </Link>
 
           {/* Secondary nav — desktop */}
           <nav aria-label="Secondary" className="hidden lg:flex items-center gap-x-8 h-full">
@@ -185,7 +186,7 @@ export default function Navbar() {
             {!user &&
             <div className="hidden md:flex items-center gap-2">
                 <Button asChild variant="ghost" size="sm" className="text-foreground hover:bg-accent">
-                  <a href="https://www.shopify.com/" target="_blank" rel="noopener noreferrer">Log in</a>
+                  <Link to="/login">Log in</Link>
                 </Button>
                 <Button asChild size="sm" className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90">
                   <Link to="/register">Login</Link>

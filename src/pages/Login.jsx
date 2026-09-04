@@ -8,8 +8,8 @@ import GoogleIcon from "@/components/GoogleIcon";
 import MathCaptcha from "@/components/MathCaptcha";
 import toast from "react-hot-toast";
 
-const SHOPIFY_LOGO =
-  "https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg";
+const APP_LOGO =
+  "https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/602604d47_image.png";
 
 function AppleIcon({ className = "" }) {
   return (
@@ -64,14 +64,14 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-10">
       <img
-        src={SHOPIFY_LOGO}
-        alt="Shopify"
+        src={APP_LOGO}
+        alt="Shopify Partner Base"
         className="w-14 h-14 mb-8 drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
       />
 
       <div className="w-full max-w-[440px] bg-card rounded-2xl px-8 py-10 shadow-xl">
         <h1 className="text-[28px] font-bold text-foreground leading-tight">Log in</h1>
-        <p className="text-[15px] text-muted-foreground mt-1 mb-8">Continue to Shopify</p>
+        <p className="text-[15px] text-muted-foreground mt-1 mb-8">Log in to your account</p>
 
         {error && (
           <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">{error}</div>
@@ -193,7 +193,7 @@ export default function Login() {
       </div>
 
       <p className="text-[15px] text-foreground mt-8">
-        New to Shopify?{" "}
+        New here?{" "}
         <Link to="/register" className="text-[#006fbb] font-medium hover:underline">
           Get started →
         </Link>

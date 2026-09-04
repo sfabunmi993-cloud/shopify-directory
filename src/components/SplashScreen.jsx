@@ -13,8 +13,8 @@ export default function SplashScreen() {
       aria-label="Loading"
     >
       <img
-        src="https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg"
-        alt="Shopify Partner Directory"
+        src="https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/602604d47_image.png"
+        alt="Shopify Partner Base"
         className="h-10 w-auto animate-pulse"
       />
     </div>

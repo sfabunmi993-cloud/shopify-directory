@@ -169,7 +169,7 @@ export default function Directory() {
         </div>
         <div className="hidden md:block">
           <img
-            src="https://cdn.shopify.com/b/shopify-brochure2-assets/a7ac407a50f89efe69413cc02a73d700.png?height=363"
+            src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
             alt="Communication and collaboration illustration"
             className="mx-auto max-h-80 object-contain" />
         </div>
