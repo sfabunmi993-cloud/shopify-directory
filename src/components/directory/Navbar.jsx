@@ -77,7 +77,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-background text-foreground border-y border-border shadow-sm safe-pt">
-      <div className="w-full px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 hidden">
         <div className="flex items-center h-12 gap-4">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
