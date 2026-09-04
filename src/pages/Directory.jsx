@@ -171,7 +171,7 @@ export default function Directory() {
           <img
             src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
             alt="Communication and collaboration illustration"
-            className="mx-auto max-h-80 object-contain" />
+            className="mx-auto max-h-80 object-contain hidden" />
         </div>
       </div>
 
