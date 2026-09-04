@@ -212,9 +212,9 @@ export default function PartnerDetail() {
 
   return (
     <div className="px-3 sm:px-6 lg:px-8 py-4 sm:py-8 max-w-7xl mx-auto">
-      <Link to="/directory" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-6 hidden">
-        <ArrowLeft className="w-4 h-4 mr-1" /> Back to directory
-      </Link>
+      
+
+      
 
       {partner.status === 'pending' &&
       <div className="mb-4 bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3 text-amber-600 dark:text-amber-400 text-sm">
