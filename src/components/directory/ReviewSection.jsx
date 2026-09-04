@@ -121,7 +121,7 @@ export default function ReviewSection({ partnerId, onReviewAdded, unlimitedRevie
       {/* Header */}
       <div className="flex items-center justify-between mb-5 mt-2">
         <div>
-          <h2 className="font-heading text-lg font-semibold">Customer Reviews</h2>
+          <h2 className="font-heading text-lg font-semibold">Reviews</h2>
           {reviews.length > 0 && (
             <div className="flex items-center gap-2 mt-1">
               <div className="flex">

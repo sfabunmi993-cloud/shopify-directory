@@ -9,8 +9,8 @@ import GoogleIcon from "@/components/GoogleIcon";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 
-const APP_LOGO =
-  "https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/602604d47_image.png";
+const SHOPIFY_LOGO =
+  "https://cdn.shopify.com/b/shopify-brochure2-assets/08b278c519512d187520e1fe10b4f5b7.svg";
 
 const fallIn = {
   initial: { y: "-100vh", opacity: 0 },
@@ -122,7 +122,7 @@ export default function Register() {
   if (!signupAvailable) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-10">
-        <img src={APP_LOGO} alt="Shopify Partner Base" className="w-8 h-8 mb-6" />
+        <img src={SHOPIFY_LOGO} alt="Shopify" className="w-8 h-8 mb-6" />
         <div className="w-full max-w-[440px] bg-card rounded-2xl px-8 py-10 shadow-xl text-center">
           <h1 className="text-[24px] font-bold text-foreground leading-tight">Sign-ups are currently unavailable</h1>
           <p className="text-[15px] text-muted-foreground mt-2 mb-8">New account registration is temporarily disabled. Please check back later or contact support.</p>
@@ -140,7 +140,7 @@ export default function Register() {
   if (showOtp) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-10">
-        <img src={APP_LOGO} alt="Shopify Partner Base" className="w-8 h-8 mb-6" />
+        <img src={SHOPIFY_LOGO} alt="Shopify" className="w-8 h-8 mb-6" />
         <motion.div variants={fallIn} initial="initial" animate="animate" className="w-full max-w-[440px]">
           <div className="w-full bg-card rounded-2xl px-8 py-10 shadow-xl">
             <h1 className="text-[28px] font-bold text-foreground leading-tight">Verify your email</h1>
@@ -199,8 +199,8 @@ export default function Register() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-10">
       <motion.img
-        src={APP_LOGO}
-        alt="Shopify Partner Base"
+        src={SHOPIFY_LOGO}
+        alt="Shopify"
         className="w-8 h-8 mb-6"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -210,7 +210,7 @@ export default function Register() {
       <motion.div variants={fallIn} initial="initial" animate="animate" className="w-full max-w-[440px]">
         <div className="w-full bg-card rounded-2xl px-8 py-10 shadow-xl">
           <h1 className="text-[28px] font-bold text-foreground leading-tight">Create account</h1>
-          <p className="text-[15px] text-muted-foreground mt-1 mb-8">Create your account</p>
+          <p className="text-[15px] text-muted-foreground mt-1 mb-8">Continue to Shopify</p>
 
           {error && (
             <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">{error}</div>

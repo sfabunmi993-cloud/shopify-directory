@@ -9,9 +9,9 @@ export default function About() {
       {/* Hero */}
       <div className="bg-primary/5 border-b border-border py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
-          <h1 className="font-heading text-4xl font-bold text-foreground mb-4">About Shopify Partner Base</h1>
+          <h1 className="font-heading text-4xl font-bold text-foreground mb-4">About Shopify Partners Directory</h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Connecting Shopify store owners with trusted, listed experts who help businesses grow.
+            Connecting Shopify store owners with trusted, verified experts who help businesses grow.
           </p>
         </div>
       </div>
@@ -23,7 +23,7 @@ export default function About() {
         <section>
           <h2 className="font-heading text-2xl font-semibold mb-4">What We Do</h2>
           <p className="text-muted-foreground leading-relaxed text-base">
-            Shopify Partner Base is the go-to platform for discovering skilled Shopify partners — from developers and designers to marketing experts and business consultants. We curate a vetted list of professionals who have demonstrated real results for Shopify merchants worldwide. Whether you are launching your first store, optimizing an existing one, or scaling to new markets, our directory helps you find the right partner quickly and confidently.
+            Shopify Partners Directory is the go-to platform for discovering skilled Shopify partners — from developers and designers to marketing experts and business consultants. We curate a vetted list of professionals who have demonstrated real results for Shopify merchants worldwide. Whether you are launching your first store, optimizing an existing one, or scaling to new markets, our directory helps you find the right partner quickly and confidently.
           </p>
           <p className="text-muted-foreground leading-relaxed text-base mt-4">
             Every partner on our platform goes through a review process before being listed publicly. We highlight their services, completed projects, client reviews, and tier rankings — so you can make an informed decision without spending hours searching across the web.
@@ -61,14 +61,14 @@ export default function About() {
         <section>
           <h2 className="font-heading text-2xl font-semibold mb-4">Our Story</h2>
           <p className="text-muted-foreground leading-relaxed text-base">
-            Shopify Partner Base started with a simple frustration: finding the right Shopify expert felt like searching for a needle in a haystack. Merchants were left to gamble on freelance marketplaces, skim scattered reviews, and hope for the best — while talented partners struggled to stand out in a sea of noise. We knew there had to be a better way. So we built a dedicated space where proven Shopify professionals could be discovered, compared, and hired with confidence. Our mission is to make every Shopify store owner's journey smoother by connecting them with partners who have already helped real businesses succeed. We focus on transparency, verified results, and honest reviews, so the trust is built into the platform itself. From store setup and custom development to marketing, branding, and growth strategy, our partners cover the full lifecycle of a Shopify business. Today, the directory serves a growing global community of merchants and experts, and we are just getting started. Every new partner, review, and success story pushes us closer to a world where no merchant ever has to guess when choosing the right help for their store.
+            Shopify Partners Directory started with a simple frustration: finding the right Shopify expert felt like searching for a needle in a haystack. Merchants were left to gamble on freelance marketplaces, skim scattered reviews, and hope for the best — while talented partners struggled to stand out in a sea of noise. We knew there had to be a better way. So we built a dedicated space where proven Shopify professionals could be discovered, compared, and hired with confidence. Our mission is to make every Shopify store owner's journey smoother by connecting them with partners who have already helped real businesses succeed. We focus on transparency, verified results, and honest reviews, so the trust is built into the platform itself. From store setup and custom development to marketing, branding, and growth strategy, our partners cover the full lifecycle of a Shopify business. Today, the directory serves a growing global community of merchants and experts, and we are just getting started. Every new partner, review, and success story pushes us closer to a world where no merchant ever has to guess when choosing the right help for their store.
           </p>
         </section>
 
         {/* Who builds it */}
         <section>
           <h2 className="font-heading text-2xl font-semibold mb-4">Who Builds It</h2>
-          <p className="text-muted-foreground leading-relaxed text-base">Shopify Partner Base is built and maintained by Fabunmi Samuel And Omoniyi Enitan Johnson a dedicated team passionate about the Shopify ecosystem. We are a group of e-commerce enthusiasts, developers, and community builders who believe that finding the right expert should be simple, transparent, and accessible to everyone. Our team continuously improves the platform based on feedback from both partners and merchants to ensure the best possible experience on all sides.
+          <p className="text-muted-foreground leading-relaxed text-base">Shopify Partners Directory is built and maintained by Fabunmi Samuel And Omoniyi Enitan Johnson a dedicated team passionate about the Shopify ecosystem. We are a group of e-commerce enthusiasts, developers, and community builders who believe that finding the right expert should be simple, transparent, and accessible to everyone. Our team continuously improves the platform based on feedback from both partners and merchants to ensure the best possible experience on all sides.
 
           </p>
         </section>

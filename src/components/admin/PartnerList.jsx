@@ -22,7 +22,7 @@ function getPartnerRank(reviewCount = 0) {
 }
 
 export default function PartnerList(props) {
-  const { partners, onApprove, onRestrict, onRevert, onBulkApprove, onBulkRestrict, onBulkMarkDomain, onEditId, onEditDetails, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, onToggleDomain, coAdminUserIds, pendingCoAdminUserIds, onToggleCoAdmin, currentUserId, coAdminLoadingId, coAdminRoleByUser, pendingCoAdminRoleByUser } = props;
+  const { partners, onApprove, onRestrict, onRevert, onBulkApprove, onBulkRestrict, onBulkMarkDomain, onEditId, onEditDetails, onGenerateReviews, generatingReviews, onToggleVerify, onToggleUnlimitedReviews, onSetBanner, showApprove, onToggleHide, onDelete, domainPaidPartnerIds, onToggleDomain, coAdminUserIds, pendingCoAdminUserIds, onToggleCoAdmin, currentUserId, coAdminLoadingId, coAdminRoleByUser, pendingCoAdminRoleByUser } = props;
   const [selected, setSelected] = useState([]);
 
   if (partners.length === 0) {
@@ -34,9 +34,9 @@ export default function PartnerList(props) {
   const toggleSelectAll = () => setSelected(allSelected ? [] : partners.map(p => p.id));
   const clearSelection = () => setSelected([]);
   const selectDomainPaid = () => {
-    const ids = partners.filter(p => p.domain_purchased).map(p => p.id);
+    const ids = partners.filter(p => domainPaidPartnerIds?.has(p.id)).map(p => p.id);
     setSelected(ids);
-    if (ids.length === 0) toast.info('No domain-marked partners in this list.');
+    if (ids.length === 0) toast.info('No domain-paid partners in this list.');
   };
 
   const handleBulkApprove = () => {

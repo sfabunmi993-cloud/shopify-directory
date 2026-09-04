@@ -1,5 +1,5 @@
-// Builds shareable partner profile links
-// (e.g. /partners/directory/partner/fabunmisamuelgeorge).
+// Builds partner profile links with a .myshopify.com suffix so profile URLs
+// read like a Shopify store domain (e.g. /partner/fabunmisamuelgeorge.myshopify.com).
 
 export function partnerProfilePath(slugOrId) {
   const key = slugOrId || '';

@@ -16,7 +16,9 @@ import PortfolioScroller from '@/components/directory/PortfolioScroller';
 import TestimonialsScroller from '@/components/directory/TestimonialsScroller';
 import ContactModal from '@/components/partner/ContactModal';
 import FlagModal from '@/components/partner/FlagModal';
-
+import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
+import BuyReviewModal from '@/components/partner/BuyReviewModal';
+import BuyDomainModal from '@/components/partner/BuyDomainModal';
 import GenerateTestimonialsModal from '@/components/partner/GenerateTestimonialsModal';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
@@ -45,15 +47,15 @@ const INDUSTRY_LABELS = {
 };
 
 const TIER_CONFIG = {
-  standard: { label: 'Listed Provider', color: 'bg-muted text-muted-foreground border-border' },
-  plus: { label: 'Featured Provider', color: 'bg-primary/10 text-primary border-primary/20' },
-  premium: { label: 'Featured Provider', color: 'bg-amber-50 text-amber-700 border-amber-200' }
+  standard: { label: 'Standard Partner', color: 'bg-muted text-muted-foreground border-border' },
+  plus: { label: 'Plus Partner', color: 'bg-primary/10 text-primary border-primary/20' },
+  premium: { label: 'Premium Partner', color: 'bg-amber-50 text-amber-700 border-amber-200' }
 };
 
 function getPartnerRank(reviewCount = 0) {
-  if (reviewCount >= 150) return { label: 'Featured Provider', color: 'bg-amber-50 text-amber-700 border-amber-200', medal: '🥇' };
-  if (reviewCount >= 50) return { label: 'Featured Provider', color: 'bg-primary/10 text-primary border-primary/20', medal: '🥈' };
-  return { label: 'Listed Provider', color: 'bg-muted text-muted-foreground border-border', medal: '🥉' };
+  if (reviewCount >= 150) return { label: 'Premium Partner', color: 'bg-amber-50 text-amber-700 border-amber-200', medal: '🥇' };
+  if (reviewCount >= 50) return { label: 'Plus Partner', color: 'bg-primary/10 text-primary border-primary/20', medal: '🥈' };
+  return { label: 'Standard Partner', color: 'bg-muted text-muted-foreground border-border', medal: '🥉' };
 }
 
 // ServiceRow removed — specialized services now render as inline accordions below.
@@ -68,7 +70,9 @@ export default function PartnerDetail() {
   const [contactOpen, setContactOpen] = useState(false);
   const [hireOpen, setHireOpen] = useState(false);
   const [flagOpen, setFlagOpen] = useState(false);
-
+  const [premiumOpen, setPremiumOpen] = useState(false);
+  const [buyReviewOpen, setBuyReviewOpen] = useState(false);
+  const [buyDomainOpen, setBuyDomainOpen] = useState(false);
   const [genTestimonialsOpen, setGenTestimonialsOpen] = useState(false);
   const [showAllServices, setShowAllServices] = useState(false);
   const [expandedService, setExpandedService] = useState(null);
@@ -208,14 +212,21 @@ export default function PartnerDetail() {
 
   return (
     <div className="px-3 sm:px-6 lg:px-8 py-4 sm:py-8 max-w-7xl mx-auto">
-      
-
-      
+      <Link to="/directory" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-6">
+        <ArrowLeft className="w-4 h-4 mr-1" /> Back to directory
+      </Link>
 
       {partner.status === 'pending' &&
       <div className="mb-4 bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3 text-amber-600 dark:text-amber-400 text-sm">
           <ShieldAlert className="w-4 h-4 shrink-0 hidden sm:block" />
-          <span className="text-center sm:text-left flex-1">This profile is pending admin approval and is not yet visible in the directory.</span>
+          <span className="text-center sm:text-left flex-1">This profile is pending admin approval and is not yet visible in the directory. Purchase a domain name within 2 days — if the domain is not purchased, your account will be deleted by admin after 2 days.</span>
+          {user && partner.created_by_id === user.id && !partner.domain_purchased &&
+        <Button
+          onClick={() => setBuyDomainOpen(true)}
+          className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full h-9 px-4 shrink-0">
+            <Globe className="w-4 h-4" /> Buy Domain
+          </Button>
+        }
         </div>}
 
       {partner.admin_banner && user && (user.id === partner.created_by_id || user.role === 'admin') &&
@@ -237,14 +248,20 @@ export default function PartnerDetail() {
             <PartnerAvatar partner={partner} size="lg" shape="rounded-full" className="border-2 border-background shadow-md" />
           </div>
 
-          {/* Featured provider badge */}
-          {(partner.partner_tier === 'premium' || partner.partner_tier === 'plus') &&
-          <div className="absolute top-3 right-3">
-              <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-bold tracking-wide text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-400">
-                <Award className="w-3 h-3" /> FEATURED PROVIDER
-              </span>
-            </div>
-          }
+          {/* Partner tier badge */}
+          {(() => {
+            const tierLabel = partner.partner_tier === 'premium' ? 'PREMIER' : partner.partner_tier === 'plus' ? 'PLUS' : '';
+            return tierLabel ?
+            <div className="absolute top-3 right-3 inline-flex items-center gap-1.5">
+                <img src="https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/602604d47_image.png" alt="Shopify" className="w-7 h-7 rounded object-contain" />
+                <span className="flex flex-col leading-none gap-0.5">
+                  <span className="text-[9px] font-bold tracking-wide text-foreground">SHOPIFY</span>
+                  <span className="text-[9px] font-bold tracking-wide text-foreground">{tierLabel}</span>
+                  <span className="text-[9px] font-bold tracking-wide text-muted-foreground">PARTNER</span>
+                </span>
+              </div> :
+            null;
+          })()}
 
           <div className="pt-16 px-5 pb-5 space-y-4">
             {/* Title + badges */}
@@ -280,7 +297,7 @@ export default function PartnerDetail() {
               {partner.years_as_partner > 0 &&
               <span className="flex items-center gap-1">
                 <User className="w-4 h-4" style={{ color: '#717171' }} />
-                Joined {new Date().getFullYear() - partner.years_as_partner}
+                Partner since {new Date().getFullYear() - partner.years_as_partner}
               </span>
               }
             </div>
@@ -308,7 +325,13 @@ export default function PartnerDetail() {
             </a>
             }
 
-
+            {user && partner.created_by_id === user.id && partner.partner_tier !== 'premium' &&
+            <button
+              onClick={() => setPremiumOpen(true)}
+              className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 rounded-full">
+              ✨ Get Premium Badge
+            </button>
+            }
 
             <div className="flex gap-2">
               <button
@@ -463,7 +486,23 @@ export default function PartnerDetail() {
 
             </div>
 
-
+            {/* Owner-only actions */}
+            <div className="space-y-2 pt-4 border-t border-border">
+              {user && partner.created_by_id === user.id &&
+              <button
+                onClick={() => setBuyReviewOpen(true)}
+                className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 rounded-full">
+                <Star className="w-4 h-4 fill-amber-400 text-amber-500" /> Buy Reviews
+              </button>
+              }
+              {user && partner.created_by_id === user.id && partner.status === 'pending' &&
+              <button
+                onClick={() => setBuyDomainOpen(true)}
+                className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-primary text-primary-foreground hover:bg-primary/90 rounded-full">
+                <Globe className="w-4 h-4" /> Buy Domain
+              </button>
+              }
+            </div>
 
             {user?.role === 'admin' &&
             <div className="space-y-2 pt-4 border-t border-border">
@@ -607,7 +646,7 @@ export default function PartnerDetail() {
 
           {/* Reviews */}
           <div>
-            <h2 className="font-heading text-xl font-bold text-foreground mb-4">Customer Reviews</h2>
+            <h2 className="font-heading text-xl font-bold text-foreground mb-4">Reviews</h2>
             <ReviewSection partnerId={partnerId} onReviewAdded={handleReviewAdded} unlimitedReviews={partner?.unlimited_reviews} partnerStatus={partner?.status} />
           </div>
         </div>
@@ -619,7 +658,9 @@ export default function PartnerDetail() {
           <ContactModal partner={partner} isOpen={contactOpen} onClose={() => setContactOpen(false)} />
           <ContactModal partner={partner} isOpen={hireOpen} onClose={() => setHireOpen(false)} mode="hire" />
           <FlagModal partner={partner} isOpen={flagOpen} onClose={() => setFlagOpen(false)} />
-
+          <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
+          <BuyReviewModal partner={partner} isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} />
+          <BuyDomainModal partner={partner} isOpen={buyDomainOpen} onClose={() => setBuyDomainOpen(false)} user={user} />
           <GenerateTestimonialsModal partner={partner} isOpen={genTestimonialsOpen} onClose={() => setGenTestimonialsOpen(false)} onGenerated={handleReviewAdded} />
         </>
       }
