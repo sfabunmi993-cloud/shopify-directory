@@ -43,7 +43,7 @@ export default function Home() {
                   <Link to="/directory" className="bg-[#843e3e]">Hire an expert</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="rounded-full text-base h-12 px-8 bg-transparent text-foreground border border-input hover:bg-accent">
-                  <a href="https://www.shopify.com/" target="_blank" rel="noopener noreferrer">Login</a>
+                  <a href="https://www.shopify.com/" target="_blank" rel="noopener noreferrer" className="hidden">Login</a>
                 </Button>
               </div>
               <div className="mt-8 flex items-center gap-6 text-sm text-muted-foreground">
