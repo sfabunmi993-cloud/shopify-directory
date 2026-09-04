@@ -544,7 +544,7 @@ export default function MyProfile() {
               <Input type="number" value={form.starting_price || ''} onChange={(e) => set('starting_price', e.target.value)} />
             </div>
             <div className="space-y-1.5">
-              <Label>Partner since (year)</Label>
+              <Label>Join date (year)</Label>
               <Input
                 type="number"
                 min="1990"
@@ -554,7 +554,7 @@ export default function MyProfile() {
                   const year = Number(e.target.value);
                   set('years_as_partner', year ? Math.max(0, new Date().getFullYear() - year) : 0);
                 }} />
-              <p className="text-xs text-muted-foreground">The year you became a Shopify partner. Shown as "Partner since" on your public profile.</p>
+              <p className="text-xs text-muted-foreground">The year you joined the platform. Shown as "Joined" on your public profile.</p>
             </div>
             <div className="space-y-1.5">
               <Label>Completed projects</Label>
@@ -676,8 +676,8 @@ export default function MyProfile() {
 
         {/* Shopify Dashboard Screenshot */}
         <div>
-          <h2 className="font-semibold text-base mb-1">Shopify Partner Dashboard Screenshot</h2>
-          <p className="text-xs text-muted-foreground mb-4">Upload a screenshot of your Shopify Partner Dashboard to showcase your experience. It will be displayed on your public profile.</p>
+          <h2 className="font-semibold text-base mb-1">Provider Dashboard Screenshot</h2>
+          <p className="text-xs text-muted-foreground mb-4">Upload a screenshot of your provider dashboard to showcase your experience. It will be displayed on your public profile.</p>
           <div className="space-y-3">
             {form.dashboard_screenshot_url ?
             <div className="relative rounded-xl overflow-hidden border border-border">

@@ -58,7 +58,7 @@ export default function PartnerCard({ partner, compareSelected, onToggleCompare 
             </div>
             {partner.partner_tier && partner.partner_tier !== 'standard' &&
               <Badge variant="outline" className={`text-xs shrink-0 my-1 ${TIER_STYLES[partner.partner_tier]}`}>
-                {partner.partner_tier.charAt(0).toUpperCase() + partner.partner_tier.slice(1)}
+                Featured Provider
               </Badge>
               }
           </div>

@@ -47,15 +47,15 @@ const INDUSTRY_LABELS = {
 };
 
 const TIER_CONFIG = {
-  standard: { label: 'Standard Partner', color: 'bg-muted text-muted-foreground border-border' },
-  plus: { label: 'Plus Partner', color: 'bg-primary/10 text-primary border-primary/20' },
-  premium: { label: 'Premium Partner', color: 'bg-amber-50 text-amber-700 border-amber-200' }
+  standard: { label: 'Listed Provider', color: 'bg-muted text-muted-foreground border-border' },
+  plus: { label: 'Featured Provider', color: 'bg-primary/10 text-primary border-primary/20' },
+  premium: { label: 'Featured Provider', color: 'bg-amber-50 text-amber-700 border-amber-200' }
 };
 
 function getPartnerRank(reviewCount = 0) {
-  if (reviewCount >= 150) return { label: 'Premium Partner', color: 'bg-amber-50 text-amber-700 border-amber-200', medal: '🥇' };
-  if (reviewCount >= 50) return { label: 'Plus Partner', color: 'bg-primary/10 text-primary border-primary/20', medal: '🥈' };
-  return { label: 'Standard Partner', color: 'bg-muted text-muted-foreground border-border', medal: '🥉' };
+  if (reviewCount >= 150) return { label: 'Featured Provider', color: 'bg-amber-50 text-amber-700 border-amber-200', medal: '🥇' };
+  if (reviewCount >= 50) return { label: 'Featured Provider', color: 'bg-primary/10 text-primary border-primary/20', medal: '🥈' };
+  return { label: 'Listed Provider', color: 'bg-muted text-muted-foreground border-border', medal: '🥉' };
 }
 
 // ServiceRow removed — specialized services now render as inline accordions below.
@@ -248,20 +248,14 @@ export default function PartnerDetail() {
             <PartnerAvatar partner={partner} size="lg" shape="rounded-full" className="border-2 border-background shadow-md" />
           </div>
 
-          {/* Partner tier badge */}
-          {(() => {
-            const tierLabel = partner.partner_tier === 'premium' ? 'PREMIER' : partner.partner_tier === 'plus' ? 'PLUS' : '';
-            return tierLabel ?
-            <div className="absolute top-3 right-3 inline-flex items-center gap-1.5">
-                <img src="https://media.base44.com/images/public/6a25a3e760ebc5e135a0582b/602604d47_image.png" alt="Shopify" className="w-7 h-7 rounded object-contain" />
-                <span className="flex flex-col leading-none gap-0.5">
-                  <span className="text-[9px] font-bold tracking-wide text-foreground">SHOPIFY</span>
-                  <span className="text-[9px] font-bold tracking-wide text-foreground">{tierLabel}</span>
-                  <span className="text-[9px] font-bold tracking-wide text-muted-foreground">PARTNER</span>
-                </span>
-              </div> :
-            null;
-          })()}
+          {/* Featured provider badge */}
+          {(partner.partner_tier === 'premium' || partner.partner_tier === 'plus') &&
+          <div className="absolute top-3 right-3">
+              <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-bold tracking-wide text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-400">
+                <Award className="w-3 h-3" /> FEATURED PROVIDER
+              </span>
+            </div>
+          }
 
           <div className="pt-16 px-5 pb-5 space-y-4">
             {/* Title + badges */}
@@ -297,7 +291,7 @@ export default function PartnerDetail() {
               {partner.years_as_partner > 0 &&
               <span className="flex items-center gap-1">
                 <User className="w-4 h-4" style={{ color: '#717171' }} />
-                Partner since {new Date().getFullYear() - partner.years_as_partner}
+                Joined {new Date().getFullYear() - partner.years_as_partner}
               </span>
               }
             </div>
@@ -646,7 +640,7 @@ export default function PartnerDetail() {
 
           {/* Reviews */}
           <div>
-            <h2 className="font-heading text-xl font-bold text-foreground mb-4">Reviews</h2>
+            <h2 className="font-heading text-xl font-bold text-foreground mb-4">Customer Reviews</h2>
             <ReviewSection partnerId={partnerId} onReviewAdded={handleReviewAdded} unlimitedReviews={partner?.unlimited_reviews} partnerStatus={partner?.status} />
           </div>
         </div>

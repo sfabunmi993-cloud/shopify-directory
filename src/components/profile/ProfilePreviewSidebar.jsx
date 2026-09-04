@@ -13,7 +13,7 @@ import PartnerAvatar from '@/components/directory/PartnerAvatar';
 export default function ProfilePreviewSidebar({ partner }) {
   if (!partner) return null;
 
-  const tierLabel = partner.partner_tier === 'premium' ? 'PLATINUM' : partner.partner_tier === 'plus' ? 'PLUS' : '';
+  const isFeatured = partner.partner_tier === 'premium' || partner.partner_tier === 'plus';
   const partnerSinceYear = partner.years_as_partner > 0 ? new Date().getFullYear() - partner.years_as_partner : null;
 
   return (
@@ -23,11 +23,10 @@ export default function ProfilePreviewSidebar({ partner }) {
         <PartnerAvatar partner={partner} size="lg" shape="rounded-full" className="border-2 border-white shadow-md" />
       </div>
 
-      {/* Partner tier badge */}
-      {tierLabel && (
-        <div className="absolute top-3 right-3 inline-flex items-center gap-1 bg-black text-white text-[10px] font-semibold tracking-wide px-2 py-1 rounded">
-          <span className="w-3.5 h-3.5 bg-white text-black rounded-sm flex items-center justify-center text-[10px] font-bold leading-none">S</span>
-          SHOPIFY {tierLabel} PARTNER
+      {/* Featured provider badge */}
+      {isFeatured && (
+        <div className="absolute top-3 right-3 inline-flex items-center gap-1 bg-black text-white text-[10px] font-semibold tracking-wide px-2.5 py-1 rounded-full">
+          FEATURED PROVIDER
         </div>
       )}
 
@@ -61,7 +60,7 @@ export default function ProfilePreviewSidebar({ partner }) {
           {partnerSinceYear && (
             <span className="flex items-center gap-1">
               <User className="w-4 h-4" style={{ color: '#717171' }} />
-              Partner since {partnerSinceYear}
+              Joined {partnerSinceYear}
             </span>
           )}
         </div>

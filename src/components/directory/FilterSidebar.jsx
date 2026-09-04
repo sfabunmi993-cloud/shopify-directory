@@ -41,16 +41,9 @@ const LOCATIONS = [
   { label: 'Nigeria', value: 'Nigeria' },
 ];
 
-const TIERS = [
-  { label: 'All Tiers', value: 'all' },
-  { label: 'Standard', value: 'standard' },
-  { label: 'Plus', value: 'plus' },
-  { label: 'Premium', value: 'premium' },
-];
-
 export default function FilterSidebar({ filters, onFilterChange, onClearFilters }) {
   const hasActiveFilters = filters.category !== 'all' || filters.industry !== 'all' || filters.location !== 'all' || 
-    filters.tier !== 'all' || filters.minPrice || filters.maxPrice;
+    filters.minPrice || filters.maxPrice;
 
   return (
     <div className="space-y-6">
@@ -116,16 +109,6 @@ export default function FilterSidebar({ filters, onFilterChange, onClearFilters 
         />
       </div>
 
-      <div className="border-t border-border pt-5 space-y-2">
-        <Label className="text-sm font-semibold text-foreground">Partner Tier</Label>
-        <MobileSelect
-          options={TIERS}
-          value={filters.tier}
-          onValueChange={(v) => onFilterChange('tier', v)}
-          placeholder="Select a partner tier"
-          label="Partner Tier"
-        />
-      </div>
     </div>
   );
 }

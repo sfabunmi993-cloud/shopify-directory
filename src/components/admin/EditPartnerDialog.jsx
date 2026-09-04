@@ -33,9 +33,9 @@ const SERVICE_CATEGORIES = [
 ];
 
 const TIERS = [
-  { label: 'Standard', value: 'standard' },
-  { label: 'Plus', value: 'plus' },
-  { label: 'Premium', value: 'premium' },
+  { label: 'Listed Provider', value: 'standard' },
+  { label: 'Featured Provider (Plus)', value: 'plus' },
+  { label: 'Featured Provider (Premium)', value: 'premium' },
 ];
 
 export default function EditPartnerDialog({ partner, open, onClose, onSaved }) {
@@ -144,7 +144,7 @@ export default function EditPartnerDialog({ partner, open, onClose, onSaved }) {
 
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <Label>Partner Tier</Label>
+              <Label>Provider Tier</Label>
               <Select value={form.partner_tier} onValueChange={v => set('partner_tier', v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>

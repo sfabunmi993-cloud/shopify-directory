@@ -79,7 +79,7 @@ export default function ComparePartners({ partners, onRemove, onClose }) {
                   <h3 className="font-semibold text-sm text-foreground leading-tight">{p.name}</h3>
                   {p.partner_tier && p.partner_tier !== 'standard' && (
                     <Badge variant="outline" className={`text-xs mt-1 ${TIER_STYLES[p.partner_tier]}`}>
-                      {p.partner_tier.charAt(0).toUpperCase() + p.partner_tier.slice(1)}
+                      Featured Provider
                     </Badge>
                   )}
                 </div>
