@@ -6,6 +6,14 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
+
+    // Only admins may remove purchased reviews.
+    let caller = null;
+    try { caller = await base44.auth.me(); } catch {}
+    if (!caller || caller.role !== 'admin') {
+      return Response.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const body = await req.json();
     const { partner_id, count } = body?.data || body;
 

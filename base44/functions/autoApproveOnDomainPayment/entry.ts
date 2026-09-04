@@ -4,8 +4,15 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const body = await req.json();
-    const payment = body?.data;
-    if (!payment) return Response.json({ skipped: true, reason: 'no data' });
+    // Trust only the database: resolve the payment record referenced by the trigger.
+    const paymentId = body?.event?.entity_id || body?.data?.id;
+    if (!paymentId) return Response.json({ skipped: true, reason: 'no payment reference' });
+    let payment;
+    try {
+      payment = await base44.asServiceRole.entities.Payment.get(paymentId);
+    } catch {
+      return Response.json({ skipped: true, reason: 'payment not found' });
+    }
     if (!(payment.description || '').includes('Domain Purchase')) {
       return Response.json({ skipped: true, reason: 'not a domain purchase' });
     }

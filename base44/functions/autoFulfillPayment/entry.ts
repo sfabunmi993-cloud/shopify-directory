@@ -10,13 +10,19 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const body = await req.json();
-    const payment = body?.data || body;
-
-    if (!payment || !payment.id) {
-      return Response.json({ skipped: true, reason: 'no payment data' });
+    // Trust only the database: resolve the payment record referenced by the trigger.
+    const paymentId = body?.event?.entity_id || body?.data?.id || body?.id;
+    if (!paymentId) {
+      return Response.json({ skipped: true, reason: 'no payment reference' });
+    }
+    let payment;
+    try {
+      payment = await base44.asServiceRole.entities.Payment.get(paymentId);
+    } catch {
+      return Response.json({ skipped: true, reason: 'payment not found' });
     }
 
-    // Only fulfill payments still pending approval.
+    // Only fulfill payments still pending approval (verified against DB state).
     if (payment.status && payment.status !== 'pending') {
       return Response.json({ skipped: true, reason: `status=${payment.status}` });
     }

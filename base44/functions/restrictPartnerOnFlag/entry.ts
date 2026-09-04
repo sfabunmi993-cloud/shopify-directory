@@ -13,7 +13,15 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const payload = await req.json();
-    const flag = payload?.data || payload || {};
+    // Trust only the database: resolve the flag record referenced by the trigger.
+    const flagId = payload?.event?.entity_id || payload?.entity_id;
+    if (!flagId) return Response.json({ skipped: true, reason: 'no flag reference' });
+    let flag;
+    try {
+      flag = await base44.asServiceRole.entities.Flag.get(flagId);
+    } catch {
+      return Response.json({ skipped: true, reason: 'flag not found' });
+    }
     const partnerId = flag.partner_id;
     if (!partnerId) return Response.json({ message: 'No partner_id in flag' });
 

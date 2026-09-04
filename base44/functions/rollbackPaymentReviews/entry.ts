@@ -6,11 +6,25 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const body = await req.json();
-    const payment = body?.data || body;
 
-    if (!payment || !payment.id) {
-      return Response.json({ skipped: true, reason: 'no payment data' });
+    // Only admins may roll back payment reviews.
+    let caller = null;
+    try { caller = await base44.auth.me(); } catch {}
+    if (!caller || caller.role !== 'admin') {
+      return Response.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    const body = await req.json();
+    // Trust only the database: resolve the payment record by id.
+    const paymentId = body?.data?.id || body?.id;
+    if (!paymentId) {
+      return Response.json({ skipped: true, reason: 'no payment reference' });
+    }
+    let payment;
+    try {
+      payment = await base44.asServiceRole.entities.Payment.get(paymentId);
+    } catch {
+      return Response.json({ skipped: true, reason: 'payment not found' });
     }
 
     const partnerId = payment.partner_id;
