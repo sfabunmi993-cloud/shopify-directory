@@ -1,9 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, LayoutGrid, MessageSquare, Heart, User } from 'lucide-react';
+import { LayoutGrid, MessageSquare, Heart, User } from 'lucide-react';
 
 const TABS = [
-  { to: '/', label: 'Home', icon: Home, exact: true },
   { to: '/directory', label: 'Directory', icon: LayoutGrid },
   { to: '/messages', label: 'Messages', icon: MessageSquare },
   { to: '/favorites', label: 'Favorites', icon: Heart },
@@ -73,7 +72,7 @@ export default function MobileBottomNav() {
       className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-background/95 backdrop-blur border-t border-border safe-pb select-none"
       aria-label="Primary mobile navigation"
     >
-      <div className="grid grid-cols-5">
+      <div className="grid grid-cols-4">
         {TABS.map(({ to, label, icon: Icon }) => {
           const active = isActive({ to, exact: to === '/' });
           return (

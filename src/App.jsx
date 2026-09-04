@@ -30,7 +30,6 @@ const LoadingScreen = () => (isNativeApp() ? <SplashScreen /> : (
 ));
 
 // Code-split main views for faster WebView cold-start and lower initial bundle.
-const Home = lazy(() => import('@/pages/Home'));
 const Directory = lazy(() => import('@/pages/Directory'));
 const PartnerDetail = lazy(() => import('@/pages/PartnerDetail'));
 const MyProfile = lazy(() => import('@/pages/MyProfile'));
@@ -67,7 +66,7 @@ const AuthenticatedApp = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route element={<DirectoryLayout />}>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Directory />} />
         <Route path="/directory" element={<Directory />} />
         <Route path="/partners/directory/partner/:slug" element={<PartnerDetail />} />
         <Route path="/partner/:slug" element={<PartnerDetail />} />
