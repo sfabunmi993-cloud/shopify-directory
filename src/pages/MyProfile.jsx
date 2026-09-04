@@ -13,10 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import InquiriesDashboard from '@/components/profile/InquiriesDashboard';
 import ServiceDescriptionEditor from '@/components/profile/ServiceDescriptionEditor';
 import ProjectsSection from '@/components/profile/ProjectsSection';
-import BuyReviewModal from '@/components/partner/BuyReviewModal';
-import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
-import BuyDomainModal from '@/components/partner/BuyDomainModal';
-import BuyDomainPlanModal from '@/components/partner/BuyDomainPlanModal';
+
 import PortfolioEditor from '@/components/profile/PortfolioEditor';
 import TestimonialsEditor from '@/components/profile/TestimonialsEditor';
 import GenerateTestimonialsModal from '@/components/partner/GenerateTestimonialsModal';
@@ -67,10 +64,7 @@ export default function MyProfile() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [buyReviewOpen, setBuyReviewOpen] = useState(false);
-  const [premiumOpen, setPremiumOpen] = useState(false);
-  const [buyDomainOpen, setBuyDomainOpen] = useState(false);
-  const [buyDomainPlanOpen, setBuyDomainPlanOpen] = useState(false);
+
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingScreenshot, setUploadingScreenshot] = useState(false);
   const [newService, setNewService] = useState('');
@@ -212,8 +206,6 @@ export default function MyProfile() {
     }
   };
 
-  const domainPlanActive = partner?.domain_plan_active && (!partner?.domain_plan_expires || new Date(partner.domain_plan_expires) > new Date());
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -239,31 +231,10 @@ export default function MyProfile() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
           <div className="flex flex-wrap items-center gap-1.5">
-          <Button
-              onClick={() => setBuyReviewOpen(true)}
-              className="rounded-full hover:bg-amber-600 text-white gap-1.5 shadow-sm bg-gray-600"
-              size="sm">
-              
-            <Star className="w-4 h-4 fill-white" /> Buy Reviews
-          </Button>
-          {!partner?.domain_purchased &&
-            <button
-              onClick={() => setBuyDomainOpen(true)}
-              className="inline-flex items-center gap-1 text-xs font-semibold border border-blue-200 rounded-full px-2.5 py-0.5 w-fit hover:bg-blue-100 transition-colors bg-blue-600 text-white">
-              <Globe className="w-3 h-3" /> Buy Domain
-            </button>
-            }
-          {partner?.is_verified ?
+          {partner?.is_verified &&
             <span className="inline-flex items-center gap-1 text-xs text-blue-600 font-semibold bg-blue-50 border border-blue-200 rounded-full px-2.5 py-0.5 w-fit">
               <ShieldCheck className="w-3.5 h-3.5" /> Verified
-            </span> :
-
-            <button
-              onClick={() => setPremiumOpen(true)}
-              className="inline-flex items-center gap-1 text-xs font-semibold border border-amber-200 rounded-full px-2.5 py-0.5 w-fit hover:bg-amber-100 transition-colors bg-gray-900 text-gray-50">
-              
-              ✨ Buy Verification Badge
-            </button>
+            </span>
             }
           </div>
           <div class="min-w-0">
@@ -338,12 +309,7 @@ export default function MyProfile() {
           <div className="flex-1">
             <span><strong>Pending approval.</strong> Your profile is under review. You'll be visible in the directory once approved by an admin.</span>
           </div>
-          <button
-          onClick={() => setBuyDomainOpen(true)}
-          className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-600 text-white hover:bg-amber-700 transition-colors">
-          
-            <Globe className="w-3.5 h-3.5" /> Buy Domain
-          </button>
+
         </div>
       }
       {partner?.status === 'approved' &&
@@ -385,23 +351,7 @@ export default function MyProfile() {
 
       
 
-      {/* Upgrade Plan banner */}
-      {partner?.can_connect_domain && !domainPlanActive &&
-      <div className="mb-4 rounded-2xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4">
-        <div className="flex items-start gap-3 flex-1">
-          <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
-            <Calendar className="w-5 h-5 text-indigo-600" />
-          </div>
-          <div>
-            <p className="font-semibold text-foreground">Upgrade to the Monthly Domain Plan</p>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">You're approved to connect an external domain. Subscribe to the monthly plan to unlock domain connection for 30 days.</p>
-          </div>
-        </div>
-        <Button className="rounded-full shrink-0" onClick={() => setBuyDomainPlanOpen(true)}>
-          <Calendar className="w-4 h-4 mr-1.5" /> Buy monthly plan
-        </Button>
-      </div>
-      }
+
 
       <div className="grid md:grid-cols-[300px_1fr] gap-4 sm:gap-8 items-start mt-2">
         <ProfilePreviewSidebar partner={partner} />
@@ -617,19 +567,12 @@ export default function MyProfile() {
           className={`rounded-xl transition-all duration-500 ${highlightDomain ? 'ring-4 ring-indigo-300/60 bg-indigo-50/40 p-3 -mx-3' : ''}`}>
           <h2 className="font-semibold text-base mb-1">External domain</h2>
           {partner?.can_connect_domain ? (
-            domainPlanActive ? (
-              <>
-                <p className="text-xs text-muted-foreground mb-3">Connect a domain you own to your profile. Enter it without https:// (e.g. my-agency.com). It will show on your public profile.</p>
-                {partner?.domain_plan_expires &&
-                  <p className="text-xs text-emerald-600 mb-4">Monthly plan active until {new Date(partner.domain_plan_expires).toLocaleDateString()}.</p>
-                }
-                <div className="flex gap-2 max-w-md">
-                  <Input placeholder="my-agency.com" value={form.connected_domain || ''} onChange={(e) => set('connected_domain', e.target.value)} />
-                </div>
-              </>
-            ) : (
-              <p className="text-xs text-muted-foreground">Subscribe to the monthly plan above to unlock external domain connection for your profile.</p>
-            )
+            <>
+              <p className="text-xs text-muted-foreground mb-3">Connect a domain you own to your profile. Enter it without https:// (e.g. my-agency.com). It will show on your public profile.</p>
+              <div className="flex gap-2 max-w-md">
+                <Input placeholder="my-agency.com" value={form.connected_domain || ''} onChange={(e) => set('connected_domain', e.target.value)} />
+              </div>
+            </>
           ) : (
             <p className="text-xs text-muted-foreground">External domain connection is not enabled for your account. Contact admin to request access.</p>
           )}
@@ -877,33 +820,7 @@ export default function MyProfile() {
           } catch (_) { /* ignore */ }
         }}
       />
-      <BuyReviewModal isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} partner={partner} />
-      <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
-      <BuyDomainModal partner={partner} isOpen={buyDomainOpen} onClose={async () => {
-        setBuyDomainOpen(false);
-        try {
-          const p = await base44.entities.Partner.get(partner.id);
-          if (p) { setPartner(p); setForm(p); }
-        } catch (_) { /* ignore */ }
-      }} user={user} />
-      <BuyDomainPlanModal
-        partner={partner}
-        isOpen={buyDomainPlanOpen}
-        onClose={async () => {
-          setBuyDomainPlanOpen(false);
-          try {
-            const p = await base44.entities.Partner.get(partner.id);
-            if (p) { setPartner(p); setForm(p); }
-            if (p?.domain_plan_active) {
-              setTimeout(() => {
-                document.getElementById('connect-domain-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                setHighlightDomain(true);
-                setTimeout(() => setHighlightDomain(false), 4000);
-              }, 250);
-            }
-          } catch (_) { /* ignore */ }
-        }}
-        user={user} />
+
 
       <Dialog open={deleteOpen} onOpenChange={(o) => !deleting && setDeleteOpen(o)}>
         <DialogContent className="max-w-md">

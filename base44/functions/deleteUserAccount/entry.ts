@@ -30,9 +30,6 @@ export default async function(req) {
     await sr.Project.deleteMany({ client_user_id: uid });
     await sr.Project.deleteMany({ created_by_id: uid });
 
-    // Payments
-    await sr.Payment.deleteMany({ user_id: uid });
-
     // Direct messages
     await sr.DirectMessage.deleteMany({ sender_id: uid });
     await sr.DirectMessage.deleteMany({ recipient_id: uid });

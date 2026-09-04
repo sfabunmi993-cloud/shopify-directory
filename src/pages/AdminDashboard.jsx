@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, ShieldCheck, Users, Flag, Eye, EyeOff, Hash, Edit2, Star, BadgeCheck, CreditCard, DollarSign, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2, Infinity, Bell, Landmark, ImageIcon } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Search, ShieldAlert, ShieldCheck, Users, Flag, Eye, EyeOff, Hash, Edit2, Star, BadgeCheck, Mail, Send, BarChart3, TrendingUp, Megaphone, Plus, Trash2, Infinity, Bell } from 'lucide-react';
 import AnnouncementsSection from '@/components/admin/AnnouncementsSection';
 import AdsSection from '@/components/admin/AdsSection';
 import SignupControlSection from '@/components/admin/SignupControlSection';
@@ -16,7 +16,6 @@ import AnalyticsSection from '@/components/admin/AnalyticsSection';
 import PartnerList from '@/components/admin/PartnerList';
 import EditPartnerDialog from '@/components/admin/EditPartnerDialog';
 import CoAdminRoleDialog, { getAccessibleTabs, CO_ADMIN_ROLES } from '@/components/admin/CoAdminRoleDialog';
-import { DEFAULT_PRICING } from '@/hooks/usePricing';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
@@ -40,7 +39,6 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [partners, setPartners] = useState([]);
   const [flags, setFlags] = useState([]);
-  const [payments, setPayments] = useState([]);
   const [search, setSearch] = useState('');
   const [restrictDialog, setRestrictDialog] = useState(null);
   const [restrictReason, setRestrictReason] = useState('');
@@ -130,17 +128,15 @@ export default function AdminDashboard() {
   }, [navigate]);
 
   const loadData = async () => {
-    const [allPartners, allFlags, allPayments, allAnnouncements, allUsers, allInvites] = await Promise.all([
+    const [allPartners, allFlags, allAnnouncements, allUsers, allInvites] = await Promise.all([
       base44.entities.Partner.list('-created_date', 200),
       base44.entities.Flag.list('-created_date', 200),
-      base44.entities.Payment.list('-created_date', 200),
       base44.entities.Announcement.list('-created_date', 50),
       base44.entities.User.list('-created_date', 500),
       base44.entities.CoAdminInvite.list('-created_date', 200),
     ]);
     setPartners(allPartners);
     setFlags(allFlags);
-    setPayments(allPayments);
     setAnnouncements(allAnnouncements);
     setUsers(allUsers);
     setCoAdminInvites(allInvites);
@@ -448,42 +444,6 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleApprovePayment = async (payment) => {
-    await base44.entities.Payment.update(payment.id, { status: 'approved' });
-    // If this is a premium badge purchase, upgrade the partner tier
-    if (payment.partner_id && payment.description?.includes('Premium Badge')) {
-      await base44.entities.Partner.update(payment.partner_id, { partner_tier: 'premium' });
-      toast.success('Payment approved & Premium badge granted!');
-    } else {
-      toast.success('Payment approved!');
-    }
-    // Send confirmation email to user
-    try {
-      await base44.functions.invoke('sendPaymentConfirmationEmail', {
-        userEmail: payment.user_email,
-        userName: payment.user_name,
-        paymentType: payment.description || 'Purchase',
-        amount: payment.amount,
-      });
-    } catch (err) {
-      console.error('Failed to send confirmation email:', err);
-      // Don't show error to admin - payment was still approved
-    }
-    loadData();
-  };
-
-  const handleRejectPayment = async (payment) => {
-    await base44.entities.Payment.update(payment.id, { status: 'rejected' });
-    // Remove any reviews that were auto-added for this payment and recompute the rating.
-    try {
-      await base44.functions.invoke('rollbackPaymentReviews', { id: payment.id, partner_id: payment.partner_id });
-    } catch (err) {
-      console.error('Failed to roll back reviews:', err);
-    }
-    toast.success('Payment rejected & linked reviews removed.');
-    loadData();
-  };
-
   const handleDismissFlag = async (flag) => {
     await base44.entities.Flag.update(flag.id, { status: 'dismissed' });
     toast.success('Flag dismissed');
@@ -556,16 +516,6 @@ export default function AdminDashboard() {
   const approved = filtered.filter(p => p.status === 'approved');
   const restricted = filtered.filter(p => p.status === 'restricted');
   const pendingFlags = flags.filter(f => f.status === 'pending');
-  const pendingPayments = payments.filter(p => p.status === 'pending');
-
-  const domainPaidIds = new Set(
-    payments
-      .filter(p => p.status !== 'rejected' && (p.description || '').includes('Domain Purchase'))
-      .map(p => p.partner_id)
-      .filter(Boolean)
-  );
-  partners.forEach(p => { if (p.domain_purchased) domainPaidIds.add(p.id); });
-
   const coAdminUserIds = new Set(users.filter(u => u.role === 'admin').map(u => u.id));
   const pendingCoAdminUserIds = new Set(coAdminInvites.filter(i => i.status === 'pending').map(i => i.user_id));
   const accessibleTabs = getAccessibleTabs(currentUser);
@@ -621,13 +571,6 @@ export default function AdminDashboard() {
           </div>
           <p className="text-2xl font-bold text-red-700">{pendingFlags.length}</p>
         </div>
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 col-span-2 md:col-span-1">
-          <div className="flex items-center gap-2 mb-1">
-            <CreditCard className="w-4 h-4 text-blue-600" />
-            <span className="text-xs text-blue-700">Pending Payments</span>
-          </div>
-          <p className="text-2xl font-bold text-blue-700">{pendingPayments.length}</p>
-        </div>
       </div>
 
       <div className="relative mb-6">
@@ -657,11 +600,6 @@ export default function AdminDashboard() {
               Restricted <Badge variant="secondary" className="ml-1.5">{restricted.length}</Badge>
             </TabsTrigger>
           )}
-          {accessibleTabs.includes('payments') && (
-            <TabsTrigger value="payments">
-              Payments <Badge variant="secondary" className="ml-1.5">{pendingPayments.length}</Badge>
-            </TabsTrigger>
-          )}
           {accessibleTabs.includes('flags') && (
             <TabsTrigger value="flags">
               Flags <Badge variant="secondary" className="ml-1.5">{pendingFlags.length}</Badge>
@@ -669,7 +607,7 @@ export default function AdminDashboard() {
           )}
           {accessibleTabs.includes('pricing') && (
             <TabsTrigger value="pricing">
-              Pricing
+              Settings
             </TabsTrigger>
           )}
           {accessibleTabs.includes('email-blast') && (
@@ -711,23 +649,19 @@ export default function AdminDashboard() {
         </TabsList>
 
         <TabsContent value="pending">
-          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} pendingCoAdminUserIds={pendingCoAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} coAdminRoleByUser={coAdminRoleByUser} pendingCoAdminRoleByUser={pendingCoAdminRoleByUser} />
+          <PartnerList partners={pending} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} pendingCoAdminUserIds={pendingCoAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} coAdminRoleByUser={coAdminRoleByUser} pendingCoAdminRoleByUser={pendingCoAdminRoleByUser} />
         </TabsContent>
         <TabsContent value="approved">
-          <PartnerList partners={approved} onRestrict={setRestrictDialog} onRevert={handleRevertToPending} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove={false} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} pendingCoAdminUserIds={pendingCoAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} coAdminRoleByUser={coAdminRoleByUser} pendingCoAdminRoleByUser={pendingCoAdminRoleByUser} />
+          <PartnerList partners={approved} onRestrict={setRestrictDialog} onRevert={handleRevertToPending} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} showApprove={false} onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} pendingCoAdminUserIds={pendingCoAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} coAdminRoleByUser={coAdminRoleByUser} pendingCoAdminRoleByUser={pendingCoAdminRoleByUser} />
         </TabsContent>
         <TabsContent value="restricted">
-          <PartnerList partners={restricted} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} domainPaidPartnerIds={domainPaidIds} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} pendingCoAdminUserIds={pendingCoAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} coAdminRoleByUser={coAdminRoleByUser} pendingCoAdminRoleByUser={pendingCoAdminRoleByUser} />
-        </TabsContent>
-        <TabsContent value="payments">
-          <PaymentList payments={payments} onApprove={handleApprovePayment} onReject={handleRejectPayment} />
+          <PartnerList partners={restricted} onApprove={handleApprove} onRestrict={setRestrictDialog} onBulkApprove={handleBulkApprove} onBulkRestrict={handleBulkRestrict} onBulkMarkDomain={handleBulkMarkDomain} showApprove onEditId={(p) => { setEditIdDialog(p); setNewPartnerId(p.partner_number || ''); }} onEditDetails={setEditPartnerDialog} onGenerateReviews={(p) => { setReviewCountDialog(p); setReviewCount('10'); }} generatingReviews={generatingReviews} onToggleVerify={handleToggleVerify} onToggleUnlimitedReviews={handleToggleUnlimitedReviews} onToggleDomain={handleToggleDomain} onSetBanner={(p) => { setBannerDialog(p); setBannerMessage(p.admin_banner || ''); }} onToggleHide={handleToggleHide} onDelete={handleDeletePartner} coAdminUserIds={coAdminUserIds} pendingCoAdminUserIds={pendingCoAdminUserIds} currentUserId={currentUserId} coAdminLoadingId={coAdminLoadingId} onToggleCoAdmin={handleToggleCoAdmin} coAdminRoleByUser={coAdminRoleByUser} pendingCoAdminRoleByUser={pendingCoAdminRoleByUser} />
         </TabsContent>
         <TabsContent value="flags">
           <FlagList flags={pendingFlags} partners={partners} onDismiss={handleDismissFlag} onReviewed={handleMarkFlagReviewed} />
         </TabsContent>
         <TabsContent value="pricing">
           <SignupControlSection />
-          <PricingSettings />
         </TabsContent>
         <TabsContent value="email-blast">
           <EmailBlastSection
@@ -737,7 +671,6 @@ export default function AdminDashboard() {
         <TabsContent value="analytics">
           <AnalyticsSection
             partners={partners}
-            payments={payments}
             users={users}
             flags={flags}
             onRefresh={loadData}
@@ -1225,54 +1158,7 @@ export default function AdminDashboard() {
   );
 }
 
-function PaymentList({ payments, onApprove, onReject }) {
-  if (payments.length === 0) {
-    return <p className="text-center text-muted-foreground py-12">No payments submitted yet.</p>;
-  }
-  const STATUS_COLORS = {
-    pending: 'bg-amber-50 text-amber-700 border-amber-200',
-    approved: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    rejected: 'bg-red-50 text-red-700 border-red-200',
-  };
-  return (
-    <div className="space-y-3">
-      {payments.map(pay => (
-        <div key={pay.id} className="bg-white border border-border rounded-xl p-4 flex items-start gap-4">
-          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-            <CreditCard className="w-5 h-5 text-blue-600" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <p className="font-semibold text-sm">{pay.user_name || pay.user_email || 'User'}</p>
-              {pay.partner_name && <span className="text-xs text-muted-foreground">→ {pay.partner_name}</span>}
-              <Badge variant="outline" className={`text-xs ${STATUS_COLORS[pay.status]}`}>{pay.status}</Badge>
-            </div>
-            <p className="text-sm font-bold text-foreground mt-1">${pay.amount?.toLocaleString()}</p>
-            {pay.description && <p className="text-xs text-muted-foreground mt-0.5">{pay.description}</p>}
-            <p className="text-xs text-muted-foreground mt-1">{pay.created_date ? format(new Date(pay.created_date), 'MMM d, yyyy') : ''}</p>
-          </div>
-          {pay.status === 'pending' && (
-            <div className="flex gap-2 shrink-0">
-              <Button size="sm" variant="outline" className="rounded-full text-emerald-700 border-emerald-200 hover:bg-emerald-50" onClick={() => onApprove(pay)}>
-                <CheckCircle className="w-3.5 h-3.5 mr-1" /> Approve
-              </Button>
-              <Button size="sm" variant="outline" className="rounded-full text-red-700 border-red-200 hover:bg-red-50" onClick={() => onReject(pay)}>
-                <XCircle className="w-3.5 h-3.5 mr-1" /> Reject
-              </Button>
-            </div>
-          )}
-          {pay.status === 'approved' && (
-            <div className="flex gap-2 shrink-0">
-              <Button size="sm" variant="outline" className="rounded-full text-red-700 border-red-200 hover:bg-red-50" onClick={() => onReject(pay)}>
-                <XCircle className="w-3.5 h-3.5 mr-1" /> Reject & Remove Reviews
-              </Button>
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
-  );
-}
+
 
 function EmailBlastSection({ onOpenDialog }) {
   return (
@@ -1307,105 +1193,7 @@ function EmailBlastSection({ onOpenDialog }) {
   );
 }
 
-function PricingSettings() {
-  const [prices, setPrices] = useState({ ...DEFAULT_PRICING });
-  const [settingsId, setSettingsId] = useState(null);
-  const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    base44.entities.AppSettings.filter({ key: 'pricing' }).then(records => {
-      if (records.length > 0) {
-        setPrices({ ...DEFAULT_PRICING, ...records[0].value });
-        setSettingsId(records[0].id);
-      }
-    });
-  }, []);
-
-  const handleSave = async () => {
-    setSaving(true);
-    if (settingsId) {
-      await base44.entities.AppSettings.update(settingsId, { value: prices });
-    } else {
-      const rec = await base44.entities.AppSettings.create({ key: 'pricing', value: prices });
-      setSettingsId(rec.id);
-    }
-    toast.success('Prices saved!');
-    setSaving(false);
-  };
-
-  const fields = [
-    { key: 'premium_badge', label: 'Premium Badge', prefix: '$', suffix: 'USD' },
-    { key: 'reviews_5', label: '5 Reviews Package', prefix: '₦', suffix: 'NGN' },
-    { key: 'reviews_10', label: '10 Reviews Package', prefix: '₦', suffix: 'NGN' },
-    { key: 'reviews_20', label: '20 Reviews Package', prefix: '₦', suffix: 'NGN' },
-    { key: 'domain_purchase', label: 'Domain Purchase', prefix: '₦', suffix: 'NGN' },
-    { key: 'domain_plan_monthly', label: 'Domain Plan (Monthly)', prefix: '₦', suffix: 'NGN' },
-    { key: 'domain_plan_yearly', label: 'Domain Plan (Yearly)', prefix: '₦', suffix: 'NGN' },
-  ];
-
-  const bankFields = [
-    { key: 'bank_account_name', label: 'Bank Account Name' },
-    { key: 'bank_account_number', label: 'Bank Account Number' },
-    { key: 'bank_name', label: 'Bank Name' },
-  ];
-
-  return (
-    <div className="max-w-md space-y-5">
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
-        <p className="font-semibold flex items-center gap-1.5 mb-1"><DollarSign className="w-4 h-4" /> Pricing Settings</p>
-        <p>Changes here instantly update the prices shown to partners in the Buy Reviews, Premium Badge, and Buy Domain modals.</p>
-      </div>
-      <div className="bg-white border border-border rounded-xl p-5 space-y-4">
-        {fields.map(f => (
-          <div key={f.key} className="space-y-1">
-            <label className="text-sm font-medium">{f.label}</label>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground w-4">{f.prefix}</span>
-              <Input
-                type="number"
-                min="0"
-                value={prices[f.key] ?? ''}
-                onChange={e => setPrices(p => ({ ...p, [f.key]: parseFloat(e.target.value) || 0 }))}
-                className="flex-1"
-              />
-              <span className="text-xs text-muted-foreground w-8">{f.suffix}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="bg-white border border-border rounded-xl p-5 space-y-4">
-        <p className="font-semibold flex items-center gap-1.5 text-sm"><Landmark className="w-4 h-4" /> Payment Bank Details</p>
-        <p className="text-xs text-muted-foreground -mt-2">Shown to partners in the Buy Domain payment modal.</p>
-        {bankFields.map(f => (
-          <div key={f.key} className="space-y-1">
-            <label className="text-sm font-medium">{f.label}</label>
-            <Input
-              value={prices[f.key] ?? ''}
-              onChange={e => setPrices(p => ({ ...p, [f.key]: e.target.value }))}
-              className="w-full"
-            />
-          </div>
-        ))}
-        <div className="flex items-center justify-between gap-3 pt-2 border-t border-border">
-          <div>
-            <p className="text-sm font-medium flex items-center gap-1.5"><ImageIcon className="w-4 h-4" /> Require Payment Screenshot</p>
-            <p className="text-xs text-muted-foreground">Force partners to upload a receipt before submitting a payment.</p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setPrices(p => ({ ...p, require_payment_screenshot: !p.require_payment_screenshot }))}
-            className={`relative w-11 h-6 rounded-full transition-colors ${prices.require_payment_screenshot ? 'bg-primary' : 'bg-muted'}`}
-          >
-            <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${prices.require_payment_screenshot ? 'translate-x-5' : ''}`} />
-          </button>
-        </div>
-        <Button className="w-full mt-2" onClick={handleSave} disabled={saving}>
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Settings'}
-        </Button>
-      </div>
-    </div>
-  );
-}
 
 function FlagList({ flags, partners, onDismiss, onReviewed }) {
   if (flags.length === 0) {

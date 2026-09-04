@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { BarChart3, Eye, Star, Users, DollarSign, Flag, CreditCard, RefreshCw } from 'lucide-react';
+import { BarChart3, Eye, Star, Users, Flag, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format, subDays, startOfDay, isSameDay, parseISO } from 'date-fns';
 import {
@@ -29,7 +29,7 @@ function dayIndex(dt, buckets) {
   return buckets.findIndex((b) => isSameDay(b.date, d));
 }
 
-export default function AnalyticsSection({ partners, payments, users, flags, onRefresh }) {
+export default function AnalyticsSection({ partners, users, flags, onRefresh }) {
   const approved = partners.filter((p) => p.status === 'approved');
 
   const totalViews = useMemo(
@@ -43,12 +43,6 @@ export default function AnalyticsSection({ partners, payments, users, flags, onR
     return (rated.reduce((s, p) => s + p.rating, 0) / rated.length).toFixed(1);
   }, [approved]);
 
-  const revenue = useMemo(
-    () => payments.filter((p) => p.status === 'approved').reduce((s, p) => s + (p.amount || 0), 0),
-    [payments]
-  );
-
-  const pendingPayments = payments.filter((p) => p.status === 'pending').length;
   const openFlags = flags.filter((f) => f.status === 'pending').length;
 
   const topViewed = useMemo(
@@ -62,18 +56,14 @@ export default function AnalyticsSection({ partners, payments, users, flags, onR
     const today = startOfDay(new Date());
     const buckets = Array.from({ length: days }, (_, i) => {
       const d = subDays(today, days - 1 - i);
-      return { date: d, label: format(d, 'MMM d'), partners: 0, payments: 0 };
+      return { date: d, label: format(d, 'MMM d'), partners: 0 };
     });
     partners.forEach((p) => {
       const i = dayIndex(p.created_date, buckets);
       if (i >= 0) buckets[i].partners++;
     });
-    payments.forEach((p) => {
-      const i = dayIndex(p.created_date, buckets);
-      if (i >= 0) buckets[i].payments++;
-    });
     return buckets;
-  }, [partners, payments]);
+  }, [partners]);
 
   const statusBreakdown = useMemo(() => {
     const counts = { approved: 0, pending: 0, restricted: 0 };
@@ -91,8 +81,6 @@ export default function AnalyticsSection({ partners, payments, users, flags, onR
     { label: 'Profile Views', value: totalViews.toLocaleString(), icon: Eye, color: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-200' },
     { label: 'Avg Rating', value: avgRating === '—' ? '—' : `★ ${avgRating}`, icon: Star, color: 'text-amber-600', bg: 'bg-amber-50 border-amber-200' },
     { label: 'Approved Partners', value: approved.length, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-200' },
-    { label: 'Revenue (approved)', value: `$${revenue.toLocaleString()}`, icon: DollarSign, color: 'text-green-600', bg: 'bg-green-50 border-green-200' },
-    { label: 'Pending Payments', value: pendingPayments, icon: CreditCard, color: 'text-indigo-600', bg: 'bg-indigo-50 border-indigo-200' },
     { label: 'Open Flags', value: openFlags, icon: Flag, color: 'text-red-600', bg: 'bg-red-50 border-red-200' },
   ];
 
@@ -112,7 +100,7 @@ export default function AnalyticsSection({ partners, payments, users, flags, onR
       </div>
 
       {/* Summary stat cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {stats.map((s) => {
           const Icon = s.icon;
           return (
@@ -145,7 +133,6 @@ export default function AnalyticsSection({ partners, payments, users, flags, onR
               />
               <Legend wrapperStyle={{ fontSize: 12 }} />
               <Bar dataKey="partners" name="New Partners" fill="#16a34a" radius={[3, 3, 0, 0]} />
-              <Bar dataKey="payments" name="New Payments" fill="#2563eb" radius={[3, 3, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

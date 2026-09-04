@@ -16,9 +16,7 @@ import PortfolioScroller from '@/components/directory/PortfolioScroller';
 import TestimonialsScroller from '@/components/directory/TestimonialsScroller';
 import ContactModal from '@/components/partner/ContactModal';
 import FlagModal from '@/components/partner/FlagModal';
-import PurchasePremiumModal from '@/components/partner/PurchasePremiumModal';
-import BuyReviewModal from '@/components/partner/BuyReviewModal';
-import BuyDomainModal from '@/components/partner/BuyDomainModal';
+
 import GenerateTestimonialsModal from '@/components/partner/GenerateTestimonialsModal';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
@@ -70,9 +68,7 @@ export default function PartnerDetail() {
   const [contactOpen, setContactOpen] = useState(false);
   const [hireOpen, setHireOpen] = useState(false);
   const [flagOpen, setFlagOpen] = useState(false);
-  const [premiumOpen, setPremiumOpen] = useState(false);
-  const [buyReviewOpen, setBuyReviewOpen] = useState(false);
-  const [buyDomainOpen, setBuyDomainOpen] = useState(false);
+
   const [genTestimonialsOpen, setGenTestimonialsOpen] = useState(false);
   const [showAllServices, setShowAllServices] = useState(false);
   const [expandedService, setExpandedService] = useState(null);
@@ -219,14 +215,7 @@ export default function PartnerDetail() {
       {partner.status === 'pending' &&
       <div className="mb-4 bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3 text-amber-600 dark:text-amber-400 text-sm">
           <ShieldAlert className="w-4 h-4 shrink-0 hidden sm:block" />
-          <span className="text-center sm:text-left flex-1">This profile is pending admin approval and is not yet visible in the directory. Purchase a domain name within 2 days — if the domain is not purchased, your account will be deleted by admin after 2 days.</span>
-          {user && partner.created_by_id === user.id && !partner.domain_purchased &&
-        <Button
-          onClick={() => setBuyDomainOpen(true)}
-          className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full h-9 px-4 shrink-0">
-            <Globe className="w-4 h-4" /> Buy Domain
-          </Button>
-        }
+          <span className="text-center sm:text-left flex-1">This profile is pending admin approval and is not yet visible in the directory.</span>
         </div>}
 
       {partner.admin_banner && user && (user.id === partner.created_by_id || user.role === 'admin') &&
@@ -319,13 +308,7 @@ export default function PartnerDetail() {
             </a>
             }
 
-            {user && partner.created_by_id === user.id && partner.partner_tier !== 'premium' &&
-            <button
-              onClick={() => setPremiumOpen(true)}
-              className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 rounded-full">
-              ✨ Get Premium Badge
-            </button>
-            }
+
 
             <div className="flex gap-2">
               <button
@@ -480,23 +463,7 @@ export default function PartnerDetail() {
 
             </div>
 
-            {/* Owner-only actions */}
-            <div className="space-y-2 pt-4 border-t border-border">
-              {user && partner.created_by_id === user.id &&
-              <button
-                onClick={() => setBuyReviewOpen(true)}
-                className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 rounded-full">
-                <Star className="w-4 h-4 fill-amber-400 text-amber-500" /> Buy Reviews
-              </button>
-              }
-              {user && partner.created_by_id === user.id && partner.status === 'pending' &&
-              <button
-                onClick={() => setBuyDomainOpen(true)}
-                className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium h-9 px-4 py-2 transition-colors bg-primary text-primary-foreground hover:bg-primary/90 rounded-full">
-                <Globe className="w-4 h-4" /> Buy Domain
-              </button>
-              }
-            </div>
+
 
             {user?.role === 'admin' &&
             <div className="space-y-2 pt-4 border-t border-border">
@@ -652,9 +619,7 @@ export default function PartnerDetail() {
           <ContactModal partner={partner} isOpen={contactOpen} onClose={() => setContactOpen(false)} />
           <ContactModal partner={partner} isOpen={hireOpen} onClose={() => setHireOpen(false)} mode="hire" />
           <FlagModal partner={partner} isOpen={flagOpen} onClose={() => setFlagOpen(false)} />
-          <PurchasePremiumModal partner={partner} isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} user={user} />
-          <BuyReviewModal partner={partner} isOpen={buyReviewOpen} onClose={() => setBuyReviewOpen(false)} />
-          <BuyDomainModal partner={partner} isOpen={buyDomainOpen} onClose={() => setBuyDomainOpen(false)} user={user} />
+
           <GenerateTestimonialsModal partner={partner} isOpen={genTestimonialsOpen} onClose={() => setGenTestimonialsOpen(false)} onGenerated={handleReviewAdded} />
         </>
       }

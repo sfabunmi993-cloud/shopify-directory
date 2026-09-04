@@ -33,25 +33,6 @@ Partner Details:
 
 Please review and approve or reject this partner from the Admin Dashboard.
       `.trim();
-    } else if (entityName === 'Payment') {
-      const userName = data?.user_name || 'Unknown User';
-      const userEmail = data?.user_email || 'N/A';
-      const partnerName = data?.partner_name || 'N/A';
-      const amount = data?.amount ? `₦${Number(data.amount).toLocaleString()}` : 'N/A';
-      const description = data?.description || 'N/A';
-      subject = `New Payment Submitted: ${userName}`;
-      body = `
-A new payment has been submitted and is awaiting your approval.
-
-Payment Details:
-- From: ${userName} (${userEmail})
-- Partner: ${partnerName}
-- Amount: ${amount}
-- Description: ${description}
-- Status: Pending
-
-Please review and approve or reject this payment from the Admin Dashboard.
-      `.trim();
     } else {
       return Response.json({ message: 'Unknown entity type' });
     }

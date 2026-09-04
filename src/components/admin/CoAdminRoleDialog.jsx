@@ -1,37 +1,30 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Check, Loader2, Mail, CreditCard, ShieldCheck, Megaphone } from 'lucide-react';
+import { Check, Loader2, Mail, ShieldCheck, Megaphone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export const CO_ADMIN_ROLES = [
   {
-    value: 'payment_notifications',
-    label: 'Payment Notifications',
-    icon: CreditCard,
-    description: 'Can view the Payments tab and receives payment notification emails. No partner management.',
-    tabs: ['payments'],
-  },
-  {
     value: 'partners_moderator',
     label: 'Partners Moderator',
     icon: ShieldCheck,
-    description: 'Can manage partners (pending, approved, restricted), payments, and flags.',
-    tabs: ['pending', 'approved', 'restricted', 'payments', 'flags'],
+    description: 'Can manage partners (pending, approved, restricted) and flags.',
+    tabs: ['pending', 'approved', 'restricted', 'flags'],
   },
   {
     value: 'marketing_admin',
     label: 'Marketing Admin',
     icon: Megaphone,
     description: 'Partners Moderator plus Email Blast, Announcements, Broadcast Update, and Ad Promos.',
-    tabs: ['pending', 'approved', 'restricted', 'payments', 'flags', 'email-blast', 'announcements', 'broadcast', 'ads'],
+    tabs: ['pending', 'approved', 'restricted', 'flags', 'email-blast', 'announcements', 'broadcast', 'ads'],
   },
   {
     value: 'full_admin',
     label: 'Full Admin',
     icon: Mail,
-    description: 'Full access to everything, including Pricing settings.',
-    tabs: ['pending', 'approved', 'restricted', 'payments', 'flags', 'pricing', 'email-blast', 'announcements', 'broadcast', 'ads', 'users', 'analytics'],
+    description: 'Full access to everything, including signup settings.',
+    tabs: ['pending', 'approved', 'restricted', 'flags', 'pricing', 'email-blast', 'announcements', 'broadcast', 'ads', 'users', 'analytics'],
   },
 ];
 
