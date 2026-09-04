@@ -101,13 +101,13 @@
     "read": {
       "$or": [
         {
-          "client_user_id": "{{user.id}}"
+          "data.client_user_id": "{{user.id}}"
         },
         {
-          "partner_user_id": "{{user.id}}"
+          "data.partner_user_id": "{{user.id}}"
         },
         {
-          "sender_id": "{{user.id}}"
+          "data.sender_id": "{{user.id}}"
         },
         {
           "user_condition": {

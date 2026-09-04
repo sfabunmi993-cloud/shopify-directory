@@ -42,8 +42,10 @@
     "rating"
   ],
   "rls": {
-    "create": {},
-    "read": {},
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "read": null,
     "update": {
       "$or": [
         {

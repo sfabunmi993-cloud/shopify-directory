@@ -59,7 +59,7 @@
           "created_by_id": "{{user.id}}"
         },
         {
-          "client_user_id": "{{user.id}}"
+          "data.client_user_id": "{{user.id}}"
         },
         {
           "user_condition": {
