@@ -1,6 +1,7 @@
+```jsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { supabase } from "@/lib/supabaseClient";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, ShieldCheck } from "lucide-react";
@@ -46,8 +47,17 @@ export default function Login() {
     e.preventDefault();
     setError("");
     setLoading(true);
+
     try {
-      await base44.auth.loginViaEmailPassword(email, password);
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
       window.location.href = "/";
     } catch (err) {
       setError(err.message || "Invalid email or password");
@@ -56,10 +66,47 @@ export default function Login() {
     }
   };
 
-  const handleGoogle = () => base44.auth.loginWithProvider("google", "/");
-  const handleApple = () => base44.auth.loginWithProvider("apple", "/");
-  const handleFacebook = () => base44.auth.loginWithProvider("facebook", "/");
-  const handleUnsupported = () => toast("This sign-in option isn't available yet");
+  const handleGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/`,
+      },
+    });
+
+    if (error) {
+      toast.error(error.message || "Google sign-in failed");
+    }
+  };
+
+  const handleApple = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "apple",
+      options: {
+        redirectTo: `${window.location.origin}/`,
+      },
+    });
+
+    if (error) {
+      toast.error(error.message || "Apple sign-in failed");
+    }
+  };
+
+  const handleFacebook = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "facebook",
+      options: {
+        redirectTo: `${window.location.origin}/`,
+      },
+    });
+
+    if (error) {
+      toast.error(error.message || "Facebook sign-in failed");
+    }
+  };
+
+  const handleUnsupported = () =>
+    toast("This sign-in option isn't available yet");
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-10">
@@ -70,18 +117,29 @@ export default function Login() {
       />
 
       <div className="w-full max-w-[440px] bg-card rounded-2xl px-8 py-10 shadow-xl">
-        <h1 className="text-[28px] font-bold text-foreground leading-tight">Log in</h1>
-        <p className="text-[15px] text-muted-foreground mt-1 mb-8">Continue to Shopify</p>
+        <h1 className="text-[28px] font-bold text-foreground leading-tight">
+          Log in
+        </h1>
+
+        <p className="text-[15px] text-muted-foreground mt-1 mb-8">
+          Continue to Shopify
+        </p>
 
         {error && (
-          <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">{error}</div>
+          <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+            {error}
+          </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-[13px] font-medium text-foreground">
+            <Label
+              htmlFor="email"
+              className="text-[13px] font-medium text-foreground"
+            >
               Email
             </Label>
+
             <Input
               id="email"
               type="email"
@@ -97,13 +155,21 @@ export default function Login() {
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="text-[13px] font-medium text-foreground">
+              <Label
+                htmlFor="password"
+                className="text-[13px] font-medium text-foreground"
+              >
                 Password
               </Label>
-              <Link to="/forgot-password" className="text-[13px] text-[#006fbb] hover:underline">
+
+              <Link
+                to="/forgot-password"
+                className="text-[13px] text-[#006fbb] hover:underline"
+              >
                 Forgot password?
               </Link>
             </div>
+
             <Input
               id="password"
               type="password"
@@ -116,7 +182,6 @@ export default function Login() {
             />
           </div>
 
-          {/* Math captcha */}
           <MathCaptcha onVerify={setCaptchaOk} />
 
           <button
@@ -126,7 +191,8 @@ export default function Login() {
           >
             {loading ? (
               <span className="inline-flex items-center justify-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin" /> Logging in...
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Logging in...
               </span>
             ) : (
               "Continue with email"
@@ -134,13 +200,15 @@ export default function Login() {
           </button>
         </form>
 
-        {/* Divider */}
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-border" />
           </div>
+
           <div className="relative flex justify-center">
-            <span className="bg-card px-3 text-[13px] text-muted-foreground">or</span>
+            <span className="bg-card px-3 text-[13px] text-muted-foreground">
+              or
+            </span>
           </div>
         </div>
 
@@ -152,10 +220,10 @@ export default function Login() {
           <span className="w-5 h-5 rounded-full bg-foreground text-background inline-flex items-center justify-center text-[10px]">
             <ShieldCheck className="w-3 h-3" />
           </span>
+
           Sign in with passkey
         </button>
 
-        {/* Social login row */}
         <div className="flex items-center justify-center gap-3 mt-6">
           <button
             type="button"
@@ -165,6 +233,7 @@ export default function Login() {
           >
             <GoogleIcon className="w-5 h-5" />
           </button>
+
           <button
             type="button"
             onClick={handleApple}
@@ -173,6 +242,7 @@ export default function Login() {
           >
             <AppleIcon className="w-5 h-5" />
           </button>
+
           <button
             type="button"
             onClick={handleFacebook}
@@ -181,6 +251,7 @@ export default function Login() {
           >
             <FacebookIcon className="w-5 h-5" />
           </button>
+
           <button
             type="button"
             onClick={handleUnsupported}
@@ -194,10 +265,14 @@ export default function Login() {
 
       <p className="text-[15px] text-foreground mt-8">
         New to Shopify?{" "}
-        <Link to="/register" className="text-[#006fbb] font-medium hover:underline">
+        <Link
+          to="/register"
+          className="text-[#006fbb] font-medium hover:underline"
+        >
           Get started →
         </Link>
       </p>
     </div>
   );
 }
+```
