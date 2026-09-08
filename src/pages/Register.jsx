@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from "react";
+```jsx
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { supabase } from "@/lib/supabaseClient";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, ShieldCheck } from "lucide-react";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import GoogleIcon from "@/components/GoogleIcon";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
@@ -15,7 +20,7 @@ const SHOPIFY_LOGO =
 const fallIn = {
   initial: { y: "-100vh", opacity: 0 },
   animate: { y: 0, opacity: 1 },
-  transition: { type: "spring", stiffness: 90, damping: 18, mass: 0.8 }
+  transition: { type: "spring", stiffness: 90, damping: 18, mass: 0.8 },
 };
 
 function AppleIcon({ className = "" }) {
@@ -51,28 +56,40 @@ export default function Register() {
   const [showOtp, setShowOtp] = useState(false);
   const [otpCode, setOtpCode] = useState("");
   const [humanChecked, setHumanChecked] = useState(false);
-  const [signupAvailable, setSignupAvailable] = useState(null); // null = checking
-
-  useEffect(() => {
-    base44.entities.AppSettings.filter({ key: 'signup_enabled' })
-      .then(records => {
-        const disabled = records.length > 0 && records[0].value?.enabled === false;
-        setSignupAvailable(!disabled);
-      })
-      .catch(() => setSignupAvailable(true));
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       return;
     }
+
+    if (!humanChecked) {
+      setError("Please confirm that you are human");
+      return;
+    }
+
     setLoading(true);
+
     try {
-      await base44.auth.register({ email, password });
-      setShowOtp(true);
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.user && !data.session) {
+        setShowOtp(true);
+      } else if (data.session) {
+        window.location.href = "/become-a-partner";
+      } else {
+        setShowOtp(true);
+      }
     } catch (err) {
       setError(err.message || "Registration failed");
     } finally {
@@ -83,11 +100,18 @@ export default function Register() {
   const handleVerify = async () => {
     setError("");
     setLoading(true);
+
     try {
-      const result = await base44.auth.verifyOtp({ email, otpCode });
-      if (result?.access_token) {
-        base44.auth.setToken(result.access_token);
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: otpCode,
+        type: "signup",
+      });
+
+      if (error) {
+        throw error;
       }
+
       window.location.href = "/become-a-partner";
     } catch (err) {
       setError(err.message || "Invalid verification code");
@@ -98,56 +122,89 @@ export default function Register() {
 
   const handleResend = async () => {
     setError("");
+
     try {
-      await base44.auth.resendOtp(email);
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email,
+      });
+
+      if (error) {
+        throw error;
+      }
+
       toast.success("Code sent — check your email for the new code.");
     } catch (err) {
       setError(err.message || "Failed to resend code");
     }
   };
 
-  const handleGoogle = () => base44.auth.loginWithProvider("google", "/");
-  const handleApple = () => base44.auth.loginWithProvider("apple", "/");
-  const handleFacebook = () => base44.auth.loginWithProvider("facebook", "/");
-  const handleUnsupported = () => toast("This sign-in option isn't available yet");
+  const handleGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/`,
+      },
+    });
 
-  if (signupAvailable === null) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-foreground" />
-      </div>
-    );
-  }
+    if (error) {
+      toast.error(error.message || "Google sign-in failed");
+    }
+  };
 
-  if (!signupAvailable) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-10">
-        <img src={SHOPIFY_LOGO} alt="Shopify" className="w-8 h-8 mb-6" />
-        <div className="w-full max-w-[440px] bg-card rounded-2xl px-8 py-10 shadow-xl text-center">
-          <h1 className="text-[24px] font-bold text-foreground leading-tight">Sign-ups are currently unavailable</h1>
-          <p className="text-[15px] text-muted-foreground mt-2 mb-8">New account registration is temporarily disabled. Please check back later or contact support.</p>
-          <Link to="/login" className="block w-full h-11 leading-[44px] rounded-lg bg-[#006fbb] hover:bg-[#005a99] text-white text-[15px] font-medium transition-colors">
-            Go to Log in
-          </Link>
-        </div>
-        <button onClick={() => { window.location.href = '/'; }} className="text-[15px] text-foreground/70 mt-6 hover:underline">
-          Back to home
-        </button>
-      </div>
-    );
-  }
+  const handleApple = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "apple",
+      options: {
+        redirectTo: `${window.location.origin}/`,
+      },
+    });
+
+    if (error) {
+      toast.error(error.message || "Apple sign-in failed");
+    }
+  };
+
+  const handleFacebook = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "facebook",
+      options: {
+        redirectTo: `${window.location.origin}/`,
+      },
+    });
+
+    if (error) {
+      toast.error(error.message || "Facebook sign-in failed");
+    }
+  };
+
+  const handleUnsupported = () =>
+    toast("This sign-in option isn't available yet");
 
   if (showOtp) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-10">
         <img src={SHOPIFY_LOGO} alt="Shopify" className="w-8 h-8 mb-6" />
-        <motion.div variants={fallIn} initial="initial" animate="animate" className="w-full max-w-[440px]">
+
+        <motion.div
+          variants={fallIn}
+          initial="initial"
+          animate="animate"
+          className="w-full max-w-[440px]"
+        >
           <div className="w-full bg-card rounded-2xl px-8 py-10 shadow-xl">
-            <h1 className="text-[28px] font-bold text-foreground leading-tight">Verify your email</h1>
-            <p className="text-[15px] text-muted-foreground mt-1 mb-8">We sent a code to {email}</p>
+            <h1 className="text-[28px] font-bold text-foreground leading-tight">
+              Verify your email
+            </h1>
+
+            <p className="text-[15px] text-muted-foreground mt-1 mb-8">
+              We sent a code to {email}
+            </p>
 
             {error && (
-              <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">{error}</div>
+              <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+                {error}
+              </div>
             )}
 
             <div className="flex justify-center mb-6">
@@ -177,7 +234,8 @@ export default function Register() {
             >
               {loading ? (
                 <span className="inline-flex items-center justify-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" /> Verifying...
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Verifying...
                 </span>
               ) : (
                 "Verify"
@@ -186,7 +244,10 @@ export default function Register() {
 
             <p className="text-center text-[14px] text-muted-foreground mt-4">
               Didn't receive the code?{" "}
-              <button onClick={handleResend} className="text-[#006fbb] font-medium hover:underline">
+              <button
+                onClick={handleResend}
+                className="text-[#006fbb] font-medium hover:underline"
+              >
                 Resend
               </button>
             </p>
@@ -207,20 +268,36 @@ export default function Register() {
         transition={{ duration: 0.4 }}
       />
 
-      <motion.div variants={fallIn} initial="initial" animate="animate" className="w-full max-w-[440px]">
+      <motion.div
+        variants={fallIn}
+        initial="initial"
+        animate="animate"
+        className="w-full max-w-[440px]"
+      >
         <div className="w-full bg-card rounded-2xl px-8 py-10 shadow-xl">
-          <h1 className="text-[28px] font-bold text-foreground leading-tight">Create account</h1>
-          <p className="text-[15px] text-muted-foreground mt-1 mb-8">Continue to Shopify</p>
+          <h1 className="text-[28px] font-bold text-foreground leading-tight">
+            Create account
+          </h1>
+
+          <p className="text-[15px] text-muted-foreground mt-1 mb-8">
+            Continue to Shopify
+          </p>
 
           {error && (
-            <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">{error}</div>
+            <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+              {error}
+            </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-[13px] font-medium text-foreground">
+              <Label
+                htmlFor="email"
+                className="text-[13px] font-medium text-foreground"
+              >
                 Email
               </Label>
+
               <Input
                 id="email"
                 type="email"
@@ -233,10 +310,15 @@ export default function Register() {
                 required
               />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-[13px] font-medium text-foreground">
+              <Label
+                htmlFor="password"
+                className="text-[13px] font-medium text-foreground"
+              >
                 Password
               </Label>
+
               <Input
                 id="password"
                 type="password"
@@ -248,10 +330,15 @@ export default function Register() {
                 required
               />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="confirm" className="text-[13px] font-medium text-foreground">
+              <Label
+                htmlFor="confirm"
+                className="text-[13px] font-medium text-foreground"
+              >
                 Confirm Password
               </Label>
+
               <Input
                 id="confirm"
                 type="password"
@@ -269,16 +356,26 @@ export default function Register() {
                 type="button"
                 onClick={() => setHumanChecked((v) => !v)}
                 className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center border transition-colors ${
-                  humanChecked ? "bg-[#006fbb] border-[#006fbb]" : "bg-card border-input"
+                  humanChecked
+                    ? "bg-[#006fbb] border-[#006fbb]"
+                    : "bg-card border-input"
                 }`}
                 aria-pressed={humanChecked}
                 aria-label="I am human"
               >
-                {humanChecked && <ShieldCheck className="w-3.5 h-3.5 text-white" />}
+                {humanChecked && (
+                  <ShieldCheck className="w-3.5 h-3.5 text-white" />
+                )}
               </button>
+
               <div className="flex-1">
-                <p className="text-[14px] text-foreground font-medium">I am human</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Privacy - Terms</p>
+                <p className="text-[14px] text-foreground font-medium">
+                  I am human
+                </p>
+
+                <p className="text-[11px] text-muted-foreground mt-0.5">
+                  Privacy - Terms
+                </p>
               </div>
             </div>
 
@@ -289,7 +386,8 @@ export default function Register() {
             >
               {loading ? (
                 <span className="inline-flex items-center justify-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" /> Creating account...
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Creating account...
                 </span>
               ) : (
                 "Create account"
@@ -301,8 +399,11 @@ export default function Register() {
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-border" />
             </div>
+
             <div className="relative flex justify-center">
-              <span className="bg-card px-3 text-[13px] text-muted-foreground">or</span>
+              <span className="bg-card px-3 text-[13px] text-muted-foreground">
+                or
+              </span>
             </div>
           </div>
 
@@ -314,6 +415,7 @@ export default function Register() {
             <span className="w-5 h-5 rounded-full bg-foreground text-background inline-flex items-center justify-center text-[10px]">
               <ShieldCheck className="w-3 h-3" />
             </span>
+
             Sign in with passkey
           </button>
 
@@ -326,6 +428,7 @@ export default function Register() {
             >
               <GoogleIcon className="w-5 h-5" />
             </button>
+
             <button
               type="button"
               onClick={handleApple}
@@ -334,6 +437,7 @@ export default function Register() {
             >
               <AppleIcon className="w-5 h-5" />
             </button>
+
             <button
               type="button"
               onClick={handleFacebook}
@@ -342,6 +446,7 @@ export default function Register() {
             >
               <FacebookIcon className="w-5 h-5" />
             </button>
+
             <button
               type="button"
               onClick={handleUnsupported}
@@ -356,10 +461,14 @@ export default function Register() {
 
       <p className="text-[15px] text-foreground mt-8">
         Already have an account?{" "}
-        <Link to="/login" className="text-[#006fbb] font-medium hover:underline">
+        <Link
+          to="/login"
+          className="text-[#006fbb] font-medium hover:underline"
+        >
           Log in →
         </Link>
       </p>
     </div>
   );
 }
+```
